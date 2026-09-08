@@ -257,11 +257,8 @@
         // ID Spreadsheet Asli
         const SHEET_ID = "1Ckk2YocjioES8EKEkT3bjHy_56tUShglGPBCpYCyh5Y";
         
-        // Target URL Google Visualization API
-        const TARGET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&range=B2:T840`;
-        
-        // Menggunakan CORS Proxy agar bisa di-fetch langsung saat membuka file:// lokal
-        const CSV_URL = `https://api.allorigins.win/raw?url=${encodeURIComponent(TARGET_URL)}`;
+        // Target URL Resmi Export CSV Google Sheets (Bypass CORS & Proxy issues)
+        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
 
         const MAPTECH_STORE_LIST = [
             "M108 Digimap Trans Studio Mall Bandung", "M116 Digimap Beachwalk Bali", "M117 Digimap Plaza Senayan",
