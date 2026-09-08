@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nilai Post Test Sementara</title>
+    <title>Nilai Post Test Sementara - MAPTECH</title>
     <!-- Google Fonts & Font Awesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -57,7 +57,53 @@
 </head>
 <body class="bg-slate-100 text-slate-800 pb-16 md:pb-0">
 
-    <div class="flex flex-col md:flex-row min-h-screen">
+    <!-- MODAL LOGIN USER MAPTECH -->
+    <div id="login-modal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md p-6 md:p-8 relative">
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-indigo-600 rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold mb-3 shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h2 class="text-xl font-bold text-slate-900">Login User MAPTECH</h2>
+                <p class="text-xs text-slate-500 mt-1">Silakan pilih Kode Toko dan masukkan password akses Anda</p>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kode Toko (Username)</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-store absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <select id="login-username" required class="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="" disabled selected>-- Pilih Kode Toko --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-key absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="password" id="login-password" placeholder="Masukkan password" required class="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+
+                <div id="login-error" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 rounded-lg p-2.5 text-center font-medium">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i> Password salah! Silakan coba lagi.
+                </div>
+
+                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg transition-colors shadow-md shadow-indigo-600/30 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Masuk Aplikasi
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center text-[10px] text-slate-400 border-t border-slate-100 pt-3">
+                Concept & Curation by <b class="text-slate-600">Novi Riyanto</b>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER -->
+    <div id="app-wrapper" class="flex flex-col md:flex-row min-h-screen hidden">
         
         <!-- SIDEBAR (PC/Laptop/Tablet) & BOTTOM DOCK (Mobile Gawai) -->
         <aside class="fixed bottom-0 left-0 right-0 z-50 bg-slate-900 border-t border-slate-800 p-2 md:relative md:w-64 md:border-t-0 md:p-4 flex md:flex-col justify-between select-none flex-shrink-0">
@@ -108,14 +154,19 @@
 
             <!-- Footer Desktop (Disembunyikan di Mobile) -->
             <div class="hidden md:block border-t border-slate-800 pt-4 mt-6">
-                <div class="flex items-center gap-3 px-2">
-                    <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white">
-                        NR
+                <div class="flex items-center justify-between px-2">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white" id="user-avatar-initial">
+                            M
+                        </div>
+                        <div class="text-xs">
+                            <p class="font-medium text-white" id="user-display-store">Store</p>
+                            <p class="text-slate-500">MAPTECH User</p>
+                        </div>
                     </div>
-                    <div class="text-xs">
-                        <p class="font-medium text-white">Novi Riyanto</p>
-                        <p class="text-slate-500">Administrator</p>
-                    </div>
+                    <button onclick="handleLogout()" title="Logout" class="text-slate-400 hover:text-rose-400 text-sm p-1.5 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
                 </div>
             </div>
 
@@ -130,6 +181,11 @@
                     <i class="fa-solid fa-store text-lg mb-0.5"></i>
                     <span class="text-[10px]">All Store</span>
                     <span id="badge-mobile-team-count" class="absolute -top-1 right-2 bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+                </button>
+
+                <button onclick="handleLogout()" class="flex flex-col items-center justify-center py-1 px-3 text-rose-400 hover:text-rose-300 font-medium transition-colors">
+                    <i class="fa-solid fa-right-from-bracket text-lg mb-0.5"></i>
+                    <span class="text-[10px]">Logout</span>
                 </button>
             </nav>
         </aside>
@@ -318,14 +374,14 @@
                                 <thead>
                                     <tr class="bg-slate-100 border-b border-slate-200">
                                         <th class="p-3 text-slate-700">Metrik Assessment</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">13-7 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">13-7 Siang</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">14-7 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">14-7 Siang</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">15-7 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">15-7 Siang</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">16-7 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">16-7 Siang</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">8-Sept-2026 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">8-Sept-2026 Siang</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">9-Sept-2026 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">9-Sept-2026 Siang</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">10-Sept-2026 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">10-Sept-2026 Siang</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">11-Sept-2026 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">11-Sept-2026 Siang</th>
                                     </tr>
                                 </thead>
                                 <tbody id="session-summary-body" class="divide-y divide-slate-200">
@@ -430,14 +486,14 @@
                                         <th class="p-3">Work Experience</th>
                                         <th class="p-3">SEED Registered Email</th>
                                         <th class="p-3">Positions</th>
-                                        <th class="p-3 text-center bg-indigo-50">13-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
-                                        <th class="p-3 text-center bg-indigo-50">13-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
-                                        <th class="p-3 text-center bg-indigo-50">14-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
-                                        <th class="p-3 text-center bg-indigo-50">14-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
-                                        <th class="p-3 text-center bg-indigo-50">15-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
-                                        <th class="p-3 text-center bg-indigo-50">15-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
-                                        <th class="p-3 text-center bg-indigo-50">16-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
-                                        <th class="p-3 text-center bg-indigo-50">16-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">8-Sept-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">8-Sept-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">9-Sept-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">9-Sept-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">10-Sept-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">10-Sept-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">11-Sept-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">11-Sept-2026<br><span class="font-normal text-[10px]">Siang</span></th>
                                         <th class="p-3 text-center font-bold text-indigo-600">Max Score</th>
                                         <th class="p-3">Status Join</th>
                                         <th class="p-3">Status Final</th>
@@ -482,16 +538,67 @@
         let statusChartInstance = null;
         let debounceTimer = null;
 
+        // Kunci Tanggal & Sesi September 2026
         const SESSION_KEYS = [
-            '13-7-2026 Pagi', '13-7-2026 Siang',
-            '14-7-2026 Pagi', '14-7-2026 Siang',
-            '15-7-2026 Pagi', '15-7-2026 Siang',
-            '16-7-2026 Pagi', '16-7-2026 Siang'
+            '8-Sept-2026 Pagi', '8-Sept-2026 Siang',
+            '9-Sept-2026 Pagi', '9-Sept-2026 Siang',
+            '10-Sept-2026 Pagi', '10-Sept-2026 Siang',
+            '11-Sept-2026 Pagi', '11-Sept-2026 Siang'
         ];
 
         document.addEventListener("DOMContentLoaded", () => {
-            fetchSheetData();
+            initLoginModal();
+            checkAuth();
         });
+
+        function initLoginModal() {
+            const selectEl = document.getElementById("login-username");
+            selectEl.innerHTML = `<option value="" disabled selected>-- Pilih Kode Toko --</option>`;
+            
+            MAPTECH_STORE_CODES.forEach(code => {
+                const opt = document.createElement("option");
+                opt.value = code;
+                opt.textContent = code;
+                selectEl.appendChild(opt);
+            });
+        }
+
+        function checkAuth() {
+            const loggedInStore = sessionStorage.getItem("maptech_store");
+            if (loggedInStore) {
+                document.getElementById("login-modal").classList.add("hidden");
+                document.getElementById("app-wrapper").classList.remove("hidden");
+                
+                // Update UI User
+                document.getElementById("user-display-store").innerText = loggedInStore;
+                document.getElementById("user-avatar-initial").innerText = loggedInStore.charAt(0);
+                
+                fetchSheetData();
+            } else {
+                document.getElementById("login-modal").classList.remove("hidden");
+                document.getElementById("app-wrapper").classList.add("hidden");
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById("login-username").value;
+            const password = document.getElementById("login-password").value;
+            const errorEl = document.getElementById("login-error");
+
+            if (password === "maptech") {
+                errorEl.classList.add("hidden");
+                sessionStorage.setItem("maptech_store", username);
+                checkAuth();
+            } else {
+                errorEl.classList.remove("hidden");
+            }
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem("maptech_store");
+            window.location.reload();
+        }
 
         function updateTimestamp() {
             const now = new Date();
@@ -508,11 +615,9 @@
             const viewSummary = document.getElementById("view-summary");
             const viewAllStore = document.getElementById("view-all-store");
             
-            // Desktop Nav Buttons
             const navSummary = document.getElementById("nav-summary");
             const navAllStore = document.getElementById("nav-all-store");
 
-            // Mobile Nav Buttons
             const navMobileSummary = document.getElementById("nav-mobile-summary");
             const navMobileAllStore = document.getElementById("nav-mobile-all-store");
 
@@ -520,22 +625,18 @@
                 viewSummary.classList.remove("hidden");
                 viewAllStore.classList.add("hidden");
                 
-                // Active Desktop
                 navSummary.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition-colors";
                 navAllStore.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors";
 
-                // Active Mobile
                 navMobileSummary.className = "flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors";
                 navMobileAllStore.className = "flex flex-col items-center justify-center py-1 px-3 text-slate-400 hover:text-white font-medium transition-colors relative";
             } else {
                 viewSummary.classList.add("hidden");
                 viewAllStore.classList.remove("hidden");
 
-                // Active Desktop
                 navAllStore.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition-colors";
                 navSummary.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors";
 
-                // Active Mobile
                 navMobileAllStore.className = "flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors relative";
                 navMobileSummary.className = "flex flex-col items-center justify-center py-1 px-3 text-slate-400 hover:text-white font-medium transition-colors";
             }
@@ -690,19 +791,18 @@
                 const email = item['SEED Registered Email'] || '-';
                 const pos = item['Positions'] || '-';
 
-                const d13p = item['13-7-2026 Pagi'] || '-';
-                const d13s = item['13-7-2026 Siang'] || '-';
-                const d14p = item['14-7-2026 Pagi'] || '-';
-                const d14s = item['14-7-2026 Siang'] || '-';
-                const d15p = item['15-7-2026 Pagi'] || '-';
-                const d15s = item['15-7-2026 Siang'] || '-';
-                const d16p = item['16-7-2026 Pagi'] || '-';
-                const d16s = item['16-7-2026 Siang'] || '-';
+                const d8p = item['8-Sept-2026 Pagi'] || '-';
+                const d8s = item['8-Sept-2026 Siang'] || '-';
+                const d9p = item['9-Sept-2026 Pagi'] || '-';
+                const d9s = item['9-Sept-2026 Siang'] || '-';
+                const d10p = item['10-Sept-2026 Pagi'] || '-';
+                const d10s = item['10-Sept-2026 Siang'] || '-';
+                const d11p = item['11-Sept-2026 Pagi'] || '-';
+                const d11s = item['11-Sept-2026 Siang'] || '-';
 
                 const maxVal = parseScore(item['Max Score pt.1']);
                 const join = item['Keterangan Join / Tidak Join'] || '-';
                 
-                // Pass rate standard 80
                 const calculatedStatus = getCalculatedStatus(maxVal);
 
                 let joinBadgeClass = 'badge-default';
@@ -724,14 +824,14 @@
                     <td class="p-3">${exp}</td>
                     <td class="p-3">${email}</td>
                     <td class="p-3">${pos}</td>
-                    <td class="p-3 text-center">${d13p}</td>
-                    <td class="p-3 text-center">${d13s}</td>
-                    <td class="p-3 text-center">${d14p}</td>
-                    <td class="p-3 text-center">${d14s}</td>
-                    <td class="p-3 text-center">${d15p}</td>
-                    <td class="p-3 text-center">${d15s}</td>
-                    <td class="p-3 text-center">${d16p}</td>
-                    <td class="p-3 text-center">${d16s}</td>
+                    <td class="p-3 text-center">${d8p}</td>
+                    <td class="p-3 text-center">${d8s}</td>
+                    <td class="p-3 text-center">${d9p}</td>
+                    <td class="p-3 text-center">${d9s}</td>
+                    <td class="p-3 text-center">${d10p}</td>
+                    <td class="p-3 text-center">${d10s}</td>
+                    <td class="p-3 text-center">${d11p}</td>
+                    <td class="p-3 text-center">${d11s}</td>
                     <td class="p-3 text-center font-semibold text-indigo-600">${maxVal !== null ? maxVal : 0}</td>
                     <td class="p-3"><span class="badge ${joinBadgeClass}">${join}</span></td>
                     <td class="p-3"><span class="badge ${statusBadgeClass}">${calculatedStatus}</span></td>
