@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,232 +15,341 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' }
+                        dark: {
+                            bg: '#0f172a',
+                            card: '#1e293b',
+                            border: '#334155',
+                            text: '#f1f5f9',
+                            muted: '#94a3b8'
+                        }
                     }
                 }
             }
         }
     </script>
-    <!-- PapaParse & Chart.js -->
+    <!-- PapaParse for Google Sheets CSV Parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fe;
+            color: #2b3674;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         .badge-lulus { background-color: #e6f9f0; color: #05cd99; border: 1px solid #b7f4d8; }
         .badge-remidi { background-color: #ffeef0; color: #ee5d50; border: 1px solid #fcd2d4; }
+        .badge-default { background-color: #f4f7fe; color: #707eae; }
+
+        body.dark .badge-lulus { background-color: rgba(5, 205, 153, 0.15); color: #35dcaf; border-color: rgba(5, 205, 153, 0.3); }
+        body.dark .badge-remidi { background-color: rgba(238, 93, 80, 0.15); color: #f87171; border-color: rgba(238, 93, 80, 0.3); }
+
         .table-responsive::-webkit-scrollbar { height: 6px; width: 6px; }
-        .table-responsive::-webkit-scrollbar-track { background: transparent; }
-        .table-responsive::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .table-responsive::-webkit-scrollbar-track { background: #f1f1f1; }
+        .table-responsive::-webkit-scrollbar-thumb { background: #c3cadb; border-radius: 4px; }
+        body.dark .table-responsive::-webkit-scrollbar-track { background: #1e293b; }
+        body.dark .table-responsive::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+
+        /* Sidebar transition */
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex min-h-screen">
 
-    <!-- APP CONTAINER -->
-    <div class="flex flex-1 w-full max-w-7xl mx-auto pb-16 md:pb-0">
-
-        <!-- SIDEBAR (Desktop) -->
-        <aside class="hidden md:flex flex-col w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 p-5 sticky top-0 h-screen justify-between shrink-0">
+    <!-- SIDEBAR DESKTOP -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+        <!-- Sidebar Header -->
+        <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
             <div>
-                <!-- Brand / Logo -->
-                <div class="flex items-center gap-3 pb-5 mb-5 border-b border-slate-100 dark:border-slate-700">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-indigo-500/20">
-                        <i class="fa-solid fa-graduation-cap"></i>
-                    </div>
-                    <div>
-                        <h1 class="font-bold text-sm tracking-wide text-slate-900 dark:text-white">MAPTECH</h1>
-                        <p class="text-[10px] text-slate-400">Learning Management</p>
-                    </div>
-                </div>
-
-                <!-- Navigation Menu -->
-                <nav class="space-y-1.5">
-                    <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 transition-colors">
-                        <i class="fa-solid fa-chart-pie w-4"></i> Dashboard Utama
-                    </a>
-                    <a href="#" onclick="switchTab('peserta')" id="nav-peserta" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                        <i class="fa-solid fa-users w-4"></i> Data Peserta
-                    </a>
-                    <a href="#" onclick="switchTab('rekap')" id="nav-rekap" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                        <i class="fa-solid fa-file-lines w-4"></i> Rekap Nilai
-                    </a>
-                </nav>
+                <h1 class="font-bold text-slate-900 dark:text-white text-base">MAPTECH</h1>
+                <p class="text-[10px] text-slate-400 mt-0.5">Concept & Curation by <span class="text-slate-600 dark:text-slate-300 font-semibold">Novi Riyanto</span>[cite: 1]</p>
             </div>
+            <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
 
-            <!-- Sidebar Footer / AutoSync & Dark Mode -->
-            <div class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-700">
-                <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-3 rounded-xl">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                            <i class="fa-solid fa-bolt"></i> AutoSync
-                        </span>
-                        <button onclick="fetchSheetData()" title="Refresh" class="text-slate-400 hover:text-indigo-600 transition-colors">
-                            <i class="fa-solid fa-rotate-right text-xs"></i>
-                        </button>
-                    </div>
-                    <p id="sync-timestamp" class="text-[10px] text-slate-400">Memuat...</p>
-                </div>
-
-                <div class="flex items-center justify-between px-1">
-                    <span class="text-xs font-medium text-slate-600 dark:text-slate-400">Mode Gelap</span>
-                    <button onclick="toggleDarkMode()" id="dark-mode-btn" class="w-9 h-5 bg-slate-200 dark:bg-indigo-600 rounded-full relative transition-colors duration-200 focus:outline-none">
-                        <span id="dark-mode-thumb" class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform duration-200 dark:translate-x-4"></span>
-                    </button>
-                </div>
+        <!-- Sidebar Top Actions: Dark Mode & Auto Sync -->
+        <div class="p-4 border-b border-slate-100 dark:border-slate-700 space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Mode Gelap</span>
+                <button onclick="toggleDarkMode()" id="dark-mode-toggle" class="w-10 h-6 bg-slate-200 dark:bg-indigo-600 rounded-full relative transition-colors p-1">
+                    <div id="dark-mode-thumb" class="w-4 h-4 bg-white rounded-full transition-transform transform translate-x-0 dark:translate-x-4"></div>
+                </button>
             </div>
-        </aside>
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Auto Sync</span>
+                <button onclick="fetchSheetData()" class="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-right"></i> Sinkron
+                </button>
+            </div>
+        </div>
 
-        <!-- MAIN CONTENT AREA -->
-        <main class="flex-1 p-3 md:p-6 overflow-x-hidden">
-            
-            <!-- ERROR CONTAINER -->
-            <div id="error-alert" class="hidden mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center justify-between">
+        <!-- Sidebar Navigation based on Headers / Sesi -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-1">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Navigasi Sesi Ujian</p>
+            <button onclick="filterBySession('all')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-house w-4 text-center text-indigo-500"></i> Semua Sesi
+            </button>
+            <button onclick="filterBySession('8-Sept-2026 Pagi')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 8-Sept-2026 Pagi
+            </button>
+            <button onclick="filterBySession('8-Sept-2026 Siang')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 8-Sept-2026 Siang
+            </button>
+            <button onclick="filterBySession('9-Sept-2026 Pagi')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 9-Sept-2026 Pagi
+            </button>
+            <button onclick="filterBySession('9-Sept-2026 Siang')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 9-Sept-2026 Siang
+            </button>
+            <button onclick="filterBySession('10-Sept-2026 Pagi')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 10-Sept-2026 Pagi
+            </button>
+            <button onclick="filterBySession('10-Sept-2026 Siang')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 10-Sept-2026 Siang
+            </button>
+            <button onclick="filterBySession('11-Sept-2026 Pagi')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 11-Sept-2026 Pagi
+            </button>
+            <button onclick="filterBySession('11-Sept-2026 Siang')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 11-Sept-2026 Siang
+            </button>
+        </div>
+
+        <!-- Sidebar Footer Status -->
+        <div class="p-4 border-t border-slate-100 dark:border-slate-700 text-[11px] text-slate-400 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="sync-timestamp">Memuat sinkronisasi...</span>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <div class="flex-1 lg:ml-64 flex flex-col min-h-screen pb-16 lg:pb-0">
+        
+        <!-- MOBILE NAVBAR TOP -->
+        <header class="lg:hidden bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4 flex items-center justify-between sticky top-0 z-40">
+            <button onclick="toggleSidebar()" class="text-slate-700 dark:text-slate-200 text-lg">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <span class="font-bold text-slate-900 dark:text-white text-sm">MAPTECH Dashboard</span>
+            <button onclick="fetchSheetData()" class="text-indigo-600 dark:text-indigo-400 text-sm">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </header>
+
+        <main class="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto space-y-6">
+
+            <!-- ERROR ALERT CONTAINER -->
+            <div id="error-alert" class="hidden p-3 bg-rose-50 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-xl text-xs flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-triangle-exclamation text-rose-500 text-base"></i>
-                    <span id="error-message-text">Gagal memperbarui data dari Google Sheets.</span>
+                    <span id="error-message-text">Gagal memperbarui data dari Google Sheets. Pastikan akses link sudah benar.</span>
                 </div>
-                <button onclick="fetchSheetData()" class="px-2.5 py-1 bg-rose-600 text-white rounded-lg font-semibold">Coba Lagi</button>
+                <button onclick="fetchSheetData()" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold transition-colors">Coba Lagi</button>
             </div>
 
-            <!-- TOP HEADER -->
-            <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-200 dark:border-slate-800">
-                <div>
-                    <h2 class="text-base md:text-xl font-bold text-slate-900 dark:text-white" id="page-title">Dashboard Utama</h2>
-                    <p class="text-[11px] text-slate-400">Concept & Curation by <span class="text-slate-600 dark:text-slate-300 font-semibold">Novi Riyanto</span></p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="toggleDarkMode()" class="md:hidden p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs">
-                        <i class="fa-solid fa-moon dark:hidden"></i>
-                        <i class="fa-solid fa-sun hidden dark:inline"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- TAB CONTENT: DASHBOARD -->
-            <div id="tab-content-dashboard" class="space-y-6">
-                <!-- STATS CARDS -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-base shrink-0">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Peserta</span>
-                            <h3 id="stat-total" class="text-xl font-bold text-slate-800 dark:text-white">0</h3>
-                        </div>
+            <!-- STATISTIK UTAMA -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl flex items-center gap-3 shadow-sm">
+                    <div class="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg shrink-0">
+                        <i class="fa-solid fa-users"></i>
                     </div>
-
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-base shrink-0">
-                            <i class="fa-solid fa-circle-check"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Lulus</span>
-                            <h3 id="stat-lulus" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">0</h3>
-                        </div>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-base shrink-0">
-                            <i class="fa-solid fa-circle-xmark"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Remidi</span>
-                            <h3 id="stat-remidi" class="text-xl font-bold text-rose-600 dark:text-rose-400">0</h3>
-                        </div>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-base shrink-0">
-                            <i class="fa-solid fa-chart-pie"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Kelulusan</span>
-                            <h3 id="stat-rate" class="text-xl font-bold text-slate-800 dark:text-white">0%</h3>
-                        </div>
+                    <div>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Peserta</span>
+                        <h3 id="stat-total" class="text-xl font-bold text-slate-800 dark:text-white">0</h3>
                     </div>
                 </div>
 
-                <!-- CHARTS GRID -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-sm">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3"><i class="fa-solid fa-chart-pie mr-1.5"></i> Status Kelulusan</h3>
-                        <div class="relative h-56 flex items-center justify-center">
-                            <canvas id="statusChart"></canvas>
-                        </div>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl flex items-center gap-3 shadow-sm">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg shrink-0">
+                        <i class="fa-solid fa-circle-check"></i>
                     </div>
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-sm">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3"><i class="fa-solid fa-list-check mr-1.5"></i> Ringkasan Kolom Header</h3>
-                        <div id="dynamic-summary-chips" class="flex flex-wrap gap-2 text-xs max-h-52 overflow-y-auto pr-1">
-                            <span class="text-slate-400 italic">Memproses header...</span>
-                        </div>
+                    <div>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Lulus</span>
+                        <h3 id="stat-lulus" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl flex items-center gap-3 shadow-sm">
+                    <div class="w-10 h-10 rounded-lg bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-lg shrink-0">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Remidi</span>
+                        <h3 id="stat-remidi" class="text-xl font-bold text-rose-600 dark:text-rose-400">0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl flex items-center gap-3 shadow-sm">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-lg shrink-0">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Kelulusan</span>
+                        <h3 id="stat-rate" class="text-xl font-bold text-slate-800 dark:text-white">0%</h3>
                     </div>
                 </div>
             </div>
 
-            <!-- SHARED TABLE SECTION (Peserta & Rekap) -->
-            <div id="table-view-section" class="mt-6">
-                <div class="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <div class="relative w-full sm:w-80">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="search-input" onkeyup="applyFilter()" placeholder="Cari nama, ID, atau kata kunci..." class="w-full pl-9 pr-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-
-                    <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-                        <div class="flex items-center bg-slate-100 dark:bg-slate-900 p-1 rounded-lg text-xs font-semibold shrink-0">
-                            <button onclick="setFilterStatus('all')" id="filter-all" class="px-3 py-1 rounded-md text-slate-800 dark:text-white bg-white dark:bg-slate-800 shadow-sm transition-all">Semua</button>
-                            <button onclick="setFilterStatus('lulus')" id="filter-lulus" class="px-3 py-1 rounded-md text-slate-500 hover:text-emerald-600 transition-all">Lulus</button>
-                            <button onclick="setFilterStatus('remidi')" id="filter-remidi" class="px-3 py-1 rounded-md text-slate-500 hover:text-rose-600 transition-all">Remidi</button>
-                        </div>
-
-                        <div class="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded-lg shrink-0">
-                            <span>Baris:</span>
-                            <select id="page-size" onchange="changePageSize()" class="bg-transparent font-bold text-slate-700 dark:text-slate-200 outline-none cursor-pointer">
-                                <option value="10" class="dark:bg-slate-800">10</option>
-                                <option value="25" selected class="dark:bg-slate-800">25</option>
-                                <option value="50" class="dark:bg-slate-800">50</option>
-                            </select>
-                        </div>
+            <!-- SECTION: CHART & SUMMARY PER KOLOM SESI -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- CHART SECTION -->
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm lg:col-span-1 flex flex-col justify-between">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Grafik Kelulusan Sesi</h3>
+                    <div class="relative w-full h-56">
+                        <canvas id="sessionChart"></canvas>
                     </div>
                 </div>
 
-                <div class="table-responsive overflow-x-auto border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 shadow-sm max-h-[500px]">
+                <!-- SUMMARY TABEL KELULUSAN & TOTAL PESERTA TIAP KOLOM SESI -->
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm lg:col-span-2 overflow-x-auto">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Ringkasan Peserta & Kelulusan per Sesi</h3>
                     <table class="w-full text-xs text-left whitespace-nowrap">
-                        <thead id="table-head" class="bg-slate-50 dark:bg-slate-900/80 sticky top-0 z-10 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"></thead>
-                        <tbody id="table-body" class="divide-y divide-slate-100 dark:divide-slate-700/50 bg-white dark:bg-slate-800">
-                            <tr><td class="text-center py-8 text-indigo-600" colspan="100%"><i class="fa-solid fa-spinner fa-spin text-base"></i><p class="mt-2 text-xs">Memuat data...</p></td></tr>
+                        <thead class="bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-600">
+                            <tr>
+                                <th class="p-2 font-semibold">Metrik Sesi</th>
+                                <th class="p-2 font-semibold text-center">8-Sept Pagi</th>
+                                <th class="p-2 font-semibold text-center">8-Sept Siang</th>
+                                <th class="p-2 font-semibold text-center">9-Sept Pagi</th>
+                                <th class="p-2 font-semibold text-center">9-Sept Siang</th>
+                                <th class="p-2 font-semibold text-center">10-Sept Pagi</th>
+                                <th class="p-2 font-semibold text-center">10-Sept Siang</th>
+                                <th class="p-2 font-semibold text-center">11-Sept Pagi</th>
+                                <th class="p-2 font-semibold text-center">11-Sept Siang</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                            <tr>
+                                <td class="p-2 font-semibold text-indigo-600 dark:text-indigo-400">Total Dinilai</td>
+                                <td id="col-total-0" class="p-2 text-center font-bold">0</td>
+                                <td id="col-total-1" class="p-2 text-center font-bold">0</td>
+                                <td id="col-total-2" class="p-2 text-center font-bold">0</td>
+                                <td id="col-total-3" class="p-2 text-center font-bold">0</td>
+                                <td id="col-total-4" class="p-2 text-center font-bold">0</td>
+                                <td id="col-total-5" class="p-2 text-center font-bold">0</td>
+                                <td id="col-total-6" class="p-2 text-center font-bold">0</td>
+                                <td id="col-total-7" class="p-2 text-center font-bold">0</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-semibold text-emerald-600 dark:text-emerald-400">Summary Lulus</td>
+                                <td id="col-lulus-0" class="p-2 text-center font-bold text-emerald-600">0</td>
+                                <td id="col-lulus-1" class="p-2 text-center font-bold text-emerald-600">0</td>
+                                <td id="col-lulus-2" class="p-2 text-center font-bold text-emerald-600">0</td>
+                                <td id="col-lulus-3" class="p-2 text-center font-bold text-emerald-600">0</td>
+                                <td id="col-lulus-4" class="p-2 text-center font-bold text-emerald-600">0</td>
+                                <td id="col-lulus-5" class="p-2 text-center font-bold text-emerald-600">0</td>
+                                <td id="col-lulus-6" class="p-2 text-center font-bold text-emerald-600">0</td>
+                                <td id="col-lulus-7" class="p-2 text-center font-bold text-emerald-600">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SEARCH & CONTROLS SECTION -->
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div class="relative w-full md:w-80">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="search-input" onkeyup="applyFilter()" placeholder="Cari nama, ID, atau kata kunci..." class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                </div>
+
+                <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+                    <div class="flex items-center bg-slate-100 dark:bg-slate-700 p-1 rounded-xl text-xs font-semibold shrink-0">
+                        <button onclick="setFilterStatus('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-600 shadow-sm transition-all">Semua</button>
+                        <button onclick="setFilterStatus('lulus')" id="filter-lulus" class="px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-300 hover:text-emerald-600 transition-all">Lulus</button>
+                        <button onclick="setFilterStatus('remidi')" id="filter-remidi" class="px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-300 hover:text-rose-600 transition-all">Remidi</button>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded-xl shrink-0">
+                        <span>Tampilkan:</span>
+                        <select id="page-size" onchange="changePageSize()" class="bg-transparent font-bold text-slate-700 dark:text-slate-200 outline-none cursor-pointer">
+                            <option value="10" class="dark:bg-slate-800">10</option>
+                            <option value="25" selected class="dark:bg-slate-800">25</option>
+                            <option value="50" class="dark:bg-slate-800">50</option>
+                            <option value="100" class="dark:bg-slate-800">100</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN DATA TABLE -->
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden">
+                <div class="table-responsive overflow-x-auto max-h-[550px]">
+                    <table class="w-full text-xs text-left whitespace-nowrap">
+                        <thead id="table-head" class="bg-slate-100 dark:bg-slate-700 sticky top-0 z-10 border-b border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200">
+                            <!-- Header Dinamis -->
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                            <tr>
+                                <td colspan="100%" class="text-center py-8 text-indigo-600 dark:text-indigo-400">
+                                    <i class="fa-solid fa-spinner fa-spin text-lg"></i>
+                                    <p class="mt-2 text-xs font-medium">Memuat data dari Google Sheets...</p>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 px-1">
+                <!-- PAGINATION BAR -->
+                <div id="pagination-container" class="p-4 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
                     <span id="pagination-info">Menampilkan 0 data</span>
                     <div class="flex items-center gap-1" id="pagination-buttons"></div>
                 </div>
             </div>
+
         </main>
     </div>
 
-    <!-- MOBILE BOTTOM NAVIGATION -->
-    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 px-4 py-2 flex items-center justify-around z-50 shadow-lg">
-        <button onclick="switchTab('dashboard')" id="mob-nav-dashboard" class="flex flex-col items-center gap-1 text-indigo-600 dark:text-indigo-400">
-            <i class="fa-solid fa-chart-pie text-sm"></i>
-            <span class="text-[10px] font-semibold">Utama</span>
+    <!-- MOBILE BOTTOM NAVIGATION (GAWAI VIEW) -->
+    <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center justify-around p-2 z-40 text-[10px] text-slate-600 dark:text-slate-300">
+        <button onclick="filterBySession('all'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
+            <i class="fa-solid fa-house text-sm text-indigo-500"></i>
+            <span>Semua</span>
         </button>
-        <button onclick="switchTab('peserta')" id="mob-nav-peserta" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-            <i class="fa-solid fa-users text-sm"></i>
-            <span class="text-[10px] font-semibold">Peserta</span>
+        <button onclick="filterBySession('8-Sept-2026 Pagi'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
+            <i class="fa-solid fa-calendar-day text-sm text-indigo-500"></i>
+            <span>8 Pagi</span>
         </button>
-        <button onclick="switchTab('rekap')" id="mob-nav-rekap" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-            <i class="fa-solid fa-file-lines text-sm"></i>
-            <span class="text-[10px] font-semibold">Rekap</span>
+        <button onclick="filterBySession('9-Sept-2026 Pagi'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
+            <i class="fa-solid fa-calendar-day text-sm text-indigo-500"></i>
+            <span>9 Pagi</span>
         </button>
-        <button onclick="fetchSheetData()" class="flex flex-col items-center gap-1 text-emerald-600">
-            <i class="fa-solid fa-bolt text-sm"></i>
-            <span class="text-[10px] font-semibold">Sync</span>
+        <button onclick="filterBySession('10-Sept-2026 Pagi'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
+            <i class="fa-solid fa-calendar-day text-sm text-indigo-500"></i>
+            <span>10 Pagi</span>
         </button>
-    </div>
+        <button onclick="filterBySession('11-Sept-2026 Pagi'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
+            <i class="fa-solid fa-calendar-day text-sm text-indigo-500"></i>
+            <span>11 Pagi</span>
+        </button>
+    </nav>
 
     <script>
         const SHEET_ID = "1Ckk2YocjioES8EKEkT3bjHy_56tUShglGPBCpYCyh5Y";
@@ -254,56 +363,42 @@
         let currentPage = 1;
         let pageSize = 25;
         let activeStatusFilter = "all";
-        let currentTab = "dashboard";
-        let statusChartInstance = null;
+        let activeSessionFilter = "all";
+        let sessionChartInstance = null;
+
+        const targetColumns = [
+            "8-Sept-2026 Pagi", "8-Sept-2026 Siang",
+            "9-Sept-2026 Pagi", "9-Sept-2026 Siang",
+            "10-Sept-2026 Pagi", "10-Sept-2026 Siang",
+            "11-Sept-2026 Pagi", "11-Sept-2026 Siang"
+        ];
 
         document.addEventListener("DOMContentLoaded", () => {
             fetchSheetData();
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add('dark');
-            }
         });
 
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            html.classList.toggle('dark');
-            if(statusChartInstance) renderChart(0, 0); // Re-render chart for color adaptation
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("-translate-x-full");
         }
 
-        function switchTab(tab) {
-            currentTab = tab;
-            ["dashboard", "peserta", "rekap"].forEach(t => {
-                const desktopNav = document.getElementById(`nav-${t}`);
-                const mobileNav = document.getElementById(`mob-nav-${t}`);
-                if(desktopNav) {
-                    desktopNav.className = `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors ${t === tab ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50'}`;
-                }
-                if(mobileNav) {
-                    mobileNav.className = `flex flex-col items-center gap-1 ${t === tab ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'}`;
-                }
-            });
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark");
+            const isDark = document.body.classList.contains("dark");
+            localStorage.setItem("darkMode", isDark);
+            if(sessionChartInstance) updateChartTheme();
+        }
 
-            const dashContent = document.getElementById("tab-content-dashboard");
-            const tableSection = document.getElementById("table-view-section");
-            const pageTitle = document.getElementById("page-title");
-
-            if (tab === "dashboard") {
-                dashContent.classList.remove("hidden");
-                pageTitle.innerText = "Dashboard Utama";
-            } else if (tab === "peserta") {
-                dashContent.classList.add("hidden");
-                tableSection.classList.remove("hidden");
-                pageTitle.innerText = "Data Peserta";
-            } else if (tab === "rekap") {
-                dashContent.classList.add("hidden");
-                tableSection.classList.remove("hidden");
-                pageTitle.innerText = "Rekapitulasi Nilai";
-            }
+        // Initialize theme preference
+        if (localStorage.getItem("darkMode") === "true") {
+            document.body.classList.add("dark");
         }
 
         function updateTimestamp() {
             const now = new Date();
-            document.getElementById("sync-timestamp").innerText = `Sinkron: ${now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}, ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`;
+            const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById("sync-timestamp").innerText = `Sync: ${dateStr}, ${timeStr}`;
         }
 
         function fetchSheetData() {
@@ -311,69 +406,139 @@
             errorAlert.classList.add("hidden");
 
             fetch(SHEET_URL)
-                .then(res => { if (!res.ok) throw new Error("Gagal mengambil data spreadsheet."); return res.text(); })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
+                    return response.text();
+                })
                 .then(csvText => {
+                    if (csvText.trim().startsWith("<!DOCTYPE html>") || csvText.trim().startsWith("<html")) {
+                        throw new Error("Akses Google Sheets dibatasi. Pastikan pengaturan file diset 'Anyone with the link'.");
+                    }
+
                     Papa.parse(csvText, {
                         header: false,
                         skipEmptyLines: 'greedy',
                         complete: function(results) {
                             const rawRows = results.data;
-                            if (!rawRows || rawRows.length === 0) return;
-                            let headerIdx = rawRows.findIndex(row => row.some(cell => String(cell).trim() !== ""));
-                            if (headerIdx === -1) return;
+                            if (!rawRows || rawRows.length === 0) {
+                                renderEmptyTable();
+                                return;
+                            }
 
-                            allHeaders = rawRows[headerIdx].slice(0, MAX_COLUMNS).map((h, i) => String(h).trim() || `Kolom ${i + 1}`);
-                            allDataRows = rawRows.slice(headerIdx + 1).map(row => row.slice(0, MAX_COLUMNS)).filter(row => row.some(cell => String(cell).trim() !== ""));
+                            let headerIdx = rawRows.findIndex(row => row.some(cell => String(cell).trim() !== ""));
+                            if (headerIdx === -1) {
+                                renderEmptyTable();
+                                return;
+                            }
+
+                            allHeaders = rawRows[headerIdx]
+                                .slice(0, MAX_COLUMNS)
+                                .map((h, i) => String(h).trim() || `Kolom ${i + 1}`);
+
+                            allDataRows = rawRows
+                                .slice(headerIdx + 1)
+                                .map(row => row.slice(0, MAX_COLUMNS))
+                                .filter(row => row.some(cell => String(cell).trim() !== ""));
 
                             updateTimestamp();
-                            calculateStats();
-                            renderDynamicSummary();
+                            calculateStatsAndSummaries();
                             applyFilter();
+                        },
+                        error: function(err) {
+                            throw new Error("Gagal memparsing data CSV: " + err.message);
                         }
                     });
                 })
                 .catch(err => {
+                    console.error("Error fetching sheet:", err);
+                    const errorMsg = document.getElementById("error-message-text");
+                    if (errorMsg) errorMsg.innerText = err.message;
                     errorAlert.classList.remove("hidden");
-                    document.getElementById("error-message-text").innerText = err.message;
+                    renderEmptyTable();
                 });
         }
 
-        function calculateStats() {
-            let lulus = 0, remidi = 0;
+        function calculateStatsAndSummaries() {
+            let lulusCount = 0;
+            let remidiCount = 0;
+
+            // Mapping target session columns index in allHeaders
+            const colIndices = targetColumns.map(targetName => {
+                return allHeaders.findIndex(h => h.toLowerCase() === targetName.toLowerCase());
+            });
+
+            let colTotals = new Array(8).fill(0);
+            let colLulus = new Array(8).fill(0);
+
             allDataRows.forEach(row => {
+                // Global status detection
                 row.forEach(cell => {
                     const val = String(cell).trim().toLowerCase();
-                    if (val === "lulus") lulus++;
-                    if (val === "remidi" || val === "remedi") remidi++;
+                    if (val === "lulus") lulusCount++;
+                    if (val === "remidi" || val === "remedi") remidiCount++;
+                });
+
+                // Per column session evaluation
+                colIndices.forEach((cIdx, idx) => {
+                    if (cIdx !== -1 && row[cIdx] !== undefined) {
+                        const cellVal = String(row[cIdx]).trim();
+                        if (cellVal !== "" && cellVal !== "-") {
+                            colTotals[idx]++;
+                            if (cellVal.toLowerCase() === "lulus") {
+                                colLulus[idx]++;
+                            }
+                        }
+                    }
                 });
             });
 
+            // Update UI for summary table
+            colTotals.forEach((tot, idx) => {
+                document.getElementById(`col-total-${idx}`).innerText = tot;
+                document.getElementById(`col-lulus-${idx}`).innerText = colLulus[idx];
+            });
+
             const total = allDataRows.length;
-            const rate = total > 0 ? Math.round((lulus / total) * 100) : 0;
+            const rate = total > 0 ? Math.round((lulusCount / total) * 100) : 0;
 
             document.getElementById("stat-total").innerText = total;
-            document.getElementById("stat-lulus").innerText = lulus;
-            document.getElementById("stat-remidi").innerText = remidi;
+            document.getElementById("stat-lulus").innerText = lulusCount;
+            document.getElementById("stat-remidi").innerText = remidiCount;
             document.getElementById("stat-rate").innerText = `${rate}%`;
 
-            renderChart(lulus, remidi);
+            renderChart(colLulus, colTotals);
         }
 
-        function renderChart(lulus, remidi) {
-            const ctx = document.getElementById('statusChart').getContext('2d');
-            const isDark = document.documentElement.classList.contains('dark');
+        function renderChart(lulusData, totalData) {
+            const ctx = document.getElementById('sessionChart').getContext('2d');
+            const labels = ["8 Pagi", "8 Siang", "9 Pagi", "9 Siang", "10 Pagi", "10 Siang", "11 Pagi", "11 Siang"];
             
-            if (statusChartInstance) statusChartInstance.destroy();
+            const isDark = document.body.classList.contains("dark");
+            const textColor = isDark ? '#94a3b8' : '#64748b';
+            const gridColor = isDark ? '#334155' : '#f1f5f9';
 
-            statusChartInstance = new Chart(ctx, {
-                type: 'doughnut',
+            if (sessionChartInstance) {
+                sessionChartInstance.destroy();
+            }
+
+            sessionChartInstance = new Chart(ctx, {
+                type: 'bar',
                 data: {
-                    labels: ['Lulus', 'Remidi'],
-                    datasets: [{
-                        data: [lulus, remidi],
-                        backgroundColor: ['#05cd99', '#ee5d50'],
-                        borderWidth: 0
-                    }]
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Lulus',
+                            data: lulusData,
+                            backgroundColor: '#05cd99',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Total Dinilai',
+                            data: totalData,
+                            backgroundColor: '#6366f1',
+                            borderRadius: 4
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -383,24 +548,38 @@
                             position: 'bottom',
                             labels: {
                                 boxWidth: 12,
-                                color: isDark ? '#cbd5e1' : '#475569',
-                                font: { family: 'Inter', size: 11 }
+                                color: textColor,
+                                font: { size: 10 }
                             }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: textColor, font: { size: 9 } }
+                        },
+                        y: {
+                            grid: { color: gridColor },
+                            ticks: { color: textColor, font: { size: 9 } },
+                            beginAtZero: true
                         }
                     }
                 }
             });
         }
 
-        function renderDynamicSummary() {
-            const container = document.getElementById("dynamic-summary-chips");
-            container.innerHTML = "";
-            allHeaders.forEach((h, index) => {
-                const chip = document.createElement("div");
-                chip.className = "bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg flex items-center justify-between w-full";
-                chip.innerHTML = `<span class="font-medium text-slate-600 dark:text-slate-400">Kolom ${index + 1} (${h})</span> <span class="badge bg-indigo-50 dark:bg-indigo-950/55 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900">Aktif</span>`;
-                container.appendChild(chip);
-            });
+        function updateChartTheme() {
+            if (!sessionChartInstance) return;
+            const isDark = document.body.classList.contains("dark");
+            const textColor = isDark ? '#94a3b8' : '#64748b';
+            const gridColor = isDark ? '#334155' : '#f1f5f9';
+
+            sessionChartInstance.options.plugins.legend.labels.color = textColor;
+            sessionChartInstance.options.scales.x.ticks.color = textColor;
+            sessionChartInstance.options.scales.x.grid.color = gridColor;
+            sessionChartInstance.options.scales.y.ticks.color = textColor;
+            sessionChartInstance.options.scales.y.grid.color = gridColor;
+            sessionChartInstance.update();
         }
 
         function setFilterStatus(status) {
@@ -408,18 +587,25 @@
             ["all", "lulus", "remidi"].forEach(s => {
                 const btn = document.getElementById(`filter-${s}`);
                 if (s === status) {
-                    btn.className = "px-3 py-1 rounded-md text-slate-900 dark:text-white bg-white dark:bg-slate-800 shadow-sm font-bold transition-all";
+                    btn.className = "px-3 py-1.5 rounded-lg text-slate-900 dark:text-white bg-white dark:bg-slate-600 shadow-sm font-bold transition-all";
                 } else {
-                    btn.className = "px-3 py-1 rounded-md text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all";
+                    btn.className = "px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white transition-all";
                 }
             });
             applyFilter();
         }
 
+        function filterBySession(sessionName) {
+            activeSessionFilter = sessionName;
+            applyFilter();
+        }
+
         function applyFilter() {
             const query = document.getElementById("search-input").value.toLowerCase().trim();
+
             filteredRows = allDataRows.filter(row => {
                 const matchesSearch = query === "" || row.some(cell => String(cell).toLowerCase().includes(query));
+
                 let matchesStatus = true;
                 if (activeStatusFilter !== "all") {
                     matchesStatus = row.some(cell => {
@@ -429,8 +615,21 @@
                         return false;
                     });
                 }
-                return matchesSearch && matchesStatus;
+
+                let matchesSession = true;
+                if (activeSessionFilter !== "all") {
+                    const cIdx = allHeaders.findIndex(h => h.toLowerCase() === activeSessionFilter.toLowerCase());
+                    if (cIdx !== -1) {
+                        const cellVal = String(row[cIdx]).trim().toLowerCase();
+                        matchesSession = cellVal !== "" && cellVal !== "-";
+                    } else {
+                        matchesSession = false;
+                    }
+                }
+
+                return matchesSearch && matchesStatus && matchesSession;
             });
+
             currentPage = 1;
             renderTableData();
         }
@@ -441,23 +640,33 @@
             renderTableData();
         }
 
+        function renderEmptyTable() {
+            const tbody = document.getElementById("table-body");
+            tbody.innerHTML = `<tr><td colspan="100%" class="text-center py-8 text-slate-400">Data tidak ditemukan di Google Sheets.</td></tr>`;
+            document.getElementById("stat-total").innerText = "0";
+            document.getElementById("stat-lulus").innerText = "0";
+            document.getElementById("stat-remidi").innerText = "0";
+            document.getElementById("stat-rate").innerText = "0%";
+            document.getElementById("pagination-info").innerText = "Menampilkan 0 data";
+            document.getElementById("pagination-buttons").innerHTML = "";
+        }
+
         function renderTableData() {
             const thead = document.getElementById("table-head");
             const tbody = document.getElementById("table-body");
+
             thead.innerHTML = "";
             tbody.innerHTML = "";
 
             if (filteredRows.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="100%" class="text-center py-8 text-slate-400">Data tidak ditemukan.</td></tr>`;
-                document.getElementById("pagination-info").innerText = "Menampilkan 0 data";
-                document.getElementById("pagination-buttons").innerHTML = "";
+                renderEmptyTable();
                 return;
             }
 
             const trHead = document.createElement("tr");
             allHeaders.forEach(headerText => {
                 const th = document.createElement("th");
-                th.className = "p-3 font-semibold text-left border-b border-slate-200 dark:border-slate-700";
+                th.className = "p-3 font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 border-b border-slate-200 dark:border-slate-600 text-left";
                 th.innerText = headerText;
                 trHead.appendChild(th);
             });
@@ -468,13 +677,13 @@
             const pageData = filteredRows.slice(startIdx, startIdx + pageSize);
 
             const fragment = document.createDocumentFragment();
-            pageData.forEach(row => {
+            pageData.forEach((row) => {
                 const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-50/50 dark:hover:bg-slate-700/20 transition-colors";
+                tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors";
 
                 allHeaders.forEach((_, colIndex) => {
                     const td = document.createElement("td");
-                    td.className = "p-3 border-b border-slate-100 dark:border-slate-800";
+                    td.className = "p-3 border-b border-slate-100 dark:border-slate-700";
                     const cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? String(row[colIndex]).trim() : "";
                     
                     const lowerVal = cellVal.toLowerCase();
@@ -487,10 +696,12 @@
                     }
                     tr.appendChild(td);
                 });
+
                 fragment.appendChild(tr);
             });
 
             tbody.appendChild(fragment);
+
             const endIdx = Math.min(startIdx + pageSize, filteredRows.length);
             document.getElementById("pagination-info").innerText = `Menampilkan ${startIdx + 1} - ${endIdx} dari ${filteredRows.length} data`;
             renderPaginationButtons(totalPage);
@@ -499,17 +710,32 @@
         function renderPaginationButtons(totalPage) {
             const btnContainer = document.getElementById("pagination-buttons");
             btnContainer.innerHTML = "";
+
             if (totalPage <= 1) return;
+
+            const prevBtn = document.createElement("button");
+            prevBtn.className = `px-2.5 py-1 rounded-lg border text-xs font-semibold ${currentPage === 1 ? 'border-slate-100 dark:border-slate-700 text-slate-300 dark:text-slate-600 cursor-not-allowed' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'}`;
+            prevBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => { if(currentPage > 1) { currentPage--; renderTableData(); } };
+            btnContainer.appendChild(prevBtn);
 
             for (let i = 1; i <= totalPage; i++) {
                 if (i === 1 || i === totalPage || (i >= currentPage - 1 && i <= currentPage + 1)) {
                     const pageBtn = document.createElement("button");
-                    pageBtn.className = `px-2.5 py-1 rounded-lg text-xs font-semibold ${i === currentPage ? 'bg-indigo-600 text-white' : 'border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'}`;
+                    pageBtn.className = `px-2.5 py-1 rounded-lg text-xs font-semibold ${i === currentPage ? 'bg-indigo-600 text-white' : 'border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'}`;
                     pageBtn.innerText = i;
                     pageBtn.onclick = () => { currentPage = i; renderTableData(); };
                     btnContainer.appendChild(pageBtn);
                 }
             }
+
+            const nextBtn = document.createElement("button");
+            nextBtn.className = `px-2.5 py-1 rounded-lg border text-xs font-semibold ${currentPage === totalPage ? 'border-slate-100 dark:border-slate-700 text-slate-300 dark:text-slate-600 cursor-not-allowed' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'}`;
+            nextBtn.innerHTML = `<i class="fa-solid fa-chevron-right"></i>`;
+            nextBtn.disabled = currentPage === totalPage;
+            nextBtn.onclick = () => { if(currentPage < totalPage) { currentPage++; renderTableData(); } };
+            btnContainer.appendChild(nextBtn);
         }
     </script>
 </body>
