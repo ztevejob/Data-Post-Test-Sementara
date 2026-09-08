@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Assessment Store</title>
+    <title>Nilai Post Test Sementara</title>
     <!-- Google Fonts & Font Awesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,6 +11,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- PapaParse for Google Sheets CSV Parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         * {
@@ -23,209 +25,6 @@
         body {
             background-color: #f4f7fe;
             color: #2b3674;
-        }
-
-        .app-layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 24px;
-            overflow-x: hidden;
-        }
-
-        .dashboard-container {
-            max-width: 100%;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
-            width: 100%;
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .dashboard-title h2 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1b2559;
-        }
-
-        .dashboard-title p {
-            font-size: 14px;
-            color: #707eae;
-        }
-
-        /* --- STATISTIC CARDS --- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: #f8f9fc;
-            border: 1px solid #e9edf7;
-            padding: 16px 20px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: #e9f3ff;
-            color: #4318ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .stat-info span {
-            font-size: 12px;
-            color: #707eae;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-
-        .stat-info h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1b2559;
-            margin-top: 4px;
-        }
-
-        /* --- FILTER CONTROLS --- */
-        .controls-card {
-            background: #f8f9fc;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .filter-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .input-box {
-            position: relative;
-        }
-
-        .input-box input, .select-box select {
-            padding: 10px 16px 10px 38px;
-            border-radius: 8px;
-            border: 1px solid #e0e5f2;
-            background: #ffffff;
-            outline: none;
-            font-size: 13px;
-            color: #2b3674;
-            transition: all 0.3s;
-        }
-
-        .select-box select {
-            padding-left: 14px;
-            cursor: pointer;
-        }
-
-        .input-box i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #707eae;
-            font-size: 14px;
-        }
-
-        .btn-reset {
-            padding: 10px 16px;
-            border-radius: 8px;
-            border: 1px solid #e0e5f2;
-            background: #fff;
-            color: #707eae;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-reset:hover {
-            background: #ee5d50;
-            color: #fff;
-            border-color: #ee5d50;
-        }
-
-        /* --- TABLE STYLING --- */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            border-radius: 12px;
-            border: 1px solid #e9edf7;
-            max-height: 550px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            white-space: nowrap;
-            font-size: 13px;
-        }
-
-        thead {
-            position: sticky;
-            top: 0;
-            background-color: #f8f9fc;
-            z-index: 10;
-        }
-
-        th {
-            padding: 12px 16px;
-            text-align: left;
-            font-weight: 600;
-            color: #707eae;
-            border-bottom: 2px solid #e9edf7;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-        }
-
-        th.date-header {
-            background-color: #f0f4ff;
-            color: #4318ff;
-            text-align: center;
-        }
-
-        td {
-            padding: 10px 16px;
-            border-bottom: 1px solid #e9edf7;
-            color: #2b3674;
-            font-weight: 500;
-        }
-
-        tbody tr:hover {
-            background-color: #f8f9fc;
         }
 
         /* Status Badges */
@@ -245,253 +44,285 @@
         .badge-default { background-color: #f4f7fe; color: #707eae; }
 
         /* Custom Scrollbar */
-        .table-responsive::-webkit-scrollbar { height: 8px; width: 8px; }
+        .table-responsive::-webkit-scrollbar { height: 6px; width: 6px; }
         .table-responsive::-webkit-scrollbar-track { background: #f1f1f1; }
         .table-responsive::-webkit-scrollbar-thumb { background: #c3cadb; border-radius: 4px; }
     </style>
 </head>
-<body>
+<body class="bg-slate-100 text-slate-800">
 
-    <div class="app-layout">
+    <div class="flex flex-col md:flex-row min-h-screen">
         <!-- SIDEBAR NAVIGATION -->
-        <aside class="w-64 h-screen sticky top-0 bg-slate-900 text-slate-200 p-4 flex flex-col justify-between select-none flex-shrink-0">
+        <aside class="w-full md:w-64 bg-slate-900 text-slate-200 p-4 flex flex-col justify-between select-none flex-shrink-0">
             <div>
                 <!-- Header / Brand -->
-                <div class="px-3 py-2 mb-6 flex items-center justify-between">
-                    <h2 class="text-xl font-bold text-white tracking-wide">Dashboard</h2>
-                    <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">v1.0</span>
+                <div class="px-3 py-2 mb-4 md:mb-6 flex items-center justify-between">
+                    <h2 class="text-lg font-bold text-white tracking-wide">Dashboard Assessment</h2>
+                    <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">v2.0</span>
                 </div>
 
                 <!-- Navigation Links -->
                 <nav class="space-y-1">
-                    <div>
-                        <a href="#summary" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors group">
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-chart-pie text-slate-400 group-hover:text-indigo-400"></i>
-                                <span>Summary</span>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="pt-2">
-                        <a href="#full-team" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors group">
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-users text-slate-400 group-hover:text-indigo-400"></i>
-                                <span>Full Team</span>
-                            </div>
-                            <span id="badge-team-count" class="bg-indigo-500/10 text-indigo-400 text-xs font-semibold px-2 py-0.5 rounded-full border border-indigo-500/20">0</span>
-                        </a>
-                    </div>
+                    <button onclick="switchView('summary')" id="nav-summary" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span>Summary</span>
+                        </div>
+                    </button>
+                    
+                    <button onclick="switchView('all-store')" id="nav-all-store" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-store"></i>
+                            <span>All Store</span>
+                        </div>
+                        <span id="badge-team-count" class="bg-indigo-500/20 text-indigo-400 text-xs font-semibold px-2 py-0.5 rounded-full border border-indigo-500/30">0</span>
+                    </button>
                 </nav>
             </div>
 
             <!-- Footer / User Profile -->
-            <div class="border-t border-slate-800 pt-4 mt-auto">
+            <div class="border-t border-slate-800 pt-4 mt-6 md:mt-auto">
                 <div class="flex items-center gap-3 px-2">
                     <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white">
                         NR
                     </div>
                     <div class="text-xs">
                         <p class="font-medium text-white">Novi Riyanto</p>
-                        <p class="text-slate-500">Admin</p>
+                        <p class="text-slate-500">Administrator</p>
                     </div>
                 </div>
             </div>
         </aside>
 
         <!-- MAIN CONTENT AREA -->
-        <main class="main-content flex flex-col justify-between">
-            <div class="dashboard-container">
-                <!-- Header Dashboard -->
-                <div class="dashboard-header">
-                    <div class="dashboard-title">
-                        <h2>Dashboard Assessment Store</h2>
-                        <p>Live Fetch Data dari Google Sheets (CSV Online)</p>
+        <main class="flex-1 p-4 md:p-6 overflow-x-hidden flex flex-col justify-between">
+            <div class="max-w-7xl mx-auto w-full bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
+                
+                <!-- HEADER DASHBOARD -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 mb-6 border-b border-slate-100 gap-3">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-900" id="page-title">Nilai Post Test Sementara</h2>
+                        <p class="text-xs md:text-sm text-slate-500">Live Sync Data Assessment Google Sheets</p>
                     </div>
                     <div class="flex items-center gap-2 bg-emerald-50 text-emerald-600 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold">
                         <i class="fa-solid fa-arrows-rotate fa-spin"></i>
-                        <span>Auto Sync 8 Sep 2026, 13.09 WIB</span>
+                        <span>Auto Sync Live Data</span>
                     </div>
                 </div>
 
-                <!-- 1. KARTU STATISTIK AVERAGE & TOTAL DATA -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
-                        <div class="stat-info">
-                            <span>Total Peserta</span>
-                            <h3 id="stat-total">0</h3>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
-                        <div class="stat-info">
-                            <span>Avg Min Score</span>
-                            <h3 id="stat-avg-min">0</h3>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
-                        <div class="stat-info">
-                            <span>Avg Max Score</span>
-                            <h3 id="stat-avg-max">0</h3>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
-                        <div class="stat-info">
-                            <span>Persentase Lulus</span>
-                            <h3 id="stat-pass-rate">0%</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. TABEL PERINGKAT TOKO SIDE-BY-SIDE (TOP 10 & BOTTOM 10) -->
-                <div class="mb-8">
-                    <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-ranking-star text-indigo-600"></i> Ranking Rata-Rata Toko (Top 10 vs Bottom 10)
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Top 10 Table -->
-                        <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-4">
-                            <h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2 flex items-center justify-between">
-                                <span><i class="fa-solid fa-arrow-trend-up"></i> Top 10 Stores</span>
-                                <span class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full">Tertinggi</span>
-                            </h4>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-xs">
-                                    <thead>
-                                        <tr class="border-b border-emerald-200 text-emerald-800">
-                                            <th class="py-2 px-2 text-left">#</th>
-                                            <th class="py-2 px-2 text-left">Nama Toko</th>
-                                            <th class="py-2 px-2 text-center">Jumlah Peserta</th>
-                                            <th class="py-2 px-2 text-right">Avg Score</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="top-store-body">
-                                        <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                <!-- 1. FILTER CONTROL (Paling Atas) -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="search-personal" placeholder="Cari NIK / Nama..." oninput="applyFilters()" 
+                                   class="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
 
-                        <!-- Bottom 10 Table -->
-                        <div class="bg-rose-50/50 border border-rose-200 rounded-xl p-4">
-                            <h4 class="text-xs font-bold text-rose-700 uppercase tracking-wider mb-2 flex items-center justify-between">
-                                <span><i class="fa-solid fa-arrow-trend-down"></i> Bottom 10 Stores</span>
-                                <span class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">Terendah</span>
-                            </h4>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-xs">
-                                    <thead>
-                                        <tr class="border-b border-rose-200 text-rose-800">
-                                            <th class="py-2 px-2 text-left">#</th>
-                                            <th class="py-2 px-2 text-left">Nama Toko</th>
-                                            <th class="py-2 px-2 text-center">Jumlah Peserta</th>
-                                            <th class="py-2 px-2 text-right">Avg Score</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="bottom-store-body">
-                                        <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. TABEL RINGKASAN PER SESI (PAGI & SIANG) -->
-                <div class="mb-8">
-                    <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-calendar-check text-indigo-600"></i> Ringkasan Sesi Assessment (Pagi & Siang)
-                    </h3>
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr class="bg-slate-100">
-                                    <th>Metrik Assessment</th>
-                                    <th class="text-center bg-indigo-50">13-7 Pagi</th>
-                                    <th class="text-center bg-indigo-50">13-7 Siang</th>
-                                    <th class="text-center bg-indigo-50">14-7 Pagi</th>
-                                    <th class="text-center bg-indigo-50">14-7 Siang</th>
-                                    <th class="text-center bg-indigo-50">15-7 Pagi</th>
-                                    <th class="text-center bg-indigo-50">15-7 Siang</th>
-                                    <th class="text-center bg-indigo-50">16-7 Pagi</th>
-                                    <th class="text-center bg-indigo-50">16-7 Siang</th>
-                                </tr>
-                            </thead>
-                            <tbody id="session-summary-body">
-                                <tr><td colspan="9" class="text-center py-3 text-slate-400">Memuat data sesi...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- 4. CONTROL FILTER DATA UTAMA -->
-                <div class="controls-card">
-                    <div class="filter-group">
-                        <div class="input-box">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="search-personal" placeholder="Cek Pribadi (NIK / Nama)..." oninput="applyFilters()">
-                        </div>
-
-                        <div class="select-box">
-                            <select id="filter-store" onchange="applyFilters()">
+                        <div>
+                            <select id="filter-store" onchange="applyFilters()" 
+                                    class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="">-- Semua Toko --</option>
                             </select>
                         </div>
 
-                        <div class="select-box">
-                            <select id="filter-status" onchange="applyFilters()">
+                        <div>
+                            <select id="filter-status" onchange="applyFilters()" 
+                                    class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="">-- Semua Status --</option>
                                 <option value="Lulus">Lulus</option>
                                 <option value="Remidi">Remidi</option>
                             </select>
                         </div>
+
+                        <button onclick="resetFilters()" class="w-full py-2 bg-slate-200 hover:bg-rose-500 hover:text-white text-slate-700 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-left"></i> Reset Filter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. KARTU STATISTIK UTAMA -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Peserta</span>
+                            <h3 id="stat-total" class="text-lg font-bold text-slate-800">0</h3>
+                        </div>
                     </div>
 
-                    <button class="btn-reset" onclick="resetFilters()">
-                        <i class="fa-solid fa-rotate-left"></i> Reset Filter
-                    </button>
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Avg Min Score</span>
+                            <h3 id="stat-avg-min" class="text-lg font-bold text-slate-800">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Avg Max Score</span>
+                            <h3 id="stat-avg-max" class="text-lg font-bold text-slate-800">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Pass Rate</span>
+                            <h3 id="stat-pass-rate" class="text-lg font-bold text-slate-800">0%</h3>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- 5. TABEL UTAMA FULL DATA -->
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Store</th>
-                                <th>Nama</th>
-                                <th>NIK</th>
-                                <th>Work Experience</th>
-                                <th>SEED Registered Email</th>
-                                <th>Positions</th>
-                                <th class="date-header">13-7-2026<br><small>Pagi</small></th>
-                                <th class="date-header">13-7-2026<br><small>Siang</small></th>
-                                <th class="date-header">14-7-2026<br><small>Pagi</small></th>
-                                <th class="date-header">14-7-2026<br><small>Siang</small></th>
-                                <th class="date-header">15-7-2026<br><small>Pagi</small></th>
-                                <th class="date-header">15-7-2026<br><small>Siang</small></th>
-                                <th class="date-header">16-7-2026<br><small>Pagi</small></th>
-                                <th class="date-header">16-7-2026<br><small>Siang</small></th>
-                                <th>Keterangan</th>
-                                <th>Min Score pt.1</th>
-                                <th>Max Score pt.1</th>
-                                <th>Keterangan Join / Tidak Join</th>
-                                <th>Status Remidi / Lulus</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body">
-                            <tr>
-                                <td colspan="19" style="text-align:center; padding: 20px; color: #4318ff;">
-                                    <i class="fa-solid fa-spinner fa-spin"></i> Memuat data dari Google Sheets...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- VIEW 1: SUMMARY TAB -->
+                <div id="view-summary" class="space-y-6">
+                    
+                    <!-- CHART VISUALISASI SUMMARY -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                        <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-column text-indigo-600"></i> Chart Performa Rata-Rata per Sesi
+                        </h3>
+                        <div class="relative w-full h-64 md:h-72">
+                            <canvas id="sessionChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- RINGKASAN SESI ASSESSMENT TABLE -->
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check text-indigo-600"></i> Ringkasan Sesi Assessment (Pagi & Siang)
+                        </h3>
+                        <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-xs text-left">
+                                <thead>
+                                    <tr class="bg-slate-100 border-b border-slate-200">
+                                        <th class="p-3 text-slate-700">Metrik Assessment</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">13-7 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">13-7 Siang</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">14-7 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">14-7 Siang</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">15-7 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">15-7 Siang</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">16-7 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">16-7 Siang</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="session-summary-body" class="divide-y divide-slate-200">
+                                    <tr><td colspan="9" class="text-center py-4 text-slate-400">Memuat data sesi...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TOP 10 VS BOTTOM 10 -->
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-ranking-star text-indigo-600"></i> Ranking Toko (Top 10 vs Bottom 10)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Top 10 Table -->
+                            <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-4">
+                                <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-arrow-trend-up"></i> Top 10 Stores</span>
+                                    <span class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full">Highest</span>
+                                </h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead>
+                                            <tr class="border-b border-emerald-200 text-emerald-800">
+                                                <th class="py-2 px-2 text-left">#</th>
+                                                <th class="py-2 px-2 text-left">Nama Toko</th>
+                                                <th class="py-2 px-2 text-center">Peserta</th>
+                                                <th class="py-2 px-2 text-right">Avg Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="top-store-body">
+                                            <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Bottom 10 Table -->
+                            <div class="bg-rose-50/50 border border-rose-200 rounded-xl p-4">
+                                <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-arrow-trend-down"></i> Bottom 10 Stores</span>
+                                    <span class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">Lowest</span>
+                                </h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead>
+                                            <tr class="border-b border-rose-200 text-rose-800">
+                                                <th class="py-2 px-2 text-left">#</th>
+                                                <th class="py-2 px-2 text-left">Nama Toko</th>
+                                                <th class="py-2 px-2 text-center">Peserta</th>
+                                                <th class="py-2 px-2 text-right">Avg Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bottom-store-body">
+                                            <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+
+                <!-- VIEW 2: ALL STORE TAB (TABEL DATA LENGKAP) -->
+                <div id="view-all-store" class="hidden">
+                    <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-table-list text-indigo-600"></i> Detail Peserta & Nilai Post Test All Store
+                    </h3>
+                    <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl max-h-[600px]">
+                        <table class="w-full text-xs text-left whitespace-nowrap">
+                            <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3">Store</th>
+                                    <th class="p-3">Nama</th>
+                                    <th class="p-3">NIK</th>
+                                    <th class="p-3">Work Experience</th>
+                                    <th class="p-3">SEED Registered Email</th>
+                                    <th class="p-3">Positions</th>
+                                    <th class="p-3 text-center bg-indigo-50">13-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                    <th class="p-3 text-center bg-indigo-50">13-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                    <th class="p-3 text-center bg-indigo-50">14-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                    <th class="p-3 text-center bg-indigo-50">14-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                    <th class="p-3 text-center bg-indigo-50">15-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                    <th class="p-3 text-center bg-indigo-50">15-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                    <th class="p-3 text-center bg-indigo-50">16-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                    <th class="p-3 text-center bg-indigo-50">16-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                    <th class="p-3">Keterangan</th>
+                                    <th class="p-3 text-center">Min Score</th>
+                                    <th class="p-3 text-center">Max Score</th>
+                                    <th class="p-3">Status Join</th>
+                                    <th class="p-3">Status Final</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body-allstore" class="divide-y divide-slate-100">
+                                <tr>
+                                    <td colspan="19" class="text-center py-6 text-indigo-600">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Memuat data dari Google Sheets...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Footer Credit -->
             <footer class="mt-6 text-center text-xs text-slate-400 font-medium">
                 Concept & Curation by Novi Riyanto
             </footer>
@@ -502,6 +333,7 @@
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-qqVF7ni3YNO19bT149rKAXNvemlgIvWYpJ0-QOs9F6WAJJ-c-Z3XqDl83jrbfoip7zu2D5aWYxfa/pub?output=csv";
 
         let rawData = [];
+        let chartInstance = null;
 
         const SESSION_KEYS = [
             '13-7-2026 Pagi', '13-7-2026 Siang',
@@ -514,6 +346,27 @@
             fetchSheetData();
         });
 
+        function switchView(viewName) {
+            const viewSummary = document.getElementById("view-summary");
+            const viewAllStore = document.getElementById("view-all-store");
+            const navSummary = document.getElementById("nav-summary");
+            const navAllStore = document.getElementById("nav-all-store");
+
+            if (viewName === 'summary') {
+                viewSummary.classList.remove("hidden");
+                viewAllStore.classList.add("hidden");
+                
+                navSummary.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition-colors";
+                navAllStore.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors";
+            } else {
+                viewSummary.classList.add("hidden");
+                viewAllStore.classList.remove("hidden");
+
+                navAllStore.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition-colors";
+                navSummary.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors";
+            }
+        }
+
         function fetchSheetData() {
             Papa.parse(CSV_URL, {
                 download: true,
@@ -522,14 +375,14 @@
                 complete: function(results) {
                     rawData = results.data;
                     populateStoreDropdown(rawData);
-                    renderTableAndStats(rawData);
+                    renderAllData(rawData);
                 },
                 error: function(err) {
                     console.error("Error fetching CSV:", err);
-                    document.getElementById("table-body").innerHTML = `
+                    document.getElementById("table-body-allstore").innerHTML = `
                         <tr>
-                            <td colspan="19" style="text-align:center; padding: 20px; color: #ee5d50;">
-                                <i class="fa-solid fa-circle-exclamation"></i> Gagal memuat data dari Google Sheets.
+                            <td colspan="19" class="text-center py-4 text-rose-500">
+                                Gagal memuat data dari Google Sheets.
                             </td>
                         </tr>`;
                 }
@@ -555,24 +408,19 @@
             return isNaN(num) ? null : num;
         }
 
-        function renderTableAndStats(data) {
-            const tbody = document.getElementById("table-body");
+        function renderAllData(data) {
+            renderTableAllStore(data);
+            renderStatsAndSummary(data);
+        }
+
+        function renderTableAllStore(data) {
+            const tbody = document.getElementById("table-body-allstore");
             tbody.innerHTML = "";
 
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="19" style="text-align:center; padding: 20px; color: #707eae;">Data tidak ditemukan.</td></tr>`;
-                updateCards(0, 0, 0, "0%");
-                renderStoreRankings([]);
-                renderSessionSummary([]);
+                tbody.innerHTML = `<tr><td colspan="19" class="text-center py-4 text-slate-400">Data tidak ditemukan.</td></tr>`;
                 return;
             }
-
-            let totalMinScore = 0;
-            let totalMaxScore = 0;
-            let totalPassed = 0;
-            let validMinCount = 0;
-            let validMaxCount = 0;
-            let totalNamaCount = 0;
 
             data.forEach(item => {
                 const store = item['Store'] || '-';
@@ -581,10 +429,6 @@
                 const exp = item['Work Experience'] || '-';
                 const email = item['SEED Registered Email'] || '-';
                 const pos = item['Positions'] || '-';
-
-                if (nama !== '-' && nama !== '') {
-                    totalNamaCount++;
-                }
 
                 const d13p = item['13-7-2026 Pagi'] || '-';
                 const d13s = item['13-7-2026 Siang'] || '-';
@@ -596,19 +440,10 @@
                 const d16s = item['16-7-2026 Siang'] || '-';
 
                 const ket = item['Keterangan'] || '-';
-                const minValRaw = item['Min Score pt.1'];
-                const maxValRaw = item['Max Score pt.1'];
-                
-                const minVal = parseScore(minValRaw);
-                const maxVal = parseScore(maxValRaw);
-
-                if (minVal !== null) { totalMinScore += minVal; validMinCount++; }
-                if (maxVal !== null) { totalMaxScore += maxVal; validMaxCount++; }
-
+                const minVal = parseScore(item['Min Score pt.1']);
+                const maxVal = parseScore(item['Max Score pt.1']);
                 const join = item['Keterangan Join / Tidak Join'] || '-';
                 const status = item['Status Remidi / Lulus'] || '-';
-
-                if (String(status).trim().toLowerCase() === 'lulus') totalPassed++;
 
                 let joinBadgeClass = 'badge-default';
                 if (String(join).toLowerCase().includes('join') && !String(join).toLowerCase().includes('tidak')) {
@@ -625,63 +460,76 @@
                 }
 
                 const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition-colors";
                 tr.innerHTML = `
-                    <td>${store}</td>
-                    <td><b>${nama}</b></td>
-                    <td>${nik}</td>
-                    <td>${exp}</td>
-                    <td>${email}</td>
-                    <td>${pos}</td>
-                    <td align="center">${d13p}</td>
-                    <td align="center">${d13s}</td>
-                    <td align="center">${d14p}</td>
-                    <td align="center">${d14s}</td>
-                    <td align="center">${d15p}</td>
-                    <td align="center">${d15s}</td>
-                    <td align="center">${d16p}</td>
-                    <td align="center">${d16s}</td>
-                    <td>${ket}</td>
-                    <td align="center">${minVal !== null ? minVal : '-'}</td>
-                    <td align="center">${maxVal !== null ? maxVal : '-'}</td>
-                    <td><span class="badge ${joinBadgeClass}">${join}</span></td>
-                    <td><span class="badge ${statusBadgeClass}">${status}</span></td>
+                    <td class="p-3 font-medium">${store}</td>
+                    <td class="p-3 font-semibold text-slate-900">${nama}</td>
+                    <td class="p-3">${nik}</td>
+                    <td class="p-3">${exp}</td>
+                    <td class="p-3">${email}</td>
+                    <td class="p-3">${pos}</td>
+                    <td class="p-3 text-center">${d13p}</td>
+                    <td class="p-3 text-center">${d13s}</td>
+                    <td class="p-3 text-center">${d14p}</td>
+                    <td class="p-3 text-center">${d14s}</td>
+                    <td class="p-3 text-center">${d15p}</td>
+                    <td class="p-3 text-center">${d15s}</td>
+                    <td class="p-3 text-center">${d16p}</td>
+                    <td class="p-3 text-center">${d16s}</td>
+                    <td class="p-3">${ket}</td>
+                    <td class="p-3 text-center font-semibold">${minVal !== null ? minVal : '-'}</td>
+                    <td class="p-3 text-center font-semibold text-indigo-600">${maxVal !== null ? maxVal : '-'}</td>
+                    <td class="p-3"><span class="badge ${joinBadgeClass}">${join}</span></td>
+                    <td class="p-3"><span class="badge ${statusBadgeClass}">${status}</span></td>
                 `;
                 tbody.appendChild(tr);
+            });
+        }
+
+        function renderStatsAndSummary(data) {
+            let totalMinScore = 0;
+            let totalMaxScore = 0;
+            let totalPassed = 0;
+            let validMinCount = 0;
+            let validMaxCount = 0;
+            let totalNamaCount = 0;
+
+            data.forEach(item => {
+                const nama = item['Nama'] ? item['Nama'].trim() : '';
+                if (nama !== '' && nama !== '-') totalNamaCount++;
+
+                const minVal = parseScore(item['Min Score pt.1']);
+                const maxVal = parseScore(item['Max Score pt.1']);
+
+                if (minVal !== null) { totalMinScore += minVal; validMinCount++; }
+                if (maxVal !== null) { totalMaxScore += maxVal; validMaxCount++; }
+
+                const status = item['Status Remidi / Lulus'] || '';
+                if (String(status).trim().toLowerCase() === 'lulus') totalPassed++;
             });
 
             const avgMin = validMinCount > 0 ? (totalMinScore / validMinCount).toFixed(1) : 0;
             const avgMax = validMaxCount > 0 ? (totalMaxScore / validMaxCount).toFixed(1) : 0;
             const passRate = totalNamaCount > 0 ? ((totalPassed / totalNamaCount) * 100).toFixed(0) + "%" : "0%";
 
-            updateCards(totalNamaCount, avgMin, avgMax, passRate);
-            renderStoreRankings(data);
-            renderSessionSummary(data);
-        }
-
-        function updateCards(total, avgMin, avgMax, passRate) {
-            document.getElementById("stat-total").innerText = total;
+            document.getElementById("stat-total").innerText = totalNamaCount;
             document.getElementById("stat-avg-min").innerText = avgMin;
             document.getElementById("stat-avg-max").innerText = avgMax;
             document.getElementById("stat-pass-rate").innerText = passRate;
-            
-            const badgeTeam = document.getElementById("badge-team-count");
-            if (badgeTeam) badgeTeam.innerText = total;
+            document.getElementById("badge-team-count").innerText = totalNamaCount;
+
+            renderStoreRankings(data);
+            renderSessionSummaryAndChart(data);
         }
 
-        /* -------------------------------------------------------------
-           PERHITUNGAN TOP 10 & BOTTOM 10 STORE AVERAGE
-        ------------------------------------------------------------- */
         function renderStoreRankings(data) {
             const topBody = document.getElementById("top-store-body");
             const bottomBody = document.getElementById("bottom-store-body");
-
             const storeStats = {};
 
             data.forEach(item => {
                 const store = item['Store'];
                 if (!store) return;
-
-                const minScore = parseScore(item['Min Score pt.1']);
                 const maxScore = parseScore(item['Max Score pt.1']);
 
                 if (!storeStats[store]) {
@@ -689,8 +537,6 @@
                 }
 
                 storeStats[store].count++;
-
-                // Menggunakan Max Score sebagai indikator performa utama toko
                 if (maxScore !== null) {
                     storeStats[store].totalScore += maxScore;
                     storeStats[store].scoreEntries++;
@@ -700,23 +546,20 @@
             const storeArray = Object.keys(storeStats).map(store => {
                 const total = storeStats[store].totalScore;
                 const entries = storeStats[store].scoreEntries;
-                const avg = entries > 0 ? total / entries : 0;
                 return {
                     store: store,
                     count: storeStats[store].count,
-                    avg: avg
+                    avg: entries > 0 ? total / entries : 0
                 };
             });
 
-            // Urutkan berdasarkan Average tinggi ke rendah
             storeArray.sort((a, b) => b.avg - a.avg);
 
             const top10 = storeArray.slice(0, 10);
             const bottom10 = storeArray.length > 10 ? storeArray.slice(-10).reverse() : [...storeArray].reverse();
 
-            // Render Top 10
             topBody.innerHTML = top10.length > 0 ? top10.map((item, index) => `
-                <tr class="hover:bg-emerald-100/50">
+                <tr class="border-b border-emerald-100 hover:bg-emerald-100/40">
                     <td class="py-1.5 px-2 font-bold text-emerald-700">${index + 1}</td>
                     <td class="py-1.5 px-2 font-medium">${item.store}</td>
                     <td class="py-1.5 px-2 text-center">${item.count}</td>
@@ -724,9 +567,8 @@
                 </tr>
             `).join('') : `<tr><td colspan="4" class="text-center py-2 text-slate-400">Tidak ada data</td></tr>`;
 
-            // Render Bottom 10
             bottomBody.innerHTML = bottom10.length > 0 ? bottom10.map((item, index) => `
-                <tr class="hover:bg-rose-100/50">
+                <tr class="border-b border-rose-100 hover:bg-rose-100/40">
                     <td class="py-1.5 px-2 font-bold text-rose-700">${index + 1}</td>
                     <td class="py-1.5 px-2 font-medium">${item.store}</td>
                     <td class="py-1.5 px-2 text-center">${item.count}</td>
@@ -735,19 +577,9 @@
             `).join('') : `<tr><td colspan="4" class="text-center py-2 text-slate-400">Tidak ada data</td></tr>`;
         }
 
-        /* -------------------------------------------------------------
-           PERHITUNGAN SUMMARY PER SESI (PAGI / SIANG)
-        ------------------------------------------------------------- */
-        function renderSessionSummary(data) {
+        function renderSessionSummaryAndChart(data) {
             const summaryBody = document.getElementById("session-summary-body");
-
-            const metrics = {
-                attended: {},
-                sum: {},
-                countValids: {},
-                failed: {},
-                missing: {}
-            };
+            const metrics = { attended: {}, sum: {}, countValids: {}, failed: {}, missing: {} };
 
             SESSION_KEYS.forEach(key => {
                 metrics.attended[key] = 0;
@@ -768,39 +600,72 @@
                         if (numVal !== null) {
                             metrics.sum[key] += numVal;
                             metrics.countValids[key]++;
-
-                            // Asumsi ambang batas lulus per sesi individu = 70
-                            if (numVal < 70) {
-                                metrics.failed[key]++;
-                            }
+                            if (numVal < 70) metrics.failed[key]++;
                         } else {
-                            // Teks ada tapi tidak bernilai angka valid
                             metrics.missing[key]++;
                         }
                     } else {
-                        // Tidak hadir / Kosong / Nilai Tidak Muncul
                         metrics.missing[key]++;
                     }
                 });
             });
 
-            const rowAttended = `<tr><td class="font-bold">Total Peserta (Attended)</td>` + SESSION_KEYS.map(k => `<td class="text-center font-bold text-indigo-600">${metrics.attended[k]}</td>`).join('') + `</tr>`;
+            const rowAttended = `<tr><td class="p-2.5 font-bold text-slate-700">Total Peserta (Attended)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-bold text-indigo-600">${metrics.attended[k]}</td>`).join('') + `</tr>`;
             
-            const rowAverage = `<tr><td class="font-bold">Average Score</td>` + SESSION_KEYS.map(k => {
-                const avg = metrics.countValids[k] > 0 ? (metrics.sum[k] / metrics.countValids[k]).toFixed(1) : '-';
-                return `<td class="text-center font-semibold text-emerald-600">${avg}</td>`;
-            }).join('') + `</tr>`;
+            const sessionAverages = SESSION_KEYS.map(k => metrics.countValids[k] > 0 ? parseFloat((metrics.sum[k] / metrics.countValids[k]).toFixed(1)) : 0);
 
-            const rowFailed = `<tr><td class="font-bold">Tidak Lulus (<70)</td>` + SESSION_KEYS.map(k => `<td class="text-center font-semibold text-rose-500">${metrics.failed[k]}</td>`).join('') + `</tr>`;
+            const rowAverage = `<tr><td class="p-2.5 font-bold text-slate-700">Average Score</td>` + sessionAverages.map(avg => `<td class="p-2.5 text-center font-semibold text-emerald-600">${avg > 0 ? avg : '-'}</td>`).join('') + `</tr>`;
 
-            const rowMissing = `<tr><td class="font-bold text-slate-500">Nilai Tidak Muncul / Absence</td>` + SESSION_KEYS.map(k => `<td class="text-center text-amber-600">${metrics.missing[k]}</td>`).join('') + `</tr>`;
+            const rowFailed = `<tr><td class="p-2.5 font-bold text-slate-700">Tidak Lulus (&lt;70)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-semibold text-rose-500">${metrics.failed[k]}</td>`).join('') + `</tr>`;
+
+            const rowMissing = `<tr><td class="p-2.5 font-bold text-slate-500">Nilai Tidak Muncul / Absence</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center text-amber-600">${metrics.missing[k]}</td>`).join('') + `</tr>`;
 
             summaryBody.innerHTML = rowAttended + rowAverage + rowFailed + rowMissing;
+
+            // Render Chart.js
+            renderSummaryChart(sessionAverages);
         }
 
-        /* -------------------------------------------------------------
-           FILTER LOGIC
-        ------------------------------------------------------------- */
+        function renderSummaryChart(averagesData) {
+            const ctx = document.getElementById('sessionChart').getContext('2d');
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: SESSION_KEYS,
+                    datasets: [{
+                        label: 'Average Score Sesi',
+                        data: averagesData,
+                        backgroundColor: 'rgba(99, 102, 241, 0.85)',
+                        borderColor: 'rgb(79, 70, 229)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
         function applyFilters() {
             const personalSearch = document.getElementById("search-personal").value.toLowerCase().trim();
             const selectedStore = document.getElementById("filter-store").value;
@@ -819,14 +684,14 @@
                 return matchPersonal && matchStore && matchStatus;
             });
 
-            renderTableAndStats(filteredData);
+            renderAllData(filteredData);
         }
 
         function resetFilters() {
             document.getElementById("search-personal").value = "";
             document.getElementById("filter-store").value = "";
             document.getElementById("filter-status").value = "";
-            renderTableAndStats(rawData);
+            renderAllData(rawData);
         }
     </script>
 </body>
