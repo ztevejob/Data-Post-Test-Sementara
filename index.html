@@ -117,7 +117,11 @@
 
     <script>
         const SHEET_ID = "1Ckk2YocjioES8EKEkT3bjHy_56tUShglGPBCpYCyh5Y";
-        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+        // Menggunakan endpoint gviz/tq untuk membatasi query rentang sel A1:T secara langsung dari Google Sheets
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&range=A1:T&gid=0`;
+
+        // Batas maksimum kolom A-T = 20 kolom
+        const MAX_COLUMNS = 20;
 
         document.addEventListener("DOMContentLoaded", () => {
             fetchSheetData();
@@ -134,18 +138,16 @@
             const errorAlert = document.getElementById("error-alert");
             errorAlert.classList.add("hidden");
 
-            fetch(CSV_URL)
+            fetch(SHEET_URL)
                 .then(response => {
                     if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
                     return response.text();
                 })
                 .then(csvText => {
-                    // Deteksi jika Google merespons dengan HTML (misal halaman login/akses terbatas)
                     if (csvText.trim().startsWith("<!DOCTYPE html>") || csvText.trim().startsWith("<html")) {
                         throw new Error("Akses Google Sheets dibatasi. Pastikan pengaturan berbagi file diset ke 'Anyone with the link'.");
                     }
 
-                    // Parse sebagai Array 2D (header: false) untuk menangani offset baris di Google Sheets
                     Papa.parse(csvText, {
                         header: false,
                         skipEmptyLines: 'greedy',
@@ -157,7 +159,7 @@
                                 return;
                             }
 
-                            // Cari baris pertama yang memiliki isi sebagai header
+                            // 1. Cari baris header pertama yang berisi teks
                             let headerIdx = rawRows.findIndex(row => row.some(cell => String(cell).trim() !== ""));
 
                             if (headerIdx === -1) {
@@ -165,8 +167,16 @@
                                 return;
                             }
 
-                            const headers = rawRows[headerIdx].map((h, i) => String(h).trim() || `Kolom ${i + 1}`);
-                            const dataRows = rawRows.slice(headerIdx + 1).filter(row => row.some(cell => String(cell).trim() !== ""));
+                            // 2. Batasi header maksimal hingga kolom T (20 kolom pertama)
+                            const headers = rawRows[headerIdx]
+                                .slice(0, MAX_COLUMNS)
+                                .map((h, i) => String(h).trim() || `Kolom ${i + 1}`);
+
+                            // 3. Batasi data tiap baris maksimal 20 kolom
+                            const dataRows = rawRows
+                                .slice(headerIdx + 1)
+                                .map(row => row.slice(0, MAX_COLUMNS))
+                                .filter(row => row.some(cell => String(cell).trim() !== ""));
 
                             updateTimestamp();
                             renderTableData(headers, dataRows);
@@ -208,7 +218,7 @@
                 return;
             }
 
-            // 1. Render Header
+            // Render Header (A-T)
             const trHead = document.createElement("tr");
             headers.forEach(headerText => {
                 const th = document.createElement("th");
@@ -218,7 +228,7 @@
             });
             thead.appendChild(trHead);
 
-            // 2. Render Baris Data
+            // Render Baris Data
             const fragment = document.createDocumentFragment();
             rows.forEach(row => {
                 const tr = document.createElement("tr");
@@ -229,7 +239,6 @@
                     td.className = "p-3 border-b border-slate-100";
                     const cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? String(row[colIndex]).trim() : "";
                     
-                    // Format tampilan badge otomatis untuk status Lulus/Remidi jika ada
                     if (cellVal.toLowerCase() === "lulus") {
                         td.innerHTML = `<span class="badge badge-lulus">Lulus</span>`;
                     } else if (cellVal.toLowerCase() === "remidi" || cellVal.toLowerCase() === "remedi") {
