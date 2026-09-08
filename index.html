@@ -75,17 +75,17 @@
     <!-- MAIN APP WRAPPER -->
     <div id="app-wrapper" class="flex flex-col md:flex-row min-h-screen">
         
-        <!-- SIDEBAR UTAMA & INFO STAFF & PENCARIAN KHUSUS -->
+        <!-- SIDEBAR UTAMA & INFO STAFF -->
         <aside class="fixed bottom-0 left-0 right-0 z-50 bg-slate-900 border-t border-slate-800 p-2 md:relative md:w-80 md:border-t-0 md:p-4 flex md:flex-col justify-between select-none flex-shrink-0 overflow-y-auto">
             
             <div class="hidden md:block w-full space-y-4">
                 <div class="bg-slate-800/90 border border-slate-700/80 rounded-xl p-3 flex items-center justify-between">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white" id="user-avatar-initial">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white">
                             <i class="fa-solid fa-store"></i>
                         </div>
                         <div class="text-xs overflow-hidden">
-                            <p class="font-bold text-white truncate" id="user-display-store">MAPTECH Dashboard</p>
+                            <p class="font-bold text-white truncate">MAPTECH Dashboard</p>
                             <p class="text-[10px] text-slate-400">Digimap Retail</p>
                         </div>
                     </div>
@@ -105,6 +105,21 @@
                     <p class="text-[10px] text-slate-400 flex items-center gap-1">
                         <i class="fa-regular fa-clock text-slate-500"></i> Update: <span id="sync-timestamp" class="text-slate-300 font-medium">Memuat...</span>
                     </p>
+                </div>
+
+                <!-- TOMBOL TOGGLE PERAN -->
+                <div class="bg-slate-800/90 border border-slate-700/80 rounded-xl p-3 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-indigo-300 uppercase tracking-wider"><i class="fa-solid fa-user-gear mr-1"></i> Mode Peran</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1.5">
+                        <button onclick="setRoleView('staff')" id="btn-role-staff" class="py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-[11px] font-semibold rounded-lg transition-colors text-center">
+                            <i class="fa-solid fa-user text-xs mr-1"></i> Anak Toko
+                        </button>
+                        <button onclick="setRoleView('management')" id="btn-role-management" class="py-1.5 px-2 bg-indigo-600 text-white text-[11px] font-semibold rounded-lg transition-colors text-center shadow-sm">
+                            <i class="fa-solid fa-user-shield text-xs mr-1"></i> Manajemen
+                        </button>
+                    </div>
                 </div>
 
                 <div class="py-1 border-b border-slate-800 pb-2">
@@ -127,10 +142,10 @@
                     </button>
                 </nav>
 
-                <!-- PENCARIAN FILTER STAFF -->
+                <!-- PENCARIAN STAFF DI SIDEBAR -->
                 <div class="pt-3 border-t border-slate-800 space-y-3">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Pencarian Profil Staff</h3>
+                        <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Kartu Ringkasan Personal</h3>
                     </div>
                     
                     <div class="relative">
@@ -168,6 +183,13 @@
                         <span>Concept & Curation by <b class="text-slate-200">Novi Riyanto</b> <span id="mobile-app-version" class="text-indigo-400 font-mono font-bold"></span></span>
                         <span class="text-neon-green font-bold"><i class="fa-solid fa-bolt"></i> AutoSync</span>
                     </div>
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="text-[10px] text-slate-400">Mode Peran:</span>
+                        <div class="flex gap-1">
+                            <button onclick="setRoleView('staff')" id="btn-mobile-role-staff" class="px-2 py-1 bg-slate-800 text-slate-300 text-[10px] font-semibold rounded">Anak Toko</button>
+                            <button onclick="setRoleView('management')" id="btn-mobile-role-management" class="px-2 py-1 bg-indigo-600 text-white text-[10px] font-semibold rounded">Manajemen</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="pb-3 md:pb-4 mb-4 md:mb-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -176,25 +198,16 @@
                         <button onclick="exportStoreReport()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5">
                             <i class="fa-solid fa-file-excel"></i> Download Laporan Toko
                         </button>
-                        <div class="block md:hidden">
-                            <input type="text" placeholder="Cari staff..." oninput="handleSidebarSearch(this.value)" class="w-36 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg">
-                        </div>
                     </div>
                 </div>
 
                 <!-- FILTER CONTROL -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 md:p-4 mb-4 space-y-3">
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 md:gap-3">
-                        <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" id="search-personal" placeholder="Cari NIK / Nama..." oninput="debounceFilter()" 
-                                   class="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 md:gap-3">
                         <div>
                             <select id="filter-store" onchange="applyFilters()" 
                                     class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="">-- Semua Toko (Memuat...) --</option>
+                                <option value="">-- Semua Toko --</option>
                             </select>
                         </div>
 
@@ -208,15 +221,6 @@
                         </div>
                     </div>
 
-                    <div class="pt-2 border-t border-slate-200 flex flex-col gap-1.5">
-                        <span class="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
-                            <i class="fa-solid fa-bolt text-indigo-600"></i> Store Quick Filter (Pilih Cepat Toko Populer):
-                        </span>
-                        <div id="quick-store-chips" class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
-                            <span class="text-[11px] text-slate-400 italic">Memuat chips toko...</span>
-                        </div>
-                    </div>
-
                     <div class="flex justify-end pt-1">
                         <button onclick="resetFilters()" class="px-3 py-1.5 bg-slate-200 hover:bg-rose-500 hover:text-white text-slate-700 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5">
                             <i class="fa-solid fa-rotate-left"></i> Reset Filter
@@ -224,52 +228,31 @@
                     </div>
                 </div>
 
-                <!-- VIEW 1: SUMMARY TAB -->
-                <div id="view-summary" class="space-y-6">
-                    
-                    <!-- INFORMATIONAL SUMMARY CARDS (ENHANCED) -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
-                                <i class="fa-solid fa-user-group"></i>
-                            </div>
-                            <div>
-                                <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Karyawan</span>
-                                <h3 id="stat-total-karyawan" class="text-xl font-bold text-slate-800">0</h3>
-                            </div>
+                <!-- KARTU STATISTIK UTAMA -->
+                <div id="management-stats-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-6">
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-user-group"></i>
                         </div>
-
-                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">
-                                <i class="fa-solid fa-users"></i>
-                            </div>
-                            <div>
-                                <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Peserta Aktif</span>
-                                <h3 id="stat-total" class="text-xl font-bold text-slate-800">0</h3>
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg">
-                                <i class="fa-solid fa-circle-check"></i>
-                            </div>
-                            <div>
-                                <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Tingkat Kelulusan</span>
-                                <h3 id="stat-pass-rate" class="text-xl font-bold text-slate-800">0%</h3>
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-lg">
-                                <i class="fa-solid fa-chart-line"></i>
-                            </div>
-                            <div>
-                                <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Rata-Rata Nilai Global</span>
-                                <h3 id="stat-global-avg" class="text-xl font-bold text-slate-800">0.0</h3>
-                            </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Karyawan</span>
+                            <h3 id="stat-total-karyawan" class="text-xl font-bold text-slate-800">0</h3>
                         </div>
                     </div>
 
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Peserta (Aktif Sesi)</span>
+                            <h3 id="stat-total" class="text-xl font-bold text-slate-800">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 1: SUMMARY TAB -->
+                <div id="view-summary" class="space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div class="lg:col-span-3 bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
                             <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
@@ -285,30 +268,26 @@
                         <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Monitoring Khusus Staff (Remidi)
                         </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
-                            
-                            <div class="bg-rose-50/60 border border-rose-200 rounded-xl p-3 md:p-4">
-                                <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
-                                    <span><i class="fa-solid fa-user-xmark"></i> Daftar Staff Remidi</span>
-                                    <span id="badge-count-remidi" class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full font-bold">0 Staff</span>
-                                </h4>
-                                <div class="table-responsive max-h-56 overflow-y-auto">
-                                    <table class="w-full text-xs">
-                                        <thead class="sticky top-0 bg-rose-100 text-rose-900 border-b border-rose-200">
-                                            <tr>
-                                                <th class="py-2 px-2 text-left">Nama</th>
-                                                <th class="py-2 px-2 text-left">Toko</th>
-                                                <th class="py-2 px-2.5 text-center">Sesi</th>
-                                                <th class="py-2 px-2 text-right">Nilai Sesi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="remidi-staff-body" class="divide-y divide-rose-100">
-                                            <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                        <div class="bg-rose-50/60 border border-rose-200 rounded-xl p-3 md:p-4">
+                            <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                <span><i class="fa-solid fa-user-xmark"></i> Daftar Staff Remidi</span>
+                                <span id="badge-count-remidi" class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full font-bold">0 Staff</span>
+                            </h4>
+                            <div class="table-responsive max-h-56 overflow-y-auto">
+                                <table class="w-full text-xs">
+                                    <thead class="sticky top-0 bg-rose-100 text-rose-900 border-b border-rose-200">
+                                        <tr>
+                                            <th class="py-2 px-2 text-left">Nama</th>
+                                            <th class="py-2 px-2 text-left">Toko</th>
+                                            <th class="py-2 px-2.5 text-center">Sesi</th>
+                                            <th class="py-2 px-2 text-right">Nilai Sesi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="remidi-staff-body" class="divide-y divide-rose-100">
+                                        <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
-
                         </div>
                     </div>
 
@@ -388,12 +367,10 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <!-- VIEW 2: ALL STORE TAB -->
                 <div id="view-all-store" class="hidden space-y-6">
-                    
                     <div>
                         <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-table-list text-indigo-600"></i> Detail Peserta & Nilai Post Test All Store
@@ -433,7 +410,6 @@
                             </table>
                         </div>
                     </div>
-
                 </div>
 
             </div>
@@ -441,24 +417,114 @@
     </div>
 
     <script>
-        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-qqVF7ni3YNO19bT149rKAXNvemlgIvWYpJ0-QOs9F6WAJJ-c-Z3XqDl83jrbfoip7zu2D5aWYxfa/pub?gid=0&single=true&output=csv";
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRbNFcwSEqELSS37KQrPEtThcbjN7KtzySQskvck9c9y8G-lNlRH6AiteYxTPBWJp8fO2tKjXlq7AF/pub?gid=0&single=true&output=csv";
 
-        const MAPTECH_STORE_CODES = [
-            "M108", "M116", "M117", "M118", "M119", "M120", "M121", "M122", "M123", "M124", 
-            "M125", "M126", "M127", "M128", "M129", "M130", "M131", "M201", "M203", "M205", 
-            "M206", "M212", "M214", "M215", "M216", "M217", "M218", "M219", "M220", "M221", 
-            "M222", "M223", "M224", "M225", "M226", "M227", "M228", "M229", "M230", "M231", 
-            "M232", "M233", "M234", "M235", "M236", "M237", "M238", "M239", "M240", "M241", 
-            "M243", "M244", "M245", "M246", "M247", "M248", "M249", "M250", "M251", "M252", 
-            "M253", "M254", "M255", "M256", "M257", "M258", "M259", "M260", "M261", "M262", 
-            "M263", "M264", "M265", "M266", "M267", "M268", "M269", "M270", "M271", "M272", 
-            "M273", "M274", "M275", "M276", "M277", "M278", "M279", "M281", "M282", "M283", 
-            "M284", "M285", "M286", "M287", "M288", "M289", "M290", "M293", "M294", "M295"
+        const MAPTECH_STORE_LIST = [
+            "M108 Digimap Trans Studio Mall Bandung",
+            "M116 Digimap Beachwalk Bali",
+            "M117 Digimap Plaza Senayan",
+            "M118 Digimap Pondok Indah Mall 3",
+            "M119 Digimap Centrepoint Mall Medan",
+            "M120 Digimap Sun Plaza Medan",
+            "M121 Digimap Tunjungan Plaza 3 Surabaya",
+            "M122 Digimap Galaxy Mall Surabaya",
+            "M123 Digimap Mall Bali Galeria",
+            "M124 Digimap Pacific Place",
+            "M125 Digimap Supermall Karawaci",
+            "M126 Digimap Ciputra World Surabaya",
+            "M127 Digimap Lotte Shopping Avenue",
+            "M128 Digimap Emporium Mall Pluit",
+            "M129 Digimap Mall Puri Indah",
+            "M130 Digimap Sunset Road Bali",
+            "M131 Digimap Grand Indonesia",
+            "M201 Digimap Trans Studio Mall Cibubur",
+            "M203 Digimap AEON Mall BSD",
+            "M205 Digimap Paskal 23 Bandung",
+            "M206 Digimap Pakuwon Mall Surabaya",
+            "M212 Digimap Sunter Mall",
+            "M214 Digimap AEON Mall Sentul",
+            "M215 Digimap Mall Taman Anggrek",
+            "M216 Digimap Tentrem Mall Semarang",
+            "M217 Digimap Blok M Plaza",
+            "M218 Digimap Plaza Balikpapan",
+            "M219 Digimap Basko Padang",
+            "M220 Digimap Malioboro Mall",
+            "M221 Digimap A Yani Pontianak",
+            "M222 Digimap Palembang Indah Mall",
+            "M223 Digimap Roxy Square Jember",
+            "M224 Digimap WTC Jambi",
+            "M225 Digimap Citimall Dumai",
+            "M226 Digimap Ambon City Center",
+            "M227 Digimap AEON Tanjung Barat",
+            "M228 Digimap Citimall Cianjur 2",
+            "M229 Digimap Trans Icon Surabaya",
+            "M230 Digimap The Park Kendari",
+            "M231 Digimap Gress Mall Gresik",
+            "M232 Digimap Pakuwon Mall Solo",
+            "M233 Digimap Unimas District Sidoarjo",
+            "M234 Digimap Citra Grand Cibubur",
+            "M235 Digimap Lippo Plaza Kramat Jati",
+            "M236 Digimap Palu Grand Mall",
+            "M237 Digimap Solo Square",
+            "M238 Digimap Pondok Indah Mall 2",
+            "M239 Digimap Icon Mall Bali",
+            "M240 Digimap Pacific Mall Tegal",
+            "M241 Digimap Revo Mall",
+            "M243 Digimap Aeon Mall Delta Mas",
+            "M244 Digimap Java Mall Semarang",
+            "M245 Digimap Living World Kota Wisata",
+            "M246 Digimap Malang Town Square",
+            "M247 Digimap Lippo Plaza Jambi",
+            "M248 Digimap Suncity Mall Sidoarjo",
+            "M249 Digimap Lippo Plaza Palangkaraya",
+            "M250 Digimap Lippo Plaza Batu",
+            "M251 Digimap The Kings Shopping Centre Bandung",
+            "M252 Digimap Binjai Mall",
+            "M253 Digimap Plaza Surabaya",
+            "M254 Digimap Basko city Mall Padang",
+            "M255 Digimap Antasari Place",
+            "M256 Digimap Lippo Plaza Lubuklinggau",
+            "M257 Digimap City Plaza Jatinegara",
+            "M258 Digimap Lippo Plaza Manado",
+            "M259 Digimap Jatinangor Town Square",
+            "M260 Digimap Kudus Extention Mall",
+            "M261 Digimap PIK Elang Laut",
+            "M262 Digimap Suzuya Merdeka Square Siantar",
+            "M263 Digimap Citimall Sampit",
+            "M264 Digimap Plaza Semanggi",
+            "M265 Digimap Merr Street",
+            "M266 Digimap HIVE Harapan Indah",
+            "M267 Digimap Mall Cijantung",
+            "M268 Digimap Diana Mall Timika",
+            "M269 Digimap Tenth Avenue",
+            "M270 Digimap Citimall Lahat",
+            "M271 Digimap Mall Indramayu",
+            "M272 Digimap Kota Baru Parahyangan",
+            "M273 Digimap Metro Lampung",
+            "M274 Digimap Street Ciputat Raya",
+            "M275 Digimap Citimall Baturaja",
+            "M276 Digimap Shila At Sawangan",
+            "M277 Digimap Citimall Tuban",
+            "M278 Digimap A.S.S Brebes",
+            "M279 Digimap Ciumbuleuit",
+            "M281 Digimap Ngaliyan Street",
+            "M282 Digimap Citimall Pangkalanbun",
+            "M283 Digimap Basuki Rahmat Tulungagung",
+            "M284 Digimap BSD Loka",
+            "M285 Digimap Blitar Square",
+            "M286 Digimap Citimall Prabumulih",
+            "M287 Digimap Grand Tarakan",
+            "M288 Digimap Mojopahit Street Mojokerto",
+            "M289 Digimap Maleo Town Square",
+            "M290 Digimap Mandau City Mall",
+            "M293 Digimap Jend Sudirman Salatiga",
+            "M294 Digimap Bojonegoro Street",
+            "M295 Digimap Juanda Tasikmalaya"
         ];
 
         let rawData = [];
         let sessionChartInstance = null;
-        let debounceTimer = null;
+        let currentRole = 'management';
 
         const SESSION_KEYS = [
             "8-Sept-2026 Pagi", "8-Sept-2026 Siang",
@@ -479,6 +545,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             initVersionDisplay();
+            populateStoreDropdown();
             fetchSheetData();
         });
 
@@ -500,32 +567,50 @@
             document.getElementById("sync-timestamp").innerText = formatted;
         }
 
+        function setRoleView(role) {
+            currentRole = role;
+            const btnStaff = document.getElementById("btn-role-staff");
+            const btnMgmt = document.getElementById("btn-role-management");
+            const btnMobStaff = document.getElementById("btn-mobile-role-staff");
+            const btnMobMgmt = document.getElementById("btn-mobile-role-management");
+            const mgmtStats = document.getElementById("management-stats-container");
+
+            if (role === 'staff') {
+                if(btnStaff) btnStaff.className = "py-1.5 px-2 bg-indigo-600 text-white text-[11px] font-semibold rounded-lg transition-colors text-center shadow-sm";
+                if(btnMgmt) btnMgmt.className = "py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-[11px] font-semibold rounded-lg transition-colors text-center";
+                if(btnMobStaff) btnMobStaff.className = "px-2 py-1 bg-indigo-600 text-white text-[10px] font-semibold rounded";
+                if(btnMobMgmt) btnMobMgmt.className = "px-2 py-1 bg-slate-800 text-slate-300 text-[10px] font-semibold rounded";
+                if(mgmtStats) mgmtStats.classList.add("hidden");
+            } else {
+                if(btnMgmt) btnMgmt.className = "py-1.5 px-2 bg-indigo-600 text-white text-[11px] font-semibold rounded-lg transition-colors text-center shadow-sm";
+                if(btnStaff) btnStaff.className = "py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-[11px] font-semibold rounded-lg transition-colors text-center";
+                if(btnMobMgmt) btnMobMgmt.className = "px-2 py-1 bg-indigo-600 text-white text-[10px] font-semibold rounded";
+                if(btnMobStaff) btnMobStaff.className = "px-2 py-1 bg-slate-800 text-slate-300 text-[10px] font-semibold rounded";
+                if(mgmtStats) mgmtStats.classList.remove("hidden");
+            }
+            applyFilters();
+        }
+
         function switchView(viewName) {
             const viewSummary = document.getElementById("view-summary");
             const viewAllStore = document.getElementById("view-all-store");
-            
             const navSummary = document.getElementById("nav-summary");
             const navAllStore = document.getElementById("nav-all-store");
-
             const navMobileSummary = document.getElementById("nav-mobile-summary");
             const navMobileAllStore = document.getElementById("nav-mobile-all-store");
 
             if (viewName === 'summary') {
                 viewSummary.classList.remove("hidden");
                 viewAllStore.classList.add("hidden");
-                
                 navSummary.className = "w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium bg-indigo-600 text-white transition-colors";
                 navAllStore.className = "w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors";
-
                 navMobileSummary.className = "flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors";
                 navMobileAllStore.className = "flex flex-col items-center justify-center py-1 px-3 text-slate-400 hover:text-white font-medium transition-colors relative";
             } else {
                 viewSummary.classList.add("hidden");
                 viewAllStore.classList.remove("hidden");
-
                 navAllStore.className = "w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium bg-indigo-600 text-white transition-colors";
                 navSummary.className = "w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors";
-
                 navMobileAllStore.className = "flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors relative";
                 navMobileSummary.className = "flex flex-col items-center justify-center py-1 px-3 text-slate-400 hover:text-white font-medium transition-colors";
             }
@@ -559,13 +644,11 @@
                                 return cleanRow;
                             }).filter(item => {
                                 const storeName = (item['Store'] || item['store'] || '').trim();
-                                const isDigimapStore = MAPTECH_STORE_CODES.some(code => storeName.toUpperCase().includes(code.toUpperCase()));
-                                return isValidName(item['Nama'] || item['nama']) && isDigimapStore;
+                                const isDigimapStore = MAPTECH_STORE_LIST.some(storeStr => storeStr.toLowerCase().includes(storeName.toLowerCase()));
+                                return isValidName(item['Nama'] || item['nama']) && (isDigimapStore || storeName !== '');
                             });
 
                             updateTimestamp();
-                            populateStoreDropdown(rawData);
-                            renderQuickStoreChips(rawData);
                             renderAllData(rawData);
                         },
                         error: function(err) {
@@ -578,23 +661,15 @@
                 });
         }
 
-        function populateStoreDropdown(data) {
+        function populateStoreDropdown() {
             const storeSelect = document.getElementById("filter-store");
-            const storeSet = new Set();
-            
-            data.forEach(item => {
-                const storeName = (item['Store'] || item['store'] || '').trim();
-                if (storeName && storeName !== '-') storeSet.add(storeName);
-            });
-
-            const sortedStores = Array.from(storeSet).sort((a, b) => a.localeCompare(b));
             const fragment = document.createDocumentFragment();
             const defaultOption = document.createElement("option");
             defaultOption.value = "";
-            defaultOption.textContent = `-- Semua Toko (${sortedStores.length} Toko) --`;
+            defaultOption.textContent = `-- Semua Toko (${MAPTECH_STORE_LIST.length} Toko) --`;
             fragment.appendChild(defaultOption);
 
-            sortedStores.forEach(store => {
+            MAPTECH_STORE_LIST.forEach(store => {
                 const option = document.createElement("option");
                 option.value = store;
                 option.textContent = store;
@@ -603,38 +678,6 @@
 
             storeSelect.innerHTML = "";
             storeSelect.appendChild(fragment);
-        }
-
-        function renderQuickStoreChips(data) {
-            const container = document.getElementById("quick-store-chips");
-            const storeCounts = {};
-
-            data.forEach(item => {
-                const store = (item['Store'] || item['store'] || '').trim();
-                if (store && store !== '-') {
-                    storeCounts[store] = (storeCounts[store] || 0) + 1;
-                }
-            });
-
-            const sortedStores = Object.keys(storeCounts).sort((a, b) => storeCounts[b] - storeCounts[a]).slice(0, 15);
-
-            if (sortedStores.length === 0) {
-                container.innerHTML = `<span class="text-[11px] text-slate-400 italic">Tidak ada toko tersedia.</span>`;
-                return;
-            }
-
-            let chipsHtml = `<button onclick="selectQuickStore('')" class="px-2.5 py-1 bg-slate-200 hover:bg-indigo-600 hover:text-white text-slate-700 text-[10px] font-bold rounded-md transition-colors">Semua Toko</button>`;
-            
-            sortedStores.forEach(store => {
-                chipsHtml += `<button onclick="selectQuickStore('${store}')" class="px-2.5 py-1 bg-white border border-slate-300 hover:bg-indigo-50 hover:border-indigo-500 text-slate-700 text-[10px] font-medium rounded-md transition-colors shadow-2xs">${store} (${storeCounts[store]})</button>`;
-            });
-
-            container.innerHTML = chipsHtml;
-        }
-
-        function selectQuickStore(storeName) {
-            document.getElementById("filter-store").value = storeName;
-            applyFilters();
         }
 
         function parseScore(val) {
@@ -825,10 +868,6 @@
             const totalKaryawan = data.length;
 
             let totalPesertaSet = new Set();
-            let totalPassed = 0;
-            let totalScoreSum = 0;
-            let totalScoreCount = 0;
-
             data.forEach((item, index) => {
                 const hasSessionScore = SESSION_KEYS.some(h => {
                     const val = item[h];
@@ -837,25 +876,10 @@
                 if (hasSessionScore) {
                     totalPesertaSet.add(index);
                 }
-
-                const maxVal = parseScore(item['Max Score pt.1'] || item['Max Score']);
-                if (maxVal !== null) {
-                    totalScoreSum += maxVal;
-                    totalScoreCount++;
-                    if (maxVal >= 80) {
-                        totalPassed++;
-                    }
-                }
             });
-
-            const passRate = totalScoreCount > 0 ? ((totalPassed / totalScoreCount) * 100).toFixed(1) : 0;
-            const globalAvg = totalScoreCount > 0 ? (totalScoreSum / totalScoreCount).toFixed(1) : 0;
 
             document.getElementById("stat-total-karyawan").innerText = totalKaryawan;
             document.getElementById("stat-total").innerText = totalPesertaSet.size;
-            document.getElementById("stat-pass-rate").innerText = `${passRate}%`;
-            document.getElementById("stat-global-avg").innerText = globalAvg;
-            
             document.getElementById("badge-team-count").innerText = totalKaryawan;
             const mobileBadge = document.getElementById("badge-mobile-team-count");
             if (mobileBadge) mobileBadge.innerText = totalKaryawan;
@@ -895,7 +919,6 @@
             storeArray.sort((a, b) => b.avg - a.avg);
             const maxAvg = storeArray.length > 0 ? storeArray[0].avg : 0;
             const topStores = storeArray.filter(s => Math.abs(s.avg - maxAvg) < 0.01);
-
             const bottomStoresFiltered = storeArray.filter(s => s.avg < 80).sort((a, b) => a.avg - b.avg);
 
             topBody.innerHTML = topStores.length > 0 ? topStores.map((item, index) => `
@@ -949,21 +972,16 @@
             });
 
             const rowAttended = `<tr><td class="p-2.5 font-bold text-slate-700">Total Peserta (Attended)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-bold text-indigo-600">${metrics.attended[k]}</td>`).join('') + `</tr>`;
-            
             const sessionAverages = SESSION_KEYS.map(k => metrics.countValids[k] > 0 ? parseFloat((metrics.sum[k] / metrics.countValids[k]).toFixed(1)) : 0);
-
             const rowAverage = `<tr><td class="p-2.5 font-bold text-slate-700">Average Score</td>` + sessionAverages.map(avg => `<td class="p-2.5 text-center font-semibold text-emerald-600">${avg > 0 ? avg : '-'}</td>`).join('') + `</tr>`;
-
             const rowFailed = `<tr><td class="p-2.5 font-bold text-slate-700">Tidak Lulus (&lt;80)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-semibold text-rose-500">${metrics.failed[k]}</td>`).join('') + `</tr>`;
 
             summaryBody.innerHTML = rowAttended + rowAverage + rowFailed;
-
             renderSummaryChart(sessionAverages);
         }
 
         function renderSummaryChart(averagesData) {
             const ctx = document.getElementById('sessionChart').getContext('2d');
-
             if (sessionChartInstance) sessionChartInstance.destroy();
 
             sessionChartInstance = new Chart(ctx, {
@@ -989,13 +1007,8 @@
                             anchor: 'center',
                             align: 'center',
                             color: '#ffffff',
-                            font: {
-                                weight: 'bold',
-                                size: 11
-                            },
-                            formatter: function(value) {
-                                return value > 0 ? value : '';
-                            }
+                            font: { weight: 'bold', size: 11 },
+                            formatter: function(value) { return value > 0 ? value : ''; }
                         }
                     },
                     scales: {
@@ -1008,23 +1021,18 @@
 
         function exportStoreReport() {
             const selectedStore = document.getElementById("filter-store").value.trim();
-            const exportTitle = selectedStore ? `Laporan_PostTest_${selectedStore}` : `Laporan_PostTest_Semua_Toko`;
-
-            const personalSearch = document.getElementById("search-personal").value.toLowerCase().trim();
+            const exportTitle = selectedStore ? `Laporan_PostTest_${selectedStore.replace(/\s+/g, '_')}` : `Laporan_PostTest_Semua_Toko`;
             const selectedStatus = document.getElementById("filter-status").value.toLowerCase().trim();
 
             const filteredExportData = rawData.filter(item => {
-                const nama = (item['Nama'] || item['nama'] || '').toLowerCase();
-                const nik = (item['NIK'] || item['nik'] || '').toLowerCase();
-                const store = (item['Store'] || item['store'] || '').toLowerCase().trim();
+                const store = (item['Store'] || item['store'] || '').trim();
                 const maxVal = parseScore(item['Max Score pt.1'] || item['Max Score']);
                 const status = getCalculatedStatus(maxVal).toLowerCase();
 
-                const matchPersonal = personalSearch === "" || nama.includes(personalSearch) || nik.includes(personalSearch);
-                const matchStore = selectedStore === "" || store.includes(selectedStore.toLowerCase());
+                const matchStore = selectedStore === "" || store.toLowerCase().includes(selectedStore.toLowerCase()) || selectedStore.toLowerCase().includes(store.toLowerCase());
                 const matchStatus = selectedStatus === "" || status.includes(selectedStatus);
 
-                return matchPersonal && matchStore && matchStatus;
+                return matchStore && matchStatus;
             });
 
             if (filteredExportData.length === 0) {
@@ -1058,41 +1066,28 @@
             const worksheet = XLSX.utils.json_to_sheet(formattedRows);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Nilai");
-
             XLSX.writeFile(workbook, `${exportTitle}.xlsx`);
         }
 
-        function debounceFilter() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                applyFilters();
-            }, 250);
-        }
-
         function applyFilters() {
-            const personalSearch = document.getElementById("search-personal").value.toLowerCase().trim();
-            const selectedStore = document.getElementById("filter-store").value.toLowerCase().trim();
+            const selectedStore = document.getElementById("filter-store").value.trim();
             const selectedStatus = document.getElementById("filter-status").value.toLowerCase().trim();
 
             const filteredData = rawData.filter(item => {
-                const nama = (item['Nama'] || item['nama'] || '').toLowerCase();
-                const nik = (item['NIK'] || item['nik'] || '').toLowerCase();
-                const store = (item['Store'] || item['store'] || '').toLowerCase().trim();
+                const store = (item['Store'] || item['store'] || '').trim();
                 const maxVal = parseScore(item['Max Score pt.1'] || item['Max Score']);
                 const status = getCalculatedStatus(maxVal).toLowerCase();
 
-                const matchPersonal = personalSearch === "" || nama.includes(personalSearch) || nik.includes(personalSearch);
-                const matchStore = selectedStore === "" || store.includes(selectedStore);
+                const matchStore = selectedStore === "" || store.toLowerCase().includes(selectedStore.toLowerCase()) || selectedStore.toLowerCase().includes(store.toLowerCase());
                 const matchStatus = selectedStatus === "" || status.includes(selectedStatus);
 
-                return matchPersonal && matchStore && matchStatus;
+                return matchStore && matchStatus;
             });
 
             renderAllData(filteredData);
         }
 
         function resetFilters() {
-            document.getElementById("search-personal").value = "";
             document.getElementById("filter-store").value = "";
             document.getElementById("filter-status").value = "";
             renderAllData(rawData);
