@@ -61,7 +61,7 @@
         <!-- SIDEBAR NAVIGATION -->
         <aside class="w-full md:w-64 bg-slate-900 text-slate-200 p-4 flex flex-col justify-between select-none flex-shrink-0">
             <div>
-                <!-- Status AutoSync (Teks Ungu Neon & Tanpa Animasi Refresh) -->
+                <!-- Status AutoSync -->
                 <div class="mb-4 bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 flex flex-col gap-1.5">
                     <div class="flex items-center justify-between">
                         <span class="text-[12px] font-bold text-neon-purple tracking-wide flex items-center gap-1.5">
@@ -478,7 +478,7 @@
             }
         }
 
-        /* MEMVALIDASI NAMA TERISI & BUKAN KOSONG/DASH */
+        /* VALIDASI STRICT UNTUK NAMA PESERTA */
         function isValidName(nama) {
             if (!nama) return false;
             const clean = String(nama).trim();
@@ -491,7 +491,7 @@
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    // Filter awal: Lewati baris yang tidak memiliki Nama valid
+                    // Filter utama: Lewati semua data yang tidak memiliki Nama valid
                     rawData = results.data.filter(item => isValidName(item['Nama']));
                     updateTimestamp();
                     populateStoreDropdown(rawData);
@@ -502,7 +502,7 @@
                     document.getElementById("table-body-allstore").innerHTML = `
                         <tr>
                             <td colspan="18" class="text-center py-4 text-rose-500">
-                                Gagal memuat data.
+                                Gagal memuat data. Silakan periksa koneksi internet Anda.
                             </td>
                         </tr>`;
                 }
@@ -605,7 +605,7 @@
             tbody.appendChild(fragment);
         }
 
-        /* TABEL DETAIL ALL STORE DENGAN NOMOR URUT DAN URUTAN KOLOM ATRIBUT UTAMA */
+        /* TABEL DETAIL PESERTA DENGAN NOMOR & ATRIBUT UTAMA DI DEPAN */
         function renderTableAllStore(data) {
             const tbody = document.getElementById("table-body-allstore");
             tbody.innerHTML = "";
@@ -670,7 +670,7 @@
                     <td class="p-3 text-center">${d15s}</td>
                     <td class="p-3 text-center">${d16p}</td>
                     <td class="p-3 text-center">${d16s}</td>
-                    <td class="p-3 text-center font-semibold text-indigo-600">${maxVal !== null ? maxVal : '-'}</td>
+                    <td class="p-3 text-center font-semibold text-indigo-600">${maxVal !== null ? maxVal : 0}</td>
                     <td class="p-3"><span class="badge ${joinBadgeClass}">${join}</span></td>
                     <td class="p-3"><span class="badge ${statusBadgeClass}">${status}</span></td>
                 `;
@@ -680,7 +680,7 @@
             tbody.appendChild(fragment);
         }
 
-        /* MONITORING TABEL KHUSUS & PERHITUNGAN SCORE STATUS */
+        /* MONITORING TABEL KHUSUS & KELENGKAPAN NILAI */
         function renderMonitoringTables(data) {
             const remidiBody = document.getElementById("remidi-staff-body");
             const missingBody = document.getElementById("missing-staff-body");
@@ -697,6 +697,7 @@
                 const status = (item['Status Remidi / Lulus'] || '').trim();
                 const maxVal = parseScore(item['Max Score pt.1']);
 
+                // Jika Max Score pt.1 ada dan lebih dari 0
                 if (maxVal !== null && maxVal > 0) {
                     hasScoreCount++;
                 } else {
@@ -705,7 +706,7 @@
                 }
 
                 if (status.toLowerCase().includes('remidi')) {
-                    remidiList.push({ nama, store, maxVal: maxVal !== null ? maxVal : '-' });
+                    remidiList.push({ nama, store, maxVal: maxVal !== null ? maxVal : 0 });
                 }
             });
 
@@ -731,7 +732,7 @@
             renderStatusChart(hasScoreCount, missingScoreCount);
         }
 
-        /* KALKULASI STATISTIK UTAMA (AKURAT & TIDAK TIMPANG) */
+        /* KALKULASI METRIK STATISTIK UTAMA */
         function renderStatsAndSummary(data) {
             let totalMinScore = 0;
             let totalMaxScore = 0;
@@ -739,7 +740,7 @@
             let validMinCount = 0;
             let validMaxCount = 0;
 
-            const totalPeserta = data.length; // Karena sudah di-filter di awal (Nama terisi saja)
+            const totalPeserta = data.length; // Karena sudah difilter valid hanya yang memiliki nama
 
             data.forEach(item => {
                 const minVal = parseScore(item['Min Score pt.1']);
