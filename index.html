@@ -61,6 +61,11 @@
         <!-- SIDEBAR NAVIGATION -->
         <aside class="w-full md:w-64 bg-slate-900 text-slate-200 p-4 flex flex-col justify-between select-none flex-shrink-0">
             <div>
+                <!-- CONCEPT & CURATION (DITARUH DI ATAS AUTO SYNC) -->
+                <div class="px-1 mb-2 text-[10px] text-slate-400 font-medium tracking-tight border-l-2 border-indigo-500 pl-2">
+                    Concept & Curation by <span class="text-slate-200 font-semibold">Novi Riyanto</span>
+                </div>
+
                 <!-- Status AutoSync -->
                 <div class="mb-4 bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 flex flex-col gap-1.5">
                     <div class="flex items-center justify-between">
@@ -424,10 +429,6 @@
                 </div>
 
             </div>
-
-            <footer class="mt-6 text-center text-xs text-slate-400 font-medium">
-                Concept & Curation by Novi Riyanto
-            </footer>
         </main>
     </div>
 
@@ -478,7 +479,6 @@
             }
         }
 
-        /* VALIDASI STRICT UNTUK NAMA PESERTA */
         function isValidName(nama) {
             if (!nama) return false;
             const clean = String(nama).trim();
@@ -491,7 +491,6 @@
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    // Filter utama: Lewati semua data yang tidak memiliki Nama valid
                     rawData = results.data.filter(item => isValidName(item['Nama']));
                     updateTimestamp();
                     populateStoreDropdown(rawData);
@@ -605,7 +604,6 @@
             tbody.appendChild(fragment);
         }
 
-        /* TABEL DETAIL PESERTA DENGAN NOMOR & ATRIBUT UTAMA DI DEPAN */
         function renderTableAllStore(data) {
             const tbody = document.getElementById("table-body-allstore");
             tbody.innerHTML = "";
@@ -680,7 +678,6 @@
             tbody.appendChild(fragment);
         }
 
-        /* MONITORING TABEL KHUSUS & KELENGKAPAN NILAI */
         function renderMonitoringTables(data) {
             const remidiBody = document.getElementById("remidi-staff-body");
             const missingBody = document.getElementById("missing-staff-body");
@@ -697,7 +694,6 @@
                 const status = (item['Status Remidi / Lulus'] || '').trim();
                 const maxVal = parseScore(item['Max Score pt.1']);
 
-                // Jika Max Score pt.1 ada dan lebih dari 0
                 if (maxVal !== null && maxVal > 0) {
                     hasScoreCount++;
                 } else {
@@ -732,7 +728,6 @@
             renderStatusChart(hasScoreCount, missingScoreCount);
         }
 
-        /* KALKULASI METRIK STATISTIK UTAMA */
         function renderStatsAndSummary(data) {
             let totalMinScore = 0;
             let totalMaxScore = 0;
@@ -740,7 +735,7 @@
             let validMinCount = 0;
             let validMaxCount = 0;
 
-            const totalPeserta = data.length; // Karena sudah difilter valid hanya yang memiliki nama
+            const totalPeserta = data.length;
 
             data.forEach(item => {
                 const minVal = parseScore(item['Min Score pt.1']);
