@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -113,13 +112,7 @@
                 </div>
 
                 <nav class="space-y-1">
-                    <button onclick="switchView('summary')" id="nav-summary" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium bg-indigo-600 text-white transition-colors">
-                        <div class="flex items-center gap-2.5">
-                            <i class="fa-solid fa-chart-pie"></i>
-                            <span>Summary Dashboard</span>
-                        </div>
-                    </button>
-                    <button onclick="switchView('all-store')" id="nav-all-store" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors">
+                    <button onclick="switchView('all-store')" id="nav-all-store" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium bg-indigo-600 text-white transition-colors">
                         <div class="flex items-center gap-2.5">
                             <i class="fa-solid fa-store"></i>
                             <span>All Store Table</span>
@@ -131,11 +124,7 @@
 
             <!-- MENU DOCK MOBILE -->
             <nav class="flex md:hidden w-full items-center justify-around">
-                <button onclick="switchView('summary')" id="nav-mobile-summary" class="flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors">
-                    <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i>
-                    <span class="text-[10px]">Summary</span>
-                </button>
-                <button onclick="switchView('all-store')" id="nav-mobile-all-store" class="flex flex-col items-center justify-center py-1 px-3 text-slate-400 hover:text-white font-medium transition-colors relative">
+                <button onclick="switchView('all-store')" id="nav-mobile-all-store" class="flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors relative">
                     <i class="fa-solid fa-store text-lg mb-0.5"></i>
                     <span class="text-[10px]">All Store</span>
                     <span id="badge-mobile-team-count" class="absolute -top-1 right-2 bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">0</span>
@@ -217,126 +206,8 @@
                     </div>
                 </div>
 
-                <!-- VIEW 1: SUMMARY TAB -->
-                <div id="view-summary" class="space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div class="lg:col-span-3 bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
-                            <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-column text-indigo-600"></i> Chart Performa Rata-Rata per Sesi
-                            </h3>
-                            <div class="relative w-full h-56 md:h-64">
-                                <canvas id="sessionChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Monitoring Khusus Staff (Remidi)
-                        </h3>
-                        <div class="bg-rose-50/60 border border-rose-200 rounded-xl p-3 md:p-4">
-                            <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
-                                <span><i class="fa-solid fa-user-xmark"></i> Daftar Staff Remidi</span>
-                                <span id="badge-count-remidi" class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full font-bold">0 Staff</span>
-                            </h4>
-                            <div class="table-responsive max-h-56 overflow-y-auto">
-                                <table class="w-full text-xs">
-                                    <thead class="sticky top-0 bg-rose-100 text-rose-900 border-b border-rose-200">
-                                        <tr>
-                                            <th class="py-2 px-2 text-left">Nama</th>
-                                            <th class="py-2 px-2 text-left">Toko</th>
-                                            <th class="py-2 px-2.5 text-center">Sesi</th>
-                                            <th class="py-2 px-2 text-right">Nilai Sesi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="remidi-staff-body" class="divide-y divide-rose-100">
-                                        <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-calendar-check text-indigo-600"></i> Ringkasan Sesi Assessment (Pagi & Siang)
-                        </h3>
-                        <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl">
-                            <table class="w-full text-xs text-left">
-                                <thead>
-                                    <tr class="bg-slate-100 border-b border-slate-200">
-                                        <th class="p-3 text-slate-700">Metrik Assessment</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">8-Sept-2026 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">8-Sept-2026 Siang</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">9-Sept-2026 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">9-Sept-2026 Siang</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">10-Sept-2026 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">10-Sept-2026 Siang</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">11-Sept-2026 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50/50">11-Sept-2026 Siang</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="session-summary-body" class="divide-y divide-slate-200">
-                                    <tr><td colspan="9" class="text-center py-4 text-slate-400">Memuat data sesi...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-ranking-star text-indigo-600"></i> Ranking Toko & Bottom Stores Digimap
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-3 md:p-4">
-                                <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center justify-between">
-                                    <span><i class="fa-solid fa-arrow-trend-up"></i> Top Stores</span>
-                                    <span class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Highest Average</span>
-                                </h4>
-                                <div class="overflow-x-auto max-h-60 overflow-y-auto">
-                                    <table class="w-full text-xs">
-                                        <thead>
-                                            <tr class="border-b border-emerald-200 text-emerald-800">
-                                                <th class="py-2 px-2 text-left">#</th>
-                                                <th class="py-2 px-2 text-left">Nama Toko</th>
-                                                <th class="py-2 px-2 text-center">Peserta</th>
-                                                <th class="py-2 px-2 text-right">Avg Score</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="top-store-body">
-                                            <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div class="bg-rose-50/50 border border-rose-200 rounded-xl p-3 md:p-4">
-                                <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
-                                    <span><i class="fa-solid fa-arrow-trend-down"></i> Bottom Stores Digimap</span>
-                                    <span class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full font-bold">Lowest Active</span>
-                                </h4>
-                                <div class="overflow-x-auto max-h-60 overflow-y-auto">
-                                    <table class="w-full text-xs">
-                                        <thead>
-                                            <tr class="border-b border-rose-200 text-rose-800">
-                                                <th class="py-2 px-2 text-left">#</th>
-                                                <th class="py-2 px-2 text-left">Nama Toko</th>
-                                                <th class="py-2 px-2 text-center">Peserta</th>
-                                                <th class="py-2 px-2 text-right">Avg Score</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="bottom-store-body">
-                                            <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW 2: ALL STORE TAB -->
-                <div id="view-all-store" class="hidden space-y-6">
+                <!-- VIEW ALL STORE TAB -->
+                <div id="view-all-store" class="space-y-6">
                     <div>
                         <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-table-list text-indigo-600"></i> Detail Peserta & Nilai Post Test All Store
@@ -423,7 +294,6 @@
         ];
 
         let rawData = [];
-        let sessionChartInstance = null;
 
         const SESSION_KEYS = [
             "8-Sept-2026 Pagi", "8-Sept-2026 Siang",
@@ -442,31 +312,6 @@
             const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
             const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             document.getElementById("sync-timestamp").innerText = `${dateStr}, ${timeStr} WIB`;
-        }
-
-        function switchView(viewName) {
-            const viewSummary = document.getElementById("view-summary");
-            const viewAllStore = document.getElementById("view-all-store");
-            const navSummary = document.getElementById("nav-summary");
-            const navAllStore = document.getElementById("nav-all-store");
-            const navMobileSummary = document.getElementById("nav-mobile-summary");
-            const navMobileAllStore = document.getElementById("nav-mobile-all-store");
-
-            if (viewName === 'summary') {
-                viewSummary.classList.remove("hidden");
-                viewAllStore.classList.add("hidden");
-                navSummary.className = "w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium bg-indigo-600 text-white transition-colors";
-                navAllStore.className = "w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors";
-                navMobileSummary.className = "flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors";
-                navMobileAllStore.className = "flex flex-col items-center justify-center py-1 px-3 text-slate-400 hover:text-white font-medium transition-colors relative";
-            } else {
-                viewSummary.classList.add("hidden");
-                viewAllStore.classList.remove("hidden");
-                navAllStore.className = "w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium bg-indigo-600 text-white transition-colors";
-                navSummary.className = "w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors";
-                navMobileAllStore.className = "flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors relative";
-                navMobileSummary.className = "flex flex-col items-center justify-center py-1 px-3 text-slate-400 hover:text-white font-medium transition-colors";
-            }
         }
 
         function isValidName(nama) {
@@ -558,7 +403,6 @@
         function renderAllData(data) {
             renderTableAllStore(data);
             renderStatsAndSummary(data);
-            renderMonitoringTables(data);
         }
 
         function renderTableAllStore(data) {
@@ -634,34 +478,6 @@
             tbody.appendChild(fragment);
         }
 
-        function renderMonitoringTables(data) {
-            const remidiBody = document.getElementById("remidi-staff-body");
-            let remidiList = [];
-
-            data.forEach(item => {
-                const nama = (item['Nama'] || item['nama'] || '-').trim();
-                const store = item['Store'] || item['store'] || '-';
-                
-                SESSION_KEYS.forEach(key => {
-                    const scoreVal = parseScore(item[key]);
-                    if (scoreVal !== null && scoreVal < 80) {
-                        remidiList.push({ nama: nama, store: store, session: key, score: scoreVal });
-                    }
-                });
-            });
-
-            document.getElementById("badge-count-remidi").innerText = `${remidiList.length} Entri Sesi`;
-
-            remidiBody.innerHTML = remidiList.length > 0 ? remidiList.map(item => `
-                <tr class="hover:bg-rose-100/50">
-                    <td class="py-1.5 px-2 font-semibold text-slate-800">${item.nama}</td>
-                    <td class="py-1.5 px-2 text-slate-600">${item.store}</td>
-                    <td class="py-1.5 px-2.5 text-center font-mono text-[10px] text-slate-500">${item.session}</td>
-                    <td class="py-1.5 px-2 text-right font-bold text-rose-600">${item.score}</td>
-                </tr>
-            `).join('') : `<tr><td colspan="4" class="text-center py-3 text-slate-400">Tidak ada staff dengan nilai sesi di bawah 80</td></tr>`;
-        }
-
         function renderStatsAndSummary(data) {
             const totalKaryawan = data.length;
             let totalPesertaSet = new Set();
@@ -678,139 +494,6 @@
             document.getElementById("badge-team-count").innerText = totalKaryawan;
             const mobileBadge = document.getElementById("badge-mobile-team-count");
             if (mobileBadge) mobileBadge.innerText = totalKaryawan;
-
-            renderStoreRankings(data);
-            renderSessionSummaryAndChart(data);
-        }
-
-        function renderStoreRankings(data) {
-            const topBody = document.getElementById("top-store-body");
-            const bottomBody = document.getElementById("bottom-store-body");
-            const storeStats = {};
-
-            data.forEach(item => {
-                const store = item['Store'] || item['store'];
-                if (!store) return;
-                
-                SESSION_KEYS.forEach(h => {
-                    let val = parseScore(item[h]);
-                    if (val !== null && val > 0) {
-                        if (!storeStats[store]) storeStats[store] = { total: 0, count: 0, participants: new Set() };
-                        storeStats[store].total += val;
-                        storeStats[store].count++;
-                        storeStats[store].participants.add(item['Nama']);
-                    }
-                });
-            });
-
-            const storeArray = Object.keys(storeStats).map(store => {
-                return {
-                    store: store,
-                    count: storeStats[store].participants.size,
-                    avg: storeStats[store].count > 0 ? storeStats[store].total / storeStats[store].count : 0
-                };
-            }).filter(s => s.avg > 0);
-
-            storeArray.sort((a, b) => b.avg - a.avg);
-            const maxAvg = storeArray.length > 0 ? storeArray[0].avg : 0;
-            const topStores = storeArray.filter(s => Math.abs(s.avg - maxAvg) < 0.01);
-            const bottomStoresFiltered = storeArray.filter(s => s.avg < 80).sort((a, b) => a.avg - b.avg);
-
-            topBody.innerHTML = topStores.length > 0 ? topStores.map((item, index) => `
-                <tr class="border-b border-emerald-100 hover:bg-emerald-100/40">
-                    <td class="py-1.5 px-2 font-bold text-emerald-700">${index + 1}</td>
-                    <td class="py-1.5 px-2 font-medium">${item.store}</td>
-                    <td class="py-1.5 px-2 text-center">${item.count}</td>
-                    <td class="py-1.5 px-2 text-right font-bold text-emerald-600">${item.avg.toFixed(1)}</td>
-                </tr>
-            `).join('') : `<tr><td colspan="4" class="text-center py-2 text-slate-400">Tidak ada data</td></tr>`;
-
-            bottomBody.innerHTML = bottomStoresFiltered.length > 0 ? bottomStoresFiltered.map((item, index) => `
-                <tr class="border-b border-rose-100 hover:bg-rose-100/40">
-                    <td class="py-1.5 px-2 font-bold text-rose-700">${index + 1}</td>
-                    <td class="py-1.5 px-2 font-medium">${item.store}</td>
-                    <td class="py-1.5 px-2 text-center">${item.count}</td>
-                    <td class="py-1.5 px-2 text-right font-bold text-rose-600">${item.avg.toFixed(1)}</td>
-                </tr>
-            `).join('') : `<tr><td colspan="4" class="text-center py-2 text-slate-400">Tidak ada store di bawah 80</td></tr>`;
-        }
-
-        function renderSessionSummaryAndChart(data) {
-            const summaryBody = document.getElementById("session-summary-body");
-            const metrics = { attended: {}, sum: {}, countValids: {}, failed: {}, missing: {} };
-
-            SESSION_KEYS.forEach(key => {
-                metrics.attended[key] = 0;
-                metrics.sum[key] = 0;
-                metrics.countValids[key] = 0;
-                metrics.failed[key] = 0;
-                metrics.missing[key] = 0;
-            });
-
-            data.forEach(item => {
-                SESSION_KEYS.forEach(key => {
-                    const rawVal = item[key];
-                    const numVal = parseScore(rawVal);
-
-                    if (rawVal !== undefined && rawVal !== null && String(rawVal).trim() !== '' && String(rawVal).trim() !== '-') {
-                        metrics.attended[key]++;
-                        if (numVal !== null) {
-                            metrics.sum[key] += numVal;
-                            metrics.countValids[key]++;
-                            if (numVal < 80) metrics.failed[key]++;
-                        }
-                    } else {
-                        metrics.missing[key]++;
-                    }
-                });
-            });
-
-            const rowAttended = `<tr><td class="p-2.5 font-bold text-slate-700">Total Peserta (Attended)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-bold text-indigo-600">${metrics.attended[k]}</td>`).join('') + `</tr>`;
-            const sessionAverages = SESSION_KEYS.map(k => metrics.countValids[k] > 0 ? parseFloat((metrics.sum[k] / metrics.countValids[k]).toFixed(1)) : 0);
-            const rowAverage = `<tr><td class="p-2.5 font-bold text-slate-700">Average Score</td>` + sessionAverages.map(avg => `<td class="p-2.5 text-center font-semibold text-emerald-600">${avg > 0 ? avg : '-'}</td>`).join('') + `</tr>`;
-            const rowFailed = `<tr><td class="p-2.5 font-bold text-slate-700">Tidak Lulus (&lt;80)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-semibold text-rose-500">${metrics.failed[k]}</td>`).join('') + `</tr>`;
-
-            summaryBody.innerHTML = rowAttended + rowAverage + rowFailed;
-            renderSummaryChart(sessionAverages);
-        }
-
-        function renderSummaryChart(averagesData) {
-            const ctx = document.getElementById('sessionChart').getContext('2d');
-            if (sessionChartInstance) sessionChartInstance.destroy();
-
-            sessionChartInstance = new Chart(ctx, {
-                type: 'bar',
-                plugins: [ChartDataLabels],
-                data: {
-                    labels: SESSION_KEYS,
-                    datasets: [{
-                        label: 'Average Score Sesi',
-                        data: averagesData,
-                        backgroundColor: 'rgba(99, 102, 241, 0.85)',
-                        borderColor: 'rgb(79, 70, 229)',
-                        borderWidth: 1,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        datalabels: {
-                            anchor: 'center',
-                            align: 'center',
-                            color: '#ffffff',
-                            font: { weight: 'bold', size: 11 },
-                            formatter: function(value) { return value > 0 ? value : ''; }
-                        }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, max: 100, grid: { color: '#f1f5f9' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
         }
 
         function applyFilters() {
