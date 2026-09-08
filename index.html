@@ -128,7 +128,7 @@
                             <i class="fa-solid fa-user-group"></i>
                         </div>
                         <div>
-                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Baris Data</span>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Karyawan</span>
                             <h3 id="stat-total-karyawan" class="text-xl font-bold text-slate-800">0</h3>
                         </div>
                     </div>
@@ -147,12 +147,8 @@
                 <!-- VIEW ALL STORE TAB -->
                 <div id="view-all-store" class="space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <h3 class="text-xs md:text-sm font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-table-list text-indigo-600"></i> Detail Raw Data Google Sheets
-                        </h3>
-                        
                         <!-- FILTER / PENCARIAN -->
-                        <div class="relative w-full sm:w-72">
+                        <div class="relative w-full sm:w-72 ml-auto">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                             <input type="text" id="filter-input" onkeyup="applyFilter()" placeholder="Cari data di semua kolom..." class="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors">
                         </div>
@@ -210,7 +206,7 @@
                     return response.text();
                 })
                 .then(csvText => {
-                    // PARSE MATRIKS ARRAY UNTUK MENEMUKAN BARIS HEADER SECARA OTOMATIS
+                    // PARSE MATRIKS CSV TANPA ASUMSI BARIS 1 HARUS HEADER
                     const parsed = Papa.parse(csvText, { skipEmptyLines: true });
                     const rows = parsed.data;
 
@@ -218,7 +214,7 @@
                         throw new Error("Data spreadsheet kosong.");
                     }
 
-                    // Cari baris yang mengandung kolom 'Store' & 'Nama'
+                    // Deteksi baris yang berisi header 'Store' dan 'Nama' secara otomatis
                     let headerIndex = -1;
                     for (let i = 0; i < Math.min(rows.length, 10); i++) {
                         const rowStr = rows[i].join(" ").toLowerCase();
@@ -230,10 +226,10 @@
 
                     if (headerIndex === -1) headerIndex = 0;
 
-                    // Mengambil nama header asli dan membersihkan spasi berlebih
+                    // Ambil susunan header asli dari kiri ke kanan
                     rawHeaders = rows[headerIndex].map(h => String(h).trim()).filter(h => h !== "");
                     
-                    // Memetakan baris data secara murni mengikuti indeks header
+                    // Petakan baris data secara murni mirroring posisi header
                     rawData = [];
                     for (let i = headerIndex + 1; i < rows.length; i++) {
                         const rowArr = rows[i];
@@ -269,7 +265,7 @@
                 });
         }
 
-        // Render Header murni Kiri ke Kanan mengikuti susunan CSV
+        // Render Header murni sesuai urutan Kolom Google Sheets
         function renderTableHeader(headers) {
             const thead = document.getElementById("table-head");
             thead.innerHTML = "";
@@ -292,7 +288,7 @@
             thead.appendChild(tr);
         }
 
-        // Render Data Baris demi Baris
+        // Render Data Baris demi Baris secara Presisi (Mirroring)
         function renderTableBody(data) {
             const tbody = document.getElementById("table-body-allstore");
             tbody.innerHTML = "";
