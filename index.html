@@ -140,7 +140,7 @@
                 <div id="error-alert" class="hidden mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <i class="fa-solid fa-triangle-exclamation text-rose-500 text-base"></i>
-                        <span id="error-message-text">Gagal memperbarui data dari Google Sheets. Menampilkan data terakhir atau kosong.</span>
+                        <span id="error-message-text">Gagal memperbarui data dari Google Sheets. Pastikan hak akses spreadsheet sudah 'Anyone with the link'.</span>
                     </div>
                     <button onclick="fetchSheetData()" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold transition-colors">Coba Lagi</button>
                 </div>
@@ -254,9 +254,14 @@
     </div>
 
     <script>
-        // Menggunakan Google Visualization API (gviz/tq) dengan range B2:T840
-        const SHEET_ID = "1vRRbNFcwSEqELSS37KQrPEtThcbjN7KtzySQskvck9c9y8G-INIRH6AiteYxTPBWJp8fO2tKjXlq7AF";
-        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&range=B2:T840`;
+        // ID Spreadsheet Asli
+        const SHEET_ID = "1Ckk2YocjioES8EKEkT3bjHy_56tUShglGPBCpYCyh5Y";
+        
+        // Target URL Google Visualization API
+        const TARGET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&range=B2:T840`;
+        
+        // Menggunakan CORS Proxy agar bisa di-fetch langsung saat membuka file:// lokal
+        const CSV_URL = `https://api.allorigins.win/raw?url=${encodeURIComponent(TARGET_URL)}`;
 
         const MAPTECH_STORE_LIST = [
             "M108 Digimap Trans Studio Mall Bandung", "M116 Digimap Beachwalk Bali", "M117 Digimap Plaza Senayan",
