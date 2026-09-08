@@ -58,7 +58,7 @@
                 <!-- Header / Brand -->
                 <div class="px-3 py-2 mb-4 md:mb-6 flex items-center justify-between">
                     <h2 class="text-lg font-bold text-white tracking-wide">Dashboard Assessment</h2>
-                    <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">v2.0</span>
+                    <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">v2.1</span>
                 </div>
 
                 <!-- Navigation Links -->
@@ -187,13 +187,81 @@
                 <!-- VIEW 1: SUMMARY TAB -->
                 <div id="view-summary" class="space-y-6">
                     
-                    <!-- CHART VISUALISASI SUMMARY -->
-                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                        <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-column text-indigo-600"></i> Chart Performa Rata-Rata per Sesi
+                    <!-- CHART VISUALISASI SUMMARY (GRID 2 CHART) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <!-- Chart Bar Sesi -->
+                        <div class="lg:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
+                            <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-column text-indigo-600"></i> Chart Performa Rata-Rata per Sesi
+                            </h3>
+                            <div class="relative w-full h-56 md:h-64">
+                                <canvas id="sessionChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart Donut Status Kelengkapan Nilai Peserta -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
+                            <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-indigo-600"></i> Kelengkapan Nilai Peserta
+                            </h3>
+                            <p class="text-[11px] text-slate-500 mb-2">Dihitung dari Nama vs Max Score pt.1</p>
+                            <div class="relative w-full h-48 md:h-52 flex items-center justify-center">
+                                <canvas id="scoreStatusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABEL SIDE BY SIDE: STAFF REMIDI VS NILAI TIDAK DITEMUKAN -->
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Monitoring Khusus Staff (Remidi & Nilai Belum Muncul)
                         </h3>
-                        <div class="relative w-full h-64 md:h-72">
-                            <canvas id="sessionChart"></canvas>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            <!-- Tabel Staff Remidi -->
+                            <div class="bg-rose-50/60 border border-rose-200 rounded-xl p-4">
+                                <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-user-xmark"></i> Daftar Staff Remidi</span>
+                                    <span id="badge-count-remidi" class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full font-bold">0 Staff</span>
+                                </h4>
+                                <div class="table-responsive max-h-56 overflow-y-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="sticky top-0 bg-rose-100 text-rose-900 border-b border-rose-200">
+                                            <tr>
+                                                <th class="py-2 px-2 text-left">Nama</th>
+                                                <th class="py-2 px-2 text-left">Toko</th>
+                                                <th class="py-2 px-2 text-right">Max Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="remidi-staff-body" class="divide-y divide-rose-100">
+                                            <tr><td colspan="3" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Tabel Staff Nilai Tidak Ditemukan -->
+                            <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-4">
+                                <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-circle-question"></i> Nilai Tidak Ditemukan / Kosong</span>
+                                    <span id="badge-count-missing" class="text-[10px] bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full font-bold">0 Staff</span>
+                                </h4>
+                                <div class="table-responsive max-h-56 overflow-y-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="sticky top-0 bg-amber-100 text-amber-900 border-b border-amber-200">
+                                            <tr>
+                                                <th class="py-2 px-2 text-left">Nama</th>
+                                                <th class="py-2 px-2 text-left">Toko</th>
+                                                <th class="py-2 px-2 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="missing-staff-body" class="divide-y divide-amber-100">
+                                            <tr><td colspan="3" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -234,7 +302,7 @@
                             <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-4">
                                 <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center justify-between">
                                     <span><i class="fa-solid fa-arrow-trend-up"></i> Top 10 Stores</span>
-                                    <span class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full">Highest</span>
+                                    <span class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Highest</span>
                                 </h4>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-xs">
@@ -257,7 +325,7 @@
                             <div class="bg-rose-50/50 border border-rose-200 rounded-xl p-4">
                                 <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
                                     <span><i class="fa-solid fa-arrow-trend-down"></i> Bottom 10 Stores</span>
-                                    <span class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">Lowest</span>
+                                    <span class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full font-bold">Lowest</span>
                                 </h4>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-xs">
@@ -333,7 +401,8 @@
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-qqVF7ni3YNO19bT149rKAXNvemlgIvWYpJ0-QOs9F6WAJJ-c-Z3XqDl83jrbfoip7zu2D5aWYxfa/pub?output=csv";
 
         let rawData = [];
-        let chartInstance = null;
+        let sessionChartInstance = null;
+        let statusChartInstance = null;
 
         const SESSION_KEYS = [
             '13-7-2026 Pagi', '13-7-2026 Siang',
@@ -411,6 +480,7 @@
         function renderAllData(data) {
             renderTableAllStore(data);
             renderStatsAndSummary(data);
+            renderMonitoringTables(data);
         }
 
         function renderTableAllStore(data) {
@@ -484,6 +554,68 @@
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        /* -------------------------------------------------------------
+           PERHITUNGAN DAN RENDER REMIDI VS MISSING TABLE (SIDE BY SIDE)
+        ------------------------------------------------------------- */
+        function renderMonitoringTables(data) {
+            const remidiBody = document.getElementById("remidi-staff-body");
+            const missingBody = document.getElementById("missing-staff-body");
+
+            let remidiList = [];
+            let missingList = [];
+
+            let hasScoreCount = 0;
+            let missingScoreCount = 0;
+
+            data.forEach(item => {
+                const nama = item['Nama'] ? item['Nama'].trim() : '';
+                const store = item['Store'] || '-';
+                const status = (item['Status Remidi / Lulus'] || '').trim();
+                const maxVal = parseScore(item['Max Score pt.1']);
+
+                // Filter hanya yang memiliki nama valid
+                if (!nama || nama === '-') return;
+
+                // 1. Cek Kelengkapan Nilai untuk Chart (Nama vs Max Score pt.1)
+                if (maxVal !== null && maxVal > 0) {
+                    hasScoreCount++;
+                } else {
+                    missingScoreCount++;
+                    missingList.push({ nama, store });
+                }
+
+                // 2. Cek Staff Remidi
+                if (status.toLowerCase().includes('remidi')) {
+                    remidiList.push({ nama, store, maxVal: maxVal !== null ? maxVal : '-' });
+                }
+            });
+
+            // Update Badge Count
+            document.getElementById("badge-count-remidi").innerText = `${remidiList.length} Staff`;
+            document.getElementById("badge-count-missing").innerText = `${missingList.length} Staff`;
+
+            // Render Table Staff Remidi
+            remidiBody.innerHTML = remidiList.length > 0 ? remidiList.map(item => `
+                <tr class="hover:bg-rose-100/50">
+                    <td class="py-1.5 px-2 font-semibold text-slate-800">${item.nama}</td>
+                    <td class="py-1.5 px-2 text-slate-600">${item.store}</td>
+                    <td class="py-1.5 px-2 text-right font-bold text-rose-600">${item.maxVal}</td>
+                </tr>
+            `).join('') : `<tr><td colspan="3" class="text-center py-3 text-slate-400">Tidak ada staff remidi</td></tr>`;
+
+            // Render Table Staff Nilai Tidak Ditemukan
+            missingBody.innerHTML = missingList.length > 0 ? missingList.map(item => `
+                <tr class="hover:bg-amber-100/50">
+                    <td class="py-1.5 px-2 font-semibold text-slate-800">${item.nama}</td>
+                    <td class="py-1.5 px-2 text-slate-600">${item.store}</td>
+                    <td class="py-1.5 px-2 text-center"><span class="badge badge-absent">Nilai Kosong</span></td>
+                </tr>
+            `).join('') : `<tr><td colspan="3" class="text-center py-3 text-slate-400">Semua nilai peserta lengkap</td></tr>`;
+
+            // Render Donut Chart Status Kelengkapan Nilai
+            renderStatusChart(hasScoreCount, missingScoreCount);
         }
 
         function renderStatsAndSummary(data) {
@@ -622,18 +754,18 @@
 
             summaryBody.innerHTML = rowAttended + rowAverage + rowFailed + rowMissing;
 
-            // Render Chart.js
             renderSummaryChart(sessionAverages);
         }
 
+        /* -------------------------------------------------------------
+           CHART RENDERING LOGIC (SESSION BAR CHART & STATUS DONUT CHART)
+        ------------------------------------------------------------- */
         function renderSummaryChart(averagesData) {
             const ctx = document.getElementById('sessionChart').getContext('2d');
 
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
+            if (sessionChartInstance) sessionChartInstance.destroy();
 
-            chartInstance = new Chart(ctx, {
+            sessionChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: SESSION_KEYS,
@@ -649,19 +781,41 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            grid: { color: '#f1f5f9' }
-                        },
-                        x: {
-                            grid: { display: false }
-                        }
+                        y: { beginAtZero: true, max: 100, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
                     }
+                }
+            });
+        }
+
+        function renderStatusChart(hasScore, missingScore) {
+            const ctx = document.getElementById('scoreStatusChart').getContext('2d');
+
+            if (statusChartInstance) statusChartInstance.destroy();
+
+            statusChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sudah Ada Nilai', 'Belum Ada Nilai / Kosong'],
+                    datasets: [{
+                        data: [hasScore, missingScore],
+                        backgroundColor: ['#10b981', '#f59e0b'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, font: { size: 10 } }
+                        }
+                    },
+                    cutout: '65%'
                 }
             });
         }
