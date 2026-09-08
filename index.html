@@ -25,7 +25,6 @@
             color: #2b3674;
         }
 
-        /* Container Layout dengan Sidebar */
         .app-layout {
             display: flex;
             min-height: 100vh;
@@ -35,9 +34,6 @@
             flex: 1;
             padding: 24px;
             overflow-x: hidden;
-            display: flex;
-            flex-col;
-            justify-content: space-between;
         }
 
         .dashboard-container {
@@ -205,7 +201,7 @@
         }
 
         th {
-            padding: 14px 16px;
+            padding: 12px 16px;
             text-align: left;
             font-weight: 600;
             color: #707eae;
@@ -222,7 +218,7 @@
         }
 
         td {
-            padding: 12px 16px;
+            padding: 10px 16px;
             border-bottom: 1px solid #e9edf7;
             color: #2b3674;
             font-weight: 500;
@@ -268,65 +264,36 @@
 
                 <!-- Navigation Links -->
                 <nav class="space-y-1">
-                    <!-- 1. Summary -->
                     <div>
                         <a href="#summary" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3">
-                                <svg class="w-5 h-5 text-slate-400 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                                </svg>
+                                <i class="fa-solid fa-chart-pie text-slate-400 group-hover:text-indigo-400"></i>
                                 <span>Summary</span>
                             </div>
                         </a>
-
-                        <!-- Sub-menu Summary -->
-                        <div class="ml-9 mt-1 space-y-1 border-l-2 border-slate-800 pl-2">
-                            <a href="#overview" class="block px-3 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-md transition-colors">Overview</a>
-                            <a href="#metrics" class="block px-3 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-md transition-colors">Key Metrics</a>
-                        </div>
                     </div>
-
-                    <!-- 2. Full Team -->
                     <div class="pt-2">
                         <a href="#full-team" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors group">
                             <div class="flex items-center gap-3">
-                                <svg class="w-5 h-5 text-slate-400 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                                </svg>
+                                <i class="fa-solid fa-users text-slate-400 group-hover:text-indigo-400"></i>
                                 <span>Full Team</span>
                             </div>
-                            <!-- Badge Counter Dinamis -->
                             <span id="badge-team-count" class="bg-indigo-500/10 text-indigo-400 text-xs font-semibold px-2 py-0.5 rounded-full border border-indigo-500/20">0</span>
                         </a>
-
-                        <!-- Sub-menu Full Team -->
-                        <div class="ml-9 mt-1 space-y-1 border-l-2 border-slate-800 pl-2">
-                            <a href="#members" class="block px-3 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-md transition-colors">All Members</a>
-                            <a href="#roles" class="block px-3 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-md transition-colors">Roles & Structure</a>
-                            <a href="#performance" class="block px-3 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-md transition-colors">Performance Tracking</a>
-                        </div>
                     </div>
                 </nav>
             </div>
 
-            <!-- Footer / User Profile & Dark Mode Toggle -->
+            <!-- Footer / User Profile -->
             <div class="border-t border-slate-800 pt-4 mt-auto">
-                <div class="flex items-center justify-between px-2">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white">
-                            NR
-                        </div>
-                        <div class="text-xs">
-                            <p class="font-medium text-white">Novi Riyanto</p>
-                            <p class="text-slate-500">Admin</p>
-                        </div>
+                <div class="flex items-center gap-3 px-2">
+                    <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white">
+                        NR
                     </div>
-                    <!-- Theme Switch Icon -->
-                    <button class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors" title="Toggle Theme">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                        </svg>
-                    </button>
+                    <div class="text-xs">
+                        <p class="font-medium text-white">Novi Riyanto</p>
+                        <p class="text-slate-500">Admin</p>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -340,7 +307,6 @@
                         <h2>Dashboard Assessment Store</h2>
                         <p>Live Fetch Data dari Google Sheets (CSV Online)</p>
                     </div>
-                    <!-- Badge Auto Sync -->
                     <div class="flex items-center gap-2 bg-emerald-50 text-emerald-600 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold">
                         <i class="fa-solid fa-arrows-rotate fa-spin"></i>
                         <span>Auto Sync 8 Sep 2026, 13.09 WIB</span>
@@ -379,23 +345,101 @@
                     </div>
                 </div>
 
-                <!-- 2. CONTROL FILTER (Cek Nilai Pribadi & Per Toko) -->
+                <!-- 2. TABEL PERINGKAT TOKO SIDE-BY-SIDE (TOP 10 & BOTTOM 10) -->
+                <div class="mb-8">
+                    <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-ranking-star text-indigo-600"></i> Ranking Rata-Rata Toko (Top 10 vs Bottom 10)
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Top 10 Table -->
+                        <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-4">
+                            <h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                <span><i class="fa-solid fa-arrow-trend-up"></i> Top 10 Stores</span>
+                                <span class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full">Tertinggi</span>
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-xs">
+                                    <thead>
+                                        <tr class="border-b border-emerald-200 text-emerald-800">
+                                            <th class="py-2 px-2 text-left">#</th>
+                                            <th class="py-2 px-2 text-left">Nama Toko</th>
+                                            <th class="py-2 px-2 text-center">Jumlah Peserta</th>
+                                            <th class="py-2 px-2 text-right">Avg Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="top-store-body">
+                                        <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Bottom 10 Table -->
+                        <div class="bg-rose-50/50 border border-rose-200 rounded-xl p-4">
+                            <h4 class="text-xs font-bold text-rose-700 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                <span><i class="fa-solid fa-arrow-trend-down"></i> Bottom 10 Stores</span>
+                                <span class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full">Terendah</span>
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-xs">
+                                    <thead>
+                                        <tr class="border-b border-rose-200 text-rose-800">
+                                            <th class="py-2 px-2 text-left">#</th>
+                                            <th class="py-2 px-2 text-left">Nama Toko</th>
+                                            <th class="py-2 px-2 text-center">Jumlah Peserta</th>
+                                            <th class="py-2 px-2 text-right">Avg Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bottom-store-body">
+                                        <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. TABEL RINGKASAN PER SESI (PAGI & SIANG) -->
+                <div class="mb-8">
+                    <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-check text-indigo-600"></i> Ringkasan Sesi Assessment (Pagi & Siang)
+                    </h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th>Metrik Assessment</th>
+                                    <th class="text-center bg-indigo-50">13-7 Pagi</th>
+                                    <th class="text-center bg-indigo-50">13-7 Siang</th>
+                                    <th class="text-center bg-indigo-50">14-7 Pagi</th>
+                                    <th class="text-center bg-indigo-50">14-7 Siang</th>
+                                    <th class="text-center bg-indigo-50">15-7 Pagi</th>
+                                    <th class="text-center bg-indigo-50">15-7 Siang</th>
+                                    <th class="text-center bg-indigo-50">16-7 Pagi</th>
+                                    <th class="text-center bg-indigo-50">16-7 Siang</th>
+                                </tr>
+                            </thead>
+                            <tbody id="session-summary-body">
+                                <tr><td colspan="9" class="text-center py-3 text-slate-400">Memuat data sesi...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. CONTROL FILTER DATA UTAMA -->
                 <div class="controls-card">
                     <div class="filter-group">
-                        <!-- Filter Cek Pribadi -->
                         <div class="input-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" id="search-personal" placeholder="Cek Pribadi (NIK / Nama)..." oninput="applyFilters()">
                         </div>
 
-                        <!-- Filter Cek Per Toko -->
                         <div class="select-box">
                             <select id="filter-store" onchange="applyFilters()">
                                 <option value="">-- Semua Toko --</option>
                             </select>
                         </div>
 
-                        <!-- Filter Status Lulus/Remidi -->
                         <div class="select-box">
                             <select id="filter-status" onchange="applyFilters()">
                                 <option value="">-- Semua Status --</option>
@@ -410,7 +454,7 @@
                     </button>
                 </div>
 
-                <!-- 3. TABEL DATA -->
+                <!-- 5. TABEL UTAMA FULL DATA -->
                 <div class="table-responsive">
                     <table>
                         <thead>
@@ -447,7 +491,7 @@
                 </div>
             </div>
 
-            <!-- Footer Curation -->
+            <!-- Footer Credit -->
             <footer class="mt-6 text-center text-xs text-slate-400 font-medium">
                 Concept & Curation by Novi Riyanto
             </footer>
@@ -455,12 +499,17 @@
     </div>
 
     <script>
-        // URL Publish CSV Google Sheet Anda
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-qqVF7ni3YNO19bT149rKAXNvemlgIvWYpJ0-QOs9F6WAJJ-c-Z3XqDl83jrbfoip7zu2D5aWYxfa/pub?output=csv";
 
         let rawData = [];
 
-        // Fetch data saat halaman selesai dimuat menggunakan PapaParse
+        const SESSION_KEYS = [
+            '13-7-2026 Pagi', '13-7-2026 Siang',
+            '14-7-2026 Pagi', '14-7-2026 Siang',
+            '15-7-2026 Pagi', '15-7-2026 Siang',
+            '16-7-2026 Pagi', '16-7-2026 Siang'
+        ];
+
         document.addEventListener("DOMContentLoaded", () => {
             fetchSheetData();
         });
@@ -480,21 +529,17 @@
                     document.getElementById("table-body").innerHTML = `
                         <tr>
                             <td colspan="19" style="text-align:center; padding: 20px; color: #ee5d50;">
-                                <i class="fa-solid fa-circle-exclamation"></i> Gagal memuat data dari Google Sheets. Pastikan akses CSV publik telah aktif.
+                                <i class="fa-solid fa-circle-exclamation"></i> Gagal memuat data dari Google Sheets.
                             </td>
                         </tr>`;
                 }
             });
         }
 
-        // 1. Populate Dropdown Toko
         function populateStoreDropdown(data) {
             const storeSelect = document.getElementById("filter-store");
             storeSelect.innerHTML = '<option value="">-- Semua Toko --</option>';
-            
-            // Ambil daftar unik toko
             const stores = [...new Set(data.map(item => item['Store']).filter(Boolean))].sort();
-            
             stores.forEach(store => {
                 const option = document.createElement("option");
                 option.value = store;
@@ -503,14 +548,13 @@
             });
         }
 
-        // Helper untuk parse angka aman
         function parseScore(val) {
-            if (!val) return 0;
-            let num = parseFloat(String(val).replace(',', '.').trim());
-            return isNaN(num) ? 0 : num;
+            if (val === undefined || val === null || val === '') return null;
+            let str = String(val).replace(',', '.').trim();
+            let num = parseFloat(str);
+            return isNaN(num) ? null : num;
         }
 
-        // 2. Render Tabel dan Kalkulasi Rata-Rata / Average
         function renderTableAndStats(data) {
             const tbody = document.getElementById("table-body");
             tbody.innerHTML = "";
@@ -518,6 +562,8 @@
             if (!data || data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="19" style="text-align:center; padding: 20px; color: #707eae;">Data tidak ditemukan.</td></tr>`;
                 updateCards(0, 0, 0, "0%");
+                renderStoreRankings([]);
+                renderSessionSummary([]);
                 return;
             }
 
@@ -536,7 +582,6 @@
                 const email = item['SEED Registered Email'] || '-';
                 const pos = item['Positions'] || '-';
 
-                // Hitung Total Peserta berdasarkan entri Nama yang valid
                 if (nama !== '-' && nama !== '') {
                     totalNamaCount++;
                 }
@@ -557,15 +602,14 @@
                 const minVal = parseScore(minValRaw);
                 const maxVal = parseScore(maxValRaw);
 
-                if (minValRaw !== undefined && minValRaw !== '') { totalMinScore += minVal; validMinCount++; }
-                if (maxValRaw !== undefined && maxValRaw !== '') { totalMaxScore += maxVal; validMaxCount++; }
+                if (minVal !== null) { totalMinScore += minVal; validMinCount++; }
+                if (maxVal !== null) { totalMaxScore += maxVal; validMaxCount++; }
 
                 const join = item['Keterangan Join / Tidak Join'] || '-';
                 const status = item['Status Remidi / Lulus'] || '-';
 
                 if (String(status).trim().toLowerCase() === 'lulus') totalPassed++;
 
-                // Badge Styles
                 let joinBadgeClass = 'badge-default';
                 if (String(join).toLowerCase().includes('join') && !String(join).toLowerCase().includes('tidak')) {
                     joinBadgeClass = 'badge-join';
@@ -597,35 +641,166 @@
                     <td align="center">${d16p}</td>
                     <td align="center">${d16s}</td>
                     <td>${ket}</td>
-                    <td align="center">${minValRaw !== undefined && minValRaw !== '' ? minVal : '-'}</td>
-                    <td align="center">${maxValRaw !== undefined && maxValRaw !== '' ? maxVal : '-'}</td>
+                    <td align="center">${minVal !== null ? minVal : '-'}</td>
+                    <td align="center">${maxVal !== null ? maxVal : '-'}</td>
                     <td><span class="badge ${joinBadgeClass}">${join}</span></td>
                     <td><span class="badge ${statusBadgeClass}">${status}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            // Hitung Rata-Rata
             const avgMin = validMinCount > 0 ? (totalMinScore / validMinCount).toFixed(1) : 0;
             const avgMax = validMaxCount > 0 ? (totalMaxScore / validMaxCount).toFixed(1) : 0;
             const passRate = totalNamaCount > 0 ? ((totalPassed / totalNamaCount) * 100).toFixed(0) + "%" : "0%";
 
             updateCards(totalNamaCount, avgMin, avgMax, passRate);
+            renderStoreRankings(data);
+            renderSessionSummary(data);
         }
 
-        // Update Kartu Ringkasan & Badge Sidebar
         function updateCards(total, avgMin, avgMax, passRate) {
             document.getElementById("stat-total").innerText = total;
             document.getElementById("stat-avg-min").innerText = avgMin;
             document.getElementById("stat-avg-max").innerText = avgMax;
             document.getElementById("stat-pass-rate").innerText = passRate;
             
-            // Sync badge counter di sidebar
             const badgeTeam = document.getElementById("badge-team-count");
             if (badgeTeam) badgeTeam.innerText = total;
         }
 
-        // 3. Logika Filter (Filter Pribadi + Filter Toko + Filter Status)
+        /* -------------------------------------------------------------
+           PERHITUNGAN TOP 10 & BOTTOM 10 STORE AVERAGE
+        ------------------------------------------------------------- */
+        function renderStoreRankings(data) {
+            const topBody = document.getElementById("top-store-body");
+            const bottomBody = document.getElementById("bottom-store-body");
+
+            const storeStats = {};
+
+            data.forEach(item => {
+                const store = item['Store'];
+                if (!store) return;
+
+                const minScore = parseScore(item['Min Score pt.1']);
+                const maxScore = parseScore(item['Max Score pt.1']);
+
+                if (!storeStats[store]) {
+                    storeStats[store] = { count: 0, totalScore: 0, scoreEntries: 0 };
+                }
+
+                storeStats[store].count++;
+
+                // Menggunakan Max Score sebagai indikator performa utama toko
+                if (maxScore !== null) {
+                    storeStats[store].totalScore += maxScore;
+                    storeStats[store].scoreEntries++;
+                }
+            });
+
+            const storeArray = Object.keys(storeStats).map(store => {
+                const total = storeStats[store].totalScore;
+                const entries = storeStats[store].scoreEntries;
+                const avg = entries > 0 ? total / entries : 0;
+                return {
+                    store: store,
+                    count: storeStats[store].count,
+                    avg: avg
+                };
+            });
+
+            // Urutkan berdasarkan Average tinggi ke rendah
+            storeArray.sort((a, b) => b.avg - a.avg);
+
+            const top10 = storeArray.slice(0, 10);
+            const bottom10 = storeArray.length > 10 ? storeArray.slice(-10).reverse() : [...storeArray].reverse();
+
+            // Render Top 10
+            topBody.innerHTML = top10.length > 0 ? top10.map((item, index) => `
+                <tr class="hover:bg-emerald-100/50">
+                    <td class="py-1.5 px-2 font-bold text-emerald-700">${index + 1}</td>
+                    <td class="py-1.5 px-2 font-medium">${item.store}</td>
+                    <td class="py-1.5 px-2 text-center">${item.count}</td>
+                    <td class="py-1.5 px-2 text-right font-bold text-emerald-600">${item.avg.toFixed(1)}</td>
+                </tr>
+            `).join('') : `<tr><td colspan="4" class="text-center py-2 text-slate-400">Tidak ada data</td></tr>`;
+
+            // Render Bottom 10
+            bottomBody.innerHTML = bottom10.length > 0 ? bottom10.map((item, index) => `
+                <tr class="hover:bg-rose-100/50">
+                    <td class="py-1.5 px-2 font-bold text-rose-700">${index + 1}</td>
+                    <td class="py-1.5 px-2 font-medium">${item.store}</td>
+                    <td class="py-1.5 px-2 text-center">${item.count}</td>
+                    <td class="py-1.5 px-2 text-right font-bold text-rose-600">${item.avg.toFixed(1)}</td>
+                </tr>
+            `).join('') : `<tr><td colspan="4" class="text-center py-2 text-slate-400">Tidak ada data</td></tr>`;
+        }
+
+        /* -------------------------------------------------------------
+           PERHITUNGAN SUMMARY PER SESI (PAGI / SIANG)
+        ------------------------------------------------------------- */
+        function renderSessionSummary(data) {
+            const summaryBody = document.getElementById("session-summary-body");
+
+            const metrics = {
+                attended: {},
+                sum: {},
+                countValids: {},
+                failed: {},
+                missing: {}
+            };
+
+            SESSION_KEYS.forEach(key => {
+                metrics.attended[key] = 0;
+                metrics.sum[key] = 0;
+                metrics.countValids[key] = 0;
+                metrics.failed[key] = 0;
+                metrics.missing[key] = 0;
+            });
+
+            data.forEach(item => {
+                SESSION_KEYS.forEach(key => {
+                    const rawVal = item[key];
+                    const numVal = parseScore(rawVal);
+
+                    if (rawVal !== undefined && rawVal !== null && String(rawVal).trim() !== '' && String(rawVal).trim() !== '-') {
+                        metrics.attended[key]++;
+
+                        if (numVal !== null) {
+                            metrics.sum[key] += numVal;
+                            metrics.countValids[key]++;
+
+                            // Asumsi ambang batas lulus per sesi individu = 70
+                            if (numVal < 70) {
+                                metrics.failed[key]++;
+                            }
+                        } else {
+                            // Teks ada tapi tidak bernilai angka valid
+                            metrics.missing[key]++;
+                        }
+                    } else {
+                        // Tidak hadir / Kosong / Nilai Tidak Muncul
+                        metrics.missing[key]++;
+                    }
+                });
+            });
+
+            const rowAttended = `<tr><td class="font-bold">Total Peserta (Attended)</td>` + SESSION_KEYS.map(k => `<td class="text-center font-bold text-indigo-600">${metrics.attended[k]}</td>`).join('') + `</tr>`;
+            
+            const rowAverage = `<tr><td class="font-bold">Average Score</td>` + SESSION_KEYS.map(k => {
+                const avg = metrics.countValids[k] > 0 ? (metrics.sum[k] / metrics.countValids[k]).toFixed(1) : '-';
+                return `<td class="text-center font-semibold text-emerald-600">${avg}</td>`;
+            }).join('') + `</tr>`;
+
+            const rowFailed = `<tr><td class="font-bold">Tidak Lulus (<70)</td>` + SESSION_KEYS.map(k => `<td class="text-center font-semibold text-rose-500">${metrics.failed[k]}</td>`).join('') + `</tr>`;
+
+            const rowMissing = `<tr><td class="font-bold text-slate-500">Nilai Tidak Muncul / Absence</td>` + SESSION_KEYS.map(k => `<td class="text-center text-amber-600">${metrics.missing[k]}</td>`).join('') + `</tr>`;
+
+            summaryBody.innerHTML = rowAttended + rowAverage + rowFailed + rowMissing;
+        }
+
+        /* -------------------------------------------------------------
+           FILTER LOGIC
+        ------------------------------------------------------------- */
         function applyFilters() {
             const personalSearch = document.getElementById("search-personal").value.toLowerCase().trim();
             const selectedStore = document.getElementById("filter-store").value;
@@ -647,7 +822,6 @@
             renderTableAndStats(filteredData);
         }
 
-        // Reset Semua Filter
         function resetFilters() {
             document.getElementById("search-personal").value = "";
             document.getElementById("filter-store").value = "";
