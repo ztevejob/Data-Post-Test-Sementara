@@ -254,7 +254,11 @@
     </div>
 
     <script>
-        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRbNFcwSEqELSS37KQrPEtThcbjN7KtzySQskvck9c9y8G-INIRH6AiteYxTPBWJp8fO2tKjXlq7AF/pub?gid=0&single=true&output=csv";
+        // URL Publikasi Asli Google Sheets
+        const RAW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRbNFcwSEqELSS37KQrPEtThcbjN7KtzySQskvck9c9y8G-INIRH6AiteYxTPBWJp8fO2tKjXlq7AF/pub?gid=0&single=true&output=csv";
+        
+        // Membungkus dengan CORS Proxy untuk menembus blokir CORS browser
+        const CSV_URL = "https://corsproxy.io/?" + encodeURIComponent(RAW_CSV_URL);
 
         const MAPTECH_STORE_LIST = [
             "M108 Digimap Trans Studio Mall Bandung", "M116 Digimap Beachwalk Bali", "M117 Digimap Plaza Senayan",
@@ -347,8 +351,7 @@
                                 return cleanRow;
                             }).filter(item => {
                                 const storeName = (item['Store'] || item['store'] || '').trim();
-                                const isDigimapStore = MAPTECH_STORE_LIST.some(storeStr => storeStr.toLowerCase().includes(storeName.toLowerCase()));
-                                return isValidName(item['Nama'] || item['nama']) && (isDigimapStore || storeName !== '');
+                                return isValidName(item['Nama'] || item['nama']) && storeName !== '';
                             });
 
                             updateTimestamp();
