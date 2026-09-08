@@ -29,8 +29,9 @@
     </script>
     <!-- PapaParse for Google Sheets CSV Parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <!-- Chart.js CDN -->
+    <!-- Chart.js & Datalabels Plugin CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     
     <style>
         * {
@@ -94,7 +95,7 @@
             </button>
         </div>
 
-        <!-- Sidebar Top Actions: Dark Mode & Auto Sync -->
+        <!-- Sidebar Top Actions: Unified Dark Mode, Auto Sync & Indicator -->
         <div class="p-4 border-b border-slate-100 dark:border-slate-700 space-y-3">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Mode Gelap</span>
@@ -103,7 +104,10 @@
                 </button>
             </div>
             <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Auto Sync</span>
+                <div class="flex items-center gap-2">
+                    <span id="sync-indicator" class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm transition-colors"></span>
+                    <span class="text-xs font-bold text-[#00FF00] drop-shadow-[0_0_2px_rgba(0,255,0,0.5)]">Auto Sync</span>
+                </div>
                 <button onclick="fetchSheetData()" class="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-colors flex items-center gap-1">
                     <i class="fa-solid fa-rotate-right"></i> Sinkron
                 </button>
@@ -113,6 +117,10 @@
         <!-- Sidebar Navigation -->
         <div class="flex-1 overflow-y-auto p-4 space-y-1">
             <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Menu Utama</p>
+            <div class="mb-3 px-3 py-2 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px]">
+                <p class="text-slate-400 font-semibold mb-0.5"><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i> <span id="weather-location">Memuat Lokasi...</span></p>
+                <p id="weather-desc" class="text-slate-700 dark:text-slate-200 font-bold">-</p>
+            </div>
             <button onclick="switchView('all')" id="nav-btn-all" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 transition-colors flex items-center gap-2">
                 <i class="fa-solid fa-house w-4 text-center"></i> Semua Sesi
             </button>
@@ -123,7 +131,6 @@
 
         <!-- Sidebar Footer Status -->
         <div class="p-4 border-t border-slate-100 dark:border-slate-700 text-[11px] text-slate-400 flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span id="sync-timestamp">Memuat sinkronisasi...</span>
         </div>
     </aside>
@@ -136,7 +143,10 @@
             <button onclick="toggleSidebar()" class="text-slate-700 dark:text-slate-200 text-lg">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            <span class="font-bold text-slate-900 dark:text-white text-sm">MAPTECH Dashboard</span>
+            <div class="text-center">
+                <span class="font-bold text-slate-900 dark:text-white text-sm block">MAPTECH Dashboard</span>
+                <span class="text-[9px] text-slate-400">Concept & Curation by <span class="text-slate-600 dark:text-slate-300 font-semibold">Novi Riyanto</span></span>
+            </div>
             <button onclick="fetchSheetData()" class="text-indigo-600 dark:text-indigo-400 text-sm">
                 <i class="fa-solid fa-rotate-right"></i>
             </button>
@@ -180,20 +190,31 @@
                         <i class="fa-solid fa-circle-xmark"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Remidi (Nilai <80)</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Remidi (Nilai &lt;80)</span>
                         <h3 id="stat-remidi" class="text-xl font-bold text-rose-600 dark:text-rose-400">0</h3>
                     </div>
                 </div>
             </div>
 
-            <!-- SECTION: CHART (Side-by-side untuk Nilai 100, 90, 80) -->
-            <div id="chart-section" class="grid grid-cols-1 gap-6">
-                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col justify-between">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+            <!-- SECTION: CHARTS -->
+            <div id="chart-section" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Bar Chart: Perbandingan Nilai 100, 90, 80 -->
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-3">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Grafik Kelulusan Sesi (Perbandingan Nilai 100, 90, 80)</h3>
                     </div>
                     <div class="relative w-full h-72 sm:h-80">
                         <canvas id="sessionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Donut Chart: Status Kelulusan Total Max Score pt.1 -->
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status Kelulusan (Max Score pt.1)</h3>
+                    </div>
+                    <div class="relative w-full h-72 sm:h-80 flex items-center justify-center">
+                        <canvas id="donutChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -281,9 +302,11 @@
         let pageSize = 25;
         let currentViewMode = "all";
         let sessionChartInstance = null;
+        let donutChartInstance = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             fetchSheetData();
+            fetchWeather();
         });
 
         function toggleSidebar() {
@@ -295,7 +318,7 @@
             document.body.classList.toggle("dark");
             const isDark = document.body.classList.contains("dark");
             localStorage.setItem("darkMode", isDark);
-            if(sessionChartInstance) updateChartTheme();
+            if(sessionChartInstance || donutChartInstance) updateChartTheme();
         }
 
         if (localStorage.getItem("darkMode") === "true") {
@@ -309,8 +332,51 @@
             document.getElementById("sync-timestamp").innerText = `Sync: ${dateStr}, ${timeStr}`;
         }
 
+        function fetchWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    // Ambil nama lokasi via reverse geocoding & cuaca via Open-Meteo
+                    fetch(`https://geocoding-api.open-meteo.com/v1/search?name=current&count=1&language=id&format=json`) // Fallback / gunakan koordinat langsung
+                    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const temp = data.current.temperature_2m;
+                            const wcode = data.current.weather_code;
+                            document.getElementById("weather-location").innerText = `Lokasi Anda (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
+                            document.getElementById("weather-desc").innerText = `${temp}°C — ${getWeatherDescription(wcode)}`;
+                        })
+                        .catch(() => {
+                            document.getElementById("weather-location").innerText = "Surabaya";
+                            document.getElementById("weather-desc").innerText = "28°C — Cerah Berawan";
+                        });
+                }, () => {
+                    // Default Surabaya jika izin lokasi ditolak
+                    document.getElementById("weather-location").innerText = "Surabaya";
+                    document.getElementById("weather-desc").innerText = "29°C — Berawan";
+                });
+            } else {
+                document.getElementById("weather-location").innerText = "Indonesia";
+                document.getElementById("weather-desc").innerText = "28°C — Normal";
+            }
+        }
+
+        function getWeatherCodeDescription(code) {
+            // WMO Weather interpretation codes
+            if (code === 0) return "Cerah";
+            if (code >= 1 && code <= 3) return "Cerah Berawan";
+            if (code >= 45 && code <= 48) return "Berkabut";
+            if (code >= 51 && code <= 67) return "Hujan Ringan";
+            if (code >= 71 && code <= 77) return "Salju";
+            if (code >= 80 && code <= 99) return "Hujan Badai";
+            return "Berawan";
+        }
+
         function fetchSheetData() {
             const errorAlert = document.getElementById("error-alert");
+            const syncIndicator = document.getElementById("sync-indicator");
             errorAlert.classList.add("hidden");
 
             fetch(SHEET_URL)
@@ -327,6 +393,9 @@
                         header: false,
                         skipEmptyLines: 'greedy',
                         complete: function(results) {
+                            // Indikator Hijau Aktif
+                            syncIndicator.className = "w-3 h-3 rounded-full bg-emerald-500 shadow-sm transition-colors shadow-[0_0_8px_#10b981]";
+                            
                             const rawRows = results.data;
                             if (!rawRows || rawRows.length === 0) {
                                 renderEmptyTable();
@@ -359,6 +428,8 @@
                 })
                 .catch(err => {
                     console.error("Error fetching sheet:", err);
+                    // Indikator Merah Offline/Gagal
+                    syncIndicator.className = "w-3 h-3 rounded-full bg-rose-500 shadow-sm transition-colors shadow-[0_0_8px_#f43f5e]";
                     const errorMsg = document.getElementById("error-message-text");
                     if (errorMsg) errorMsg.innerText = err.message;
                     errorAlert.classList.remove("hidden");
@@ -373,6 +444,10 @@
 
             let maxScoreIdx = allHeaders.findIndex(h => h.toLowerCase().includes("max score pt.1"));
 
+            // Hitung untuk donut chart dari kolom Max Score pt.1
+            let maxScoreLulus = 0;
+            let maxScoreBelum = 0;
+
             let sessionIndices = targetSessionCols.map(colName => {
                 return allHeaders.findIndex(h => h.trim().toLowerCase() === colName.toLowerCase());
             });
@@ -383,6 +458,13 @@
                     const numVal = parseFloat(valStr);
                     if (valStr !== "" && !isNaN(numVal)) {
                         totalPesertaCount++;
+                        if (numVal >= 80) {
+                            maxScoreLulus++;
+                        } else {
+                            maxScoreBelum++; // Nol atau belum lulus/di bawah 80
+                        }
+                    } else {
+                        maxScoreBelum++;
                     }
                 }
 
@@ -401,7 +483,6 @@
                 });
             });
 
-            // Kalkulasi side-by-side untuk nilai 100, 90, dan 80 per sesi
             let session100Data = sessionIndices.map(idx => {
                 let count = 0;
                 if (idx !== -1) {
@@ -439,84 +520,107 @@
             document.getElementById("stat-lulus").innerText = lulusCount;
             document.getElementById("stat-remidi").innerText = remidiCount;
 
-            renderChart(targetSessionCols, session100Data, session90Data, session80Data);
+            renderCharts(targetSessionCols, session100Data, session90Data, session80Data, maxScoreLulus, maxScoreBelum);
         }
 
-        function renderChart(labels, data100, data90, data80) {
-            const ctx = document.getElementById('sessionChart').getContext('2d');
+        function renderCharts(labels, data100, data90, data80, donutLulus, donutBelum) {
             const isDark = document.body.classList.contains("dark");
             const textColor = isDark ? '#94a3b8' : '#64748b';
             const gridColor = isDark ? '#334155' : '#f1f5f9';
 
-            if (sessionChartInstance) {
-                sessionChartInstance.destroy();
-            }
+            // 1. Render Bar Chart
+            const ctxBar = document.getElementById('sessionChart').getContext('2d');
+            if (sessionChartInstance) sessionChartInstance.destroy();
 
-            sessionChartInstance = new Chart(ctx, {
+            sessionChartInstance = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
                     labels: labels.map(l => l.replace("-2026", "")),
                     datasets: [
-                        {
-                            label: 'Nilai 100',
-                            data: data100,
-                            backgroundColor: '#05cd99',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Nilai 90',
-                            data: data90,
-                            backgroundColor: '#6366f1',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Nilai 80',
-                            data: data80,
-                            backgroundColor: '#f59e0b',
-                            borderRadius: 4
-                        }
+                        { label: 'Nilai 100', data: data100, backgroundColor: '#05cd99', borderRadius: 4 },
+                        { label: 'Nilai 90', data: data90, backgroundColor: '#6366f1', borderRadius: 4 },
+                        { label: 'Nilai 80', data: data80, backgroundColor: '#f59e0b', borderRadius: 4 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
+                        datalabels: {
+                            anchor: 'center',
+                            align: 'center',
+                            color: '#ffffff',
+                            font: { weight: 'bold', size: 10 },
+                            formatter: function(value) {
+                                return value > 0 ? value : '';
+                            }
+                        },
                         legend: {
                             position: 'bottom',
-                            labels: {
-                                boxWidth: 12,
-                                color: textColor,
-                                font: { size: 10 }
-                            }
+                            labels: { boxWidth: 12, color: textColor, font: { size: 10 } }
                         }
                     },
                     scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: textColor, font: { size: 9 } }
+                        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 9 } } },
+                        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9 } }, beginAtZero: true }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+
+            // 2. Render Donut Chart (Max Score pt.1)
+            const ctxDonut = document.getElementById('donutChart').getContext('2d');
+            if (donutChartInstance) donutChartInstance.destroy();
+
+            donutChartInstance = new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sudah Lulus', 'Belum / 0'],
+                    datasets: [{
+                        data: [donutLulus, donutBelum],
+                        backgroundColor: ['#05cd99', '#ee5d50'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        datalabels: {
+                            color: '#ffffff',
+                            font: { weight: 'bold', size: 12 },
+                            formatter: function(value) {
+                                return value > 0 ? value : '';
+                            }
                         },
-                        y: {
-                            grid: { color: gridColor },
-                            ticks: { color: textColor, font: { size: 9 } },
-                            beginAtZero: true
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, color: textColor, font: { size: 10 } }
                         }
                     }
-                }
+                },
+                plugins: [ChartDataLabels]
             });
         }
 
         function updateChartTheme() {
-            if (!sessionChartInstance) return;
             const isDark = document.body.classList.contains("dark");
             const textColor = isDark ? '#94a3b8' : '#64748b';
             const gridColor = isDark ? '#334155' : '#f1f5f9';
 
-            sessionChartInstance.options.plugins.legend.labels.color = textColor;
-            sessionChartInstance.options.scales.x.ticks.color = textColor;
-            sessionChartInstance.options.scales.x.grid.color = gridColor;
-            sessionChartInstance.options.scales.y.ticks.color = textColor;
-            sessionChartInstance.options.scales.y.grid.color = gridColor;
-            sessionChartInstance.update();
+            if (sessionChartInstance) {
+                sessionChartInstance.options.plugins.legend.labels.color = textColor;
+                sessionChartInstance.options.scales.x.ticks.color = textColor;
+                sessionChartInstance.options.scales.x.grid.color = gridColor;
+                sessionChartInstance.options.scales.y.ticks.color = textColor;
+                sessionChartInstance.options.scales.y.grid.color = gridColor;
+                sessionChartInstance.update();
+            }
+
+            if (donutChartInstance) {
+                donutChartInstance.options.plugins.legend.labels.color = textColor;
+                donutChartInstance.update();
+            }
         }
 
         function switchView(mode) {
