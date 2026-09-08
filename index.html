@@ -26,18 +26,17 @@
         }
 
         .badge {
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
-            display: inline-block;
-            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .badge-lulus { background-color: #e6f9f0; color: #05cd99; }
-        .badge-remidi { background-color: #ffeef0; color: #ee5d50; }
-        .badge-join { background-color: #e9f3ff; color: #2b77e5; }
-        .badge-absent { background-color: #fff8e6; color: #ffb800; }
+        .badge-lulus { background-color: #e6f9f0; color: #05cd99; border: 1px solid #b7f4d8; }
+        .badge-remidi { background-color: #ffeef0; color: #ee5d50; border: 1px solid #fcd2d4; }
         .badge-default { background-color: #f4f7fe; color: #707eae; }
 
         .table-responsive::-webkit-scrollbar { height: 6px; width: 6px; }
@@ -71,57 +70,123 @@
                 </span>
                 <span class="text-slate-300">|</span>
                 <span id="sync-timestamp">Memuat...</span>
+                <button onclick="fetchSheetData()" title="Refresh Data" class="ml-1 text-slate-400 hover:text-indigo-600 transition-colors">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
             </div>
         </div>
 
         <!-- KARTU STATISTIK UTAMA -->
-        <div id="management-stats-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-6">
+        <div id="management-stats-container" class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
             <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
-                    <i class="fa-solid fa-user-group"></i>
+                <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    <i class="fa-solid fa-users"></i>
                 </div>
                 <div>
-                    <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Karyawan</span>
-                    <h3 id="stat-total-karyawan" class="text-xl font-bold text-slate-800">0</h3>
+                    <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Peserta</span>
+                    <h3 id="stat-total" class="text-xl font-bold text-slate-800">0</h3>
                 </div>
             </div>
 
             <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">
-                    <i class="fa-solid fa-users"></i>
+                <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    <i class="fa-solid fa-circle-check"></i>
                 </div>
                 <div>
-                    <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Peserta (Aktif Sesi)</span>
-                    <h3 id="stat-total" class="text-xl font-bold text-slate-800">0</h3>
+                    <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Lulus</span>
+                    <h3 id="stat-lulus" class="text-xl font-bold text-emerald-600">0</h3>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+                <div>
+                    <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Remidi</span>
+                    <h3 id="stat-remidi" class="text-xl font-bold text-rose-600">0</h3>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div>
+                    <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Tingkat Kelulusan</span>
+                    <h3 id="stat-rate" class="text-xl font-bold text-slate-800">0%</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTER & CONTROLS SECTION -->
+        <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <!-- Search Bar -->
+            <div class="relative w-full md:w-80">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="search-input" onkeyup="applyFilter()" placeholder="Cari nama, ID, atau kata kunci..." className="" class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+            </div>
+
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+                <!-- Status Filter Buttons -->
+                <div class="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-semibold shrink-0">
+                    <button onclick="setFilterStatus('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-slate-600 bg-white shadow-sm transition-all">Semua</button>
+                    <button onclick="setFilterStatus('lulus')" id="filter-lulus" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-emerald-600 transition-all">Lulus</button>
+                    <button onclick="setFilterStatus('remidi')" id="filter-remidi" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-rose-600 transition-all">Remidi</button>
+                </div>
+
+                <!-- Page Size Selector -->
+                <div class="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 border border-slate-200 px-2 py-1 rounded-xl shrink-0">
+                    <span>Tampilkan:</span>
+                    <select id="page-size" onchange="changePageSize()" class="bg-transparent font-bold text-slate-700 outline-none cursor-pointer">
+                        <option value="10">10</option>
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
                 </div>
             </div>
         </div>
 
         <!-- TABEL DATA LANGSUNG DARI FETCH -->
-        <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl max-h-[600px]">
+        <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl max-h-[550px]">
             <table class="w-full text-xs text-left whitespace-nowrap">
                 <thead id="table-head" class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
                     <!-- Header dinamis dari fetch -->
                 </thead>
                 <tbody id="table-body" class="divide-y divide-slate-100 bg-white">
                     <tr>
-                        <td class="text-center py-6 text-indigo-600">
-                            <i class="fa-solid fa-spinner fa-spin"></i> Memuat data dari Google Sheets...
+                        <td class="text-center py-8 text-indigo-600">
+                            <i class="fa-solid fa-spinner fa-spin text-lg"></i>
+                            <p class="mt-2 text-xs font-medium">Memuat data dari Google Sheets...</p>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
+        <!-- PAGINATION BAR -->
+        <div id="pagination-container" class="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <span id="pagination-info">Menampilkan 0 data</span>
+            <div class="flex items-center gap-1" id="pagination-buttons">
+                <!-- Tombol halaman akan di-render dinamis -->
+            </div>
+        </div>
+
     </div>
 
     <script>
         const SHEET_ID = "1Ckk2YocjioES8EKEkT3bjHy_56tUShglGPBCpYCyh5Y";
-        // Menggunakan endpoint gviz/tq untuk membatasi query rentang sel A1:T secara langsung dari Google Sheets
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&range=A1:T&gid=0`;
-
-        // Batas maksimum kolom A-T = 20 kolom
         const MAX_COLUMNS = 20;
+
+        let allHeaders = [];
+        let allDataRows = [];
+        let filteredRows = [];
+        
+        let currentPage = 1;
+        let pageSize = 25;
+        let activeStatusFilter = "all";
 
         document.addEventListener("DOMContentLoaded", () => {
             fetchSheetData();
@@ -159,7 +224,6 @@
                                 return;
                             }
 
-                            // 1. Cari baris header pertama yang berisi teks
                             let headerIdx = rawRows.findIndex(row => row.some(cell => String(cell).trim() !== ""));
 
                             if (headerIdx === -1) {
@@ -167,23 +231,18 @@
                                 return;
                             }
 
-                            // 2. Batasi header maksimal hingga kolom T (20 kolom pertama)
-                            const headers = rawRows[headerIdx]
+                            allHeaders = rawRows[headerIdx]
                                 .slice(0, MAX_COLUMNS)
                                 .map((h, i) => String(h).trim() || `Kolom ${i + 1}`);
 
-                            // 3. Batasi data tiap baris maksimal 20 kolom
-                            const dataRows = rawRows
+                            allDataRows = rawRows
                                 .slice(headerIdx + 1)
                                 .map(row => row.slice(0, MAX_COLUMNS))
                                 .filter(row => row.some(cell => String(cell).trim() !== ""));
 
                             updateTimestamp();
-                            renderTableData(headers, dataRows);
-
-                            // Update Statistik
-                            document.getElementById("stat-total-karyawan").innerText = dataRows.length;
-                            document.getElementById("stat-total").innerText = dataRows.length;
+                            calculateStats();
+                            applyFilter();
                         },
                         error: function(err) {
                             throw new Error("Gagal memparsing data CSV: " + err.message);
@@ -199,28 +258,100 @@
                 });
         }
 
-        function renderEmptyTable() {
-            const tbody = document.getElementById("table-body");
-            tbody.innerHTML = `<tr><td class="text-center py-6 text-slate-400">Data tidak ditemukan di Google Sheets.</td></tr>`;
-            document.getElementById("stat-total-karyawan").innerText = "0";
-            document.getElementById("stat-total").innerText = "0";
+        function calculateStats() {
+            let lulusCount = 0;
+            let remidiCount = 0;
+
+            allDataRows.forEach(row => {
+                row.forEach(cell => {
+                    const val = String(cell).trim().toLowerCase();
+                    if (val === "lulus") lulusCount++;
+                    if (val === "remidi" || val === "remedi") remidiCount++;
+                });
+            });
+
+            const total = allDataRows.length;
+            const rate = total > 0 ? Math.round((lulusCount / total) * 100) : 0;
+
+            document.getElementById("stat-total").innerText = total;
+            document.getElementById("stat-lulus").innerText = lulusCount;
+            document.getElementById("stat-remidi").innerText = remidiCount;
+            document.getElementById("stat-rate").innerText = `${rate}%`;
         }
 
-        function renderTableData(headers, rows) {
+        function setFilterStatus(status) {
+            activeStatusFilter = status;
+            
+            // Toggle active styling on filter buttons
+            ["all", "lulus", "remidi"].forEach(s => {
+                const btn = document.getElementById(`filter-${s}`);
+                if (s === status) {
+                    btn.className = "px-3 py-1.5 rounded-lg text-slate-900 bg-white shadow-sm font-bold transition-all";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 transition-all";
+                }
+            });
+
+            applyFilter();
+        }
+
+        function applyFilter() {
+            const query = document.getElementById("search-input").value.toLowerCase().trim();
+
+            filteredRows = allDataRows.filter(row => {
+                // Search Query Filter
+                const matchesSearch = query === "" || row.some(cell => String(cell).toLowerCase().includes(query));
+
+                // Status Filter
+                let matchesStatus = true;
+                if (activeStatusFilter !== "all") {
+                    matchesStatus = row.some(cell => {
+                        const val = String(cell).trim().toLowerCase();
+                        if (activeStatusFilter === "lulus") return val === "lulus";
+                        if (activeStatusFilter === "remidi") return val === "remidi" || val === "remedi";
+                        return false;
+                    });
+                }
+
+                return matchesSearch && matchesStatus;
+            });
+
+            currentPage = 1;
+            renderTableData();
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById("page-size").value);
+            currentPage = 1;
+            renderTableData();
+        }
+
+        function renderEmptyTable() {
+            const tbody = document.getElementById("table-body");
+            tbody.innerHTML = `<tr><td colspan="100%" class="text-center py-8 text-slate-400">Data tidak ditemukan di Google Sheets.</td></tr>`;
+            document.getElementById("stat-total").innerText = "0";
+            document.getElementById("stat-lulus").innerText = "0";
+            document.getElementById("stat-remidi").innerText = "0";
+            document.getElementById("stat-rate").innerText = "0%";
+            document.getElementById("pagination-info").innerText = "Menampilkan 0 data";
+            document.getElementById("pagination-buttons").innerHTML = "";
+        }
+
+        function renderTableData() {
             const thead = document.getElementById("table-head");
             const tbody = document.getElementById("table-body");
 
             thead.innerHTML = "";
             tbody.innerHTML = "";
 
-            if (rows.length === 0) {
+            if (filteredRows.length === 0) {
                 renderEmptyTable();
                 return;
             }
 
-            // Render Header (A-T)
+            // 1. Render Header
             const trHead = document.createElement("tr");
-            headers.forEach(headerText => {
+            allHeaders.forEach(headerText => {
                 const th = document.createElement("th");
                 th.className = "p-3 font-semibold text-slate-700 bg-slate-100 border-b border-slate-200 text-left";
                 th.innerText = headerText;
@@ -228,21 +359,27 @@
             });
             thead.appendChild(trHead);
 
-            // Render Baris Data
+            // 2. Pagination Math
+            const totalPage = Math.ceil(filteredRows.length / pageSize);
+            const startIdx = (currentPage - 1) * pageSize;
+            const pageData = filteredRows.slice(startIdx, startIdx + pageSize);
+
+            // 3. Render Body
             const fragment = document.createDocumentFragment();
-            rows.forEach(row => {
+            pageData.forEach((row, rIdx) => {
                 const tr = document.createElement("tr");
                 tr.className = "hover:bg-slate-50 transition-colors";
 
-                headers.forEach((_, colIndex) => {
+                allHeaders.forEach((_, colIndex) => {
                     const td = document.createElement("td");
                     td.className = "p-3 border-b border-slate-100";
                     const cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? String(row[colIndex]).trim() : "";
                     
-                    if (cellVal.toLowerCase() === "lulus") {
-                        td.innerHTML = `<span class="badge badge-lulus">Lulus</span>`;
-                    } else if (cellVal.toLowerCase() === "remidi" || cellVal.toLowerCase() === "remedi") {
-                        td.innerHTML = `<span class="badge badge-remidi">Remidi</span>`;
+                    const lowerVal = cellVal.toLowerCase();
+                    if (lowerVal === "lulus") {
+                        td.innerHTML = `<span class="badge badge-lulus"><i class="fa-solid fa-check text-[10px]"></i> Lulus</span>`;
+                    } else if (lowerVal === "remidi" || lowerVal === "remedi") {
+                        td.innerHTML = `<span class="badge badge-remidi"><i class="fa-solid fa-xmark text-[10px]"></i> Remidi</span>`;
                     } else {
                         td.innerText = cellVal !== "" ? cellVal : "-";
                     }
@@ -254,6 +391,45 @@
             });
 
             tbody.appendChild(fragment);
+
+            // 4. Update Pagination Controls
+            const endIdx = Math.min(startIdx + pageSize, filteredRows.length);
+            document.getElementById("pagination-info").innerText = `Menampilkan ${startIdx + 1} - ${endIdx} dari ${filteredRows.length} data`;
+            renderPaginationButtons(totalPage);
+        }
+
+        function renderPaginationButtons(totalPage) {
+            const btnContainer = document.getElementById("pagination-buttons");
+            btnContainer.innerHTML = "";
+
+            if (totalPage <= 1) return;
+
+            // Prev Button
+            const prevBtn = document.createElement("button");
+            prevBtn.className = `px-2.5 py-1 rounded-lg border text-xs font-semibold ${currentPage === 1 ? 'border-slate-100 text-slate-300 cursor-not-allowed' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`;
+            prevBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`;
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => { if(currentPage > 1) { currentPage--; renderTableData(); } };
+            btnContainer.appendChild(prevBtn);
+
+            // Page Number Buttons
+            for (let i = 1; i <= totalPage; i++) {
+                if (i === 1 || i === totalPage || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    const pageBtn = document.createElement("button");
+                    pageBtn.className = `px-2.5 py-1 rounded-lg text-xs font-semibold ${i === currentPage ? 'bg-indigo-600 text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-50'}`;
+                    pageBtn.innerText = i;
+                    pageBtn.onclick = () => { currentPage = i; renderTableData(); };
+                    btnContainer.appendChild(pageBtn);
+                }
+            }
+
+            // Next Button
+            const nextBtn = document.createElement("button");
+            nextBtn.className = `px-2.5 py-1 rounded-lg border text-xs font-semibold ${currentPage === totalPage ? 'border-slate-100 text-slate-300 cursor-not-allowed' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`;
+            nextBtn.innerHTML = `<i class="fa-solid fa-chevron-right"></i>`;
+            nextBtn.disabled = currentPage === totalPage;
+            nextBtn.onclick = () => { if(currentPage < totalPage) { currentPage++; renderTableData(); } };
+            btnContainer.appendChild(nextBtn);
         }
     </script>
 </body>
