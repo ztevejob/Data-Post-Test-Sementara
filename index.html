@@ -35,6 +35,9 @@
             flex: 1;
             padding: 24px;
             overflow-x: hidden;
+            display: flex;
+            flex-col;
+            justify-content: space-between;
         }
 
         .dashboard-container {
@@ -44,6 +47,7 @@
             border-radius: 16px;
             padding: 24px;
             box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12);
+            width: 100%;
         }
 
         .dashboard-header {
@@ -328,13 +332,18 @@
         </aside>
 
         <!-- MAIN CONTENT AREA -->
-        <main class="main-content">
+        <main class="main-content flex flex-col justify-between">
             <div class="dashboard-container">
                 <!-- Header Dashboard -->
                 <div class="dashboard-header">
                     <div class="dashboard-title">
                         <h2>Dashboard Assessment Store</h2>
                         <p>Live Fetch Data dari Google Sheets (CSV Online)</p>
+                    </div>
+                    <!-- Badge Auto Sync -->
+                    <div class="flex items-center gap-2 bg-emerald-50 text-emerald-600 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold">
+                        <i class="fa-solid fa-arrows-rotate fa-spin"></i>
+                        <span>Auto Sync 8 Sep 2026, 13.09 WIB</span>
                     </div>
                 </div>
 
@@ -437,6 +446,11 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Footer Curation -->
+            <footer class="mt-6 text-center text-xs text-slate-400 font-medium">
+                Concept & Curation by Novi Riyanto
+            </footer>
         </main>
     </div>
 
@@ -512,14 +526,20 @@
             let totalPassed = 0;
             let validMinCount = 0;
             let validMaxCount = 0;
+            let totalNamaCount = 0;
 
             data.forEach(item => {
                 const store = item['Store'] || '-';
-                const nama = item['Nama'] || '-';
+                const nama = item['Nama'] ? item['Nama'].trim() : '-';
                 const nik = item['NIK'] || '-';
                 const exp = item['Work Experience'] || '-';
                 const email = item['SEED Registered Email'] || '-';
                 const pos = item['Positions'] || '-';
+
+                // Hitung Total Peserta berdasarkan entri Nama yang valid
+                if (nama !== '-' && nama !== '') {
+                    totalNamaCount++;
+                }
 
                 const d13p = item['13-7-2026 Pagi'] || '-';
                 const d13s = item['13-7-2026 Siang'] || '-';
@@ -588,9 +608,9 @@
             // Hitung Rata-Rata
             const avgMin = validMinCount > 0 ? (totalMinScore / validMinCount).toFixed(1) : 0;
             const avgMax = validMaxCount > 0 ? (totalMaxScore / validMaxCount).toFixed(1) : 0;
-            const passRate = data.length > 0 ? ((totalPassed / data.length) * 100).toFixed(0) + "%" : "0%";
+            const passRate = totalNamaCount > 0 ? ((totalPassed / totalNamaCount) * 100).toFixed(0) + "%" : "0%";
 
-            updateCards(data.length, avgMin, avgMax, passRate);
+            updateCards(totalNamaCount, avgMin, avgMax, passRate);
         }
 
         // Update Kartu Ringkasan & Badge Sidebar
