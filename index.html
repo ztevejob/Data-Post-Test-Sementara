@@ -27,6 +27,12 @@
             color: #2b3674;
         }
 
+        /* Neon Purple Utility */
+        .text-neon-purple {
+            color: #c084fc;
+            text-shadow: 0 0 8px rgba(192, 132, 252, 0.6);
+        }
+
         /* Status Badges */
         .badge {
             padding: 4px 10px;
@@ -55,20 +61,20 @@
         <!-- SIDEBAR NAVIGATION -->
         <aside class="w-full md:w-64 bg-slate-900 text-slate-200 p-4 flex flex-col justify-between select-none flex-shrink-0">
             <div>
-                <!-- Status Auto Sync & Last Update (Di Paling Atas Sidebar) -->
+                <!-- Status AutoSync (Teks Ungu Neon & Tanpa Animasi Refresh) -->
                 <div class="mb-4 bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 flex flex-col gap-1.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-semibold text-emerald-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-arrows-rotate fa-spin text-emerald-400"></i> Auto Sync Live Data
+                        <span class="text-[12px] font-bold text-neon-purple tracking-wide flex items-center gap-1.5">
+                            <i class="fa-solid fa-bolt text-purple-400"></i> AutoSync
                         </span>
-                        <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded-full font-mono">Active</span>
+                        <span class="text-[9px] bg-purple-500/10 text-purple-300 border border-purple-500/30 px-1.5 py-0.5 rounded-full font-mono">Active</span>
                     </div>
                     <p class="text-[10px] text-slate-400 flex items-center gap-1">
                         <i class="fa-regular fa-clock text-slate-500"></i> Update: <span id="sync-timestamp" class="text-slate-300 font-medium">Memuat...</span>
                     </p>
                 </div>
 
-                <!-- Header / Brand (Disamakan dengan Judul Nilai Post Test Sementara) -->
+                <!-- Header / Brand -->
                 <div class="px-1 py-2 mb-4 md:mb-6 border-b border-slate-800 pb-3">
                     <h2 class="text-base font-bold text-white tracking-wide leading-tight">Nilai Post Test Sementara</h2>
                     <p class="text-[11px] text-slate-400 mt-0.5">Live Assessment Portal</p>
@@ -117,19 +123,19 @@
                     <p class="text-xs md:text-sm text-slate-500">Live Sync Data Assessment Google Sheets</p>
                 </div>
 
-                <!-- FILTER CONTROL -->
+                <!-- FILTER CONTROL (RESPONSIF & RINGAN) -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" id="search-personal" placeholder="Cari NIK / Nama..." oninput="applyFilters()" 
+                            <input type="text" id="search-personal" placeholder="Cari NIK / Nama..." oninput="debounceFilter()" 
                                    class="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
 
                         <div>
                             <select id="filter-store" onchange="applyFilters()" 
                                     class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="">-- Semua Toko --</option>
+                                <option value="">-- Semua Toko (Memuat...) --</option>
                             </select>
                         </div>
 
@@ -205,12 +211,12 @@
                             </div>
                         </div>
 
+                        <!-- Kelengkapan Nilai Peserta (Tulisan Sub-judul Dihapus) -->
                         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
                             <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
                                 <i class="fa-solid fa-chart-pie text-indigo-600"></i> Kelengkapan Nilai Peserta
                             </h3>
-                            <p class="text-[11px] text-slate-500 mb-2">Dihitung dari Nama vs Max Score pt.1</p>
-                            <div class="relative w-full h-48 md:h-52 flex items-center justify-center">
+                            <div class="relative w-full h-52 md:h-56 flex items-center justify-center">
                                 <canvas id="scoreStatusChart"></canvas>
                             </div>
                         </div>
@@ -431,6 +437,7 @@
         let rawData = [];
         let sessionChartInstance = null;
         let statusChartInstance = null;
+        let debounceTimer = null;
 
         const SESSION_KEYS = [
             '13-7-2026 Pagi', '13-7-2026 Siang',
@@ -494,16 +501,37 @@
             });
         }
 
+        /* MEMASUKKAN SELURUH TOKO TANPA DUPLIKASI DAN TERURUT ALFABETIS */
         function populateStoreDropdown(data) {
             const storeSelect = document.getElementById("filter-store");
-            storeSelect.innerHTML = '<option value="">-- Semua Toko --</option>';
-            const stores = [...new Set(data.map(item => item['Store']).filter(Boolean))].sort();
-            stores.forEach(store => {
+            
+            // Mengambil semua unik nama toko dari dataset
+            const storeSet = new Set();
+            data.forEach(item => {
+                const storeName = item['Store'] ? item['Store'].trim() : '';
+                if (storeName && storeName !== '-') {
+                    storeSet.add(storeName);
+                }
+            });
+
+            const sortedStores = Array.from(storeSet).sort((a, b) => a.localeCompare(b));
+
+            // Fragmenting DOM Insertion untuk performa ringan
+            const fragment = document.createDocumentFragment();
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = `-- Semua Toko (${sortedStores.length} Toko) --`;
+            fragment.appendChild(defaultOption);
+
+            sortedStores.forEach(store => {
                 const option = document.createElement("option");
                 option.value = store;
                 option.textContent = store;
-                storeSelect.appendChild(option);
+                fragment.appendChild(option);
             });
+
+            storeSelect.innerHTML = "";
+            storeSelect.appendChild(fragment);
         }
 
         function parseScore(val) {
@@ -520,9 +548,7 @@
             renderMonitoringTables(data);
         }
 
-        /* -------------------------------------------------------------
-           1. TABEL ALL STORE SUMMARY (STORE & AVERAGE)
-        ------------------------------------------------------------- */
+        /* RINGKASAN AGREGAT STORE */
         function renderStoreAggregateTable(data) {
             const tbody = document.getElementById("store-summary-body");
             tbody.innerHTML = "";
@@ -530,7 +556,7 @@
             const storeMap = {};
 
             data.forEach(item => {
-                const store = item['Store'];
+                const store = item['Store'] ? item['Store'].trim() : '';
                 if (!store) return;
                 const maxVal = parseScore(item['Max Score pt.1']);
 
@@ -560,6 +586,7 @@
                 return;
             }
 
+            const fragment = document.createDocumentFragment();
             storeArray.forEach((item, index) => {
                 const tr = document.createElement("tr");
                 tr.className = "hover:bg-slate-50 transition-colors";
@@ -569,13 +596,12 @@
                     <td class="p-2.5 text-center text-slate-600">${item.count}</td>
                     <td class="p-2.5 text-right font-bold text-indigo-600">${item.avg.toFixed(1)}</td>
                 `;
-                tbody.appendChild(tr);
+                fragment.appendChild(tr);
             });
+            tbody.appendChild(fragment);
         }
 
-        /* -------------------------------------------------------------
-           2. TABEL DETAIL ALL STORE (KETERANGAN & MIN SCORE DIHAPUS)
-        ------------------------------------------------------------- */
+        /* TABEL DETAIL ALL STORE */
         function renderTableAllStore(data) {
             const tbody = document.getElementById("table-body-allstore");
             tbody.innerHTML = "";
@@ -584,6 +610,8 @@
                 tbody.innerHTML = `<tr><td colspan="17" class="text-center py-4 text-slate-400">Data tidak ditemukan.</td></tr>`;
                 return;
             }
+
+            const fragment = document.createDocumentFragment();
 
             data.forEach(item => {
                 const store = item['Store'] || '-';
@@ -641,13 +669,13 @@
                     <td class="p-3"><span class="badge ${joinBadgeClass}">${join}</span></td>
                     <td class="p-3"><span class="badge ${statusBadgeClass}">${status}</span></td>
                 `;
-                tbody.appendChild(tr);
+                fragment.appendChild(tr);
             });
+
+            tbody.appendChild(fragment);
         }
 
-        /* -------------------------------------------------------------
-           3. MONITORING TABLES (REMIDI VS MISSING SCORE BASED ON NAMA & MAX SCORE)
-        ------------------------------------------------------------- */
+        /* MONITORING TABEL KHUSUS */
         function renderMonitoringTables(data) {
             const remidiBody = document.getElementById("remidi-staff-body");
             const missingBody = document.getElementById("missing-staff-body");
@@ -666,7 +694,6 @@
 
                 if (!nama || nama === '-') return;
 
-                // Evaluasi hanya dari Nama & Max Score pt.1
                 if (maxVal !== null && maxVal > 0) {
                     hasScoreCount++;
                 } else {
@@ -792,10 +819,6 @@
             `).join('') : `<tr><td colspan="4" class="text-center py-2 text-slate-400">Tidak ada data</td></tr>`;
         }
 
-        /* -------------------------------------------------------------
-           4. SESI SUMMARY: METRIK NILAI TIDAK MUNCUL / ABSENCE
-           HANYA BERDASARKAN HASIL EVALUASI NAMA & MAX SCORE PT.1
-        ------------------------------------------------------------- */
         function renderSessionSummaryAndChart(data) {
             const summaryBody = document.getElementById("session-summary-body");
             const metrics = { attended: {}, sum: {}, countValids: {}, failed: {}, missing: {} };
@@ -829,7 +852,6 @@
                         }
                     }
 
-                    // Hanya dihitung jika peserta terdaftar tetapi Max Score pt.1 tidak ditemukan / 0
                     if (isOverallMissing) {
                         metrics.missing[key]++;
                     }
@@ -911,15 +933,23 @@
             });
         }
 
+        /* DEBOUNCE UNTUK OPTIMASI PERFORMANSA FILTER TEKS */
+        function debounceFilter() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                applyFilters();
+            }, 250);
+        }
+
         function applyFilters() {
             const personalSearch = document.getElementById("search-personal").value.toLowerCase().trim();
-            const selectedStore = document.getElementById("filter-store").value;
-            const selectedStatus = document.getElementById("filter-status").value.toLowerCase();
+            const selectedStore = document.getElementById("filter-store").value.toLowerCase().trim();
+            const selectedStatus = document.getElementById("filter-status").value.toLowerCase().trim();
 
             const filteredData = rawData.filter(item => {
                 const nama = (item['Nama'] || '').toLowerCase();
                 const nik = (item['NIK'] || '').toLowerCase();
-                const store = item['Store'] || '';
+                const store = (item['Store'] || '').toLowerCase().trim();
                 const status = (item['Status Remidi / Lulus'] || '').toLowerCase();
 
                 const matchPersonal = personalSearch === "" || nama.includes(personalSearch) || nik.includes(personalSearch);
