@@ -117,30 +117,6 @@
             <button onclick="filterBySession('all')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
                 <i class="fa-solid fa-house w-4 text-center text-indigo-500"></i> Semua Sesi
             </button>
-            <button onclick="filterBySession('8-Sept-2026 Pagi')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 8-Sept-2026 Pagi
-            </button>
-            <button onclick="filterBySession('8-Sept-2026 Siang')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 8-Sept-2026 Siang
-            </button>
-            <button onclick="filterBySession('9-Sept-2026 Pagi')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 9-Sept-2026 Pagi
-            </button>
-            <button onclick="filterBySession('9-Sept-2026 Siang')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 9-Sept-2026 Siang
-            </button>
-            <button onclick="filterBySession('10-Sept-2026 Pagi')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 10-Sept-2026 Pagi
-            </button>
-            <button onclick="filterBySession('10-Sept-2026 Siang')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 10-Sept-2026 Siang
-            </button>
-            <button onclick="filterBySession('11-Sept-2026 Pagi')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 11-Sept-2026 Pagi
-            </button>
-            <button onclick="filterBySession('11-Sept-2026 Siang')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-calendar-day w-4 text-center text-indigo-500"></i> 11-Sept-2026 Siang
-            </button>
         </div>
 
         <!-- Sidebar Footer Status -->
@@ -218,58 +194,14 @@
                 </div>
             </div>
 
-            <!-- SECTION: CHART & SUMMARY PER KOLOM SESI -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- SECTION: CHART ONLY -->
+            <div class="grid grid-cols-1 gap-6">
                 <!-- CHART SECTION -->
-                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm lg:col-span-1 flex flex-col justify-between">
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col justify-between">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Grafik Kelulusan Sesi</h3>
-                    <div class="relative w-full h-56">
+                    <div class="relative w-full h-64">
                         <canvas id="sessionChart"></canvas>
                     </div>
-                </div>
-
-                <!-- SUMMARY TABEL KELULUSAN & TOTAL PESERTA TIAP KOLOM SESI -->
-                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm lg:col-span-2 overflow-x-auto">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Ringkasan Peserta & Kelulusan per Sesi</h3>
-                    <table class="w-full text-xs text-left whitespace-nowrap">
-                        <thead class="bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-600">
-                            <tr>
-                                <th class="p-2 font-semibold">Metrik Sesi</th>
-                                <th class="p-2 font-semibold text-center">8-Sept Pagi</th>
-                                <th class="p-2 font-semibold text-center">8-Sept Siang</th>
-                                <th class="p-2 font-semibold text-center">9-Sept Pagi</th>
-                                <th class="p-2 font-semibold text-center">9-Sept Siang</th>
-                                <th class="p-2 font-semibold text-center">10-Sept Pagi</th>
-                                <th class="p-2 font-semibold text-center">10-Sept Siang</th>
-                                <th class="p-2 font-semibold text-center">11-Sept Pagi</th>
-                                <th class="p-2 font-semibold text-center">11-Sept Siang</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
-                            <tr>
-                                <td class="p-2 font-semibold text-indigo-600 dark:text-indigo-400">Total Dinilai</td>
-                                <td id="col-total-0" class="p-2 text-center font-bold">0</td>
-                                <td id="col-total-1" class="p-2 text-center font-bold">0</td>
-                                <td id="col-total-2" class="p-2 text-center font-bold">0</td>
-                                <td id="col-total-3" class="p-2 text-center font-bold">0</td>
-                                <td id="col-total-4" class="p-2 text-center font-bold">0</td>
-                                <td id="col-total-5" class="p-2 text-center font-bold">0</td>
-                                <td id="col-total-6" class="p-2 text-center font-bold">0</td>
-                                <td id="col-total-7" class="p-2 text-center font-bold">0</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 font-semibold text-emerald-600 dark:text-emerald-400">Summary Lulus</td>
-                                <td id="col-lulus-0" class="p-2 text-center font-bold text-emerald-600">0</td>
-                                <td id="col-lulus-1" class="p-2 text-center font-bold text-emerald-600">0</td>
-                                <td id="col-lulus-2" class="p-2 text-center font-bold text-emerald-600">0</td>
-                                <td id="col-lulus-3" class="p-2 text-center font-bold text-emerald-600">0</td>
-                                <td id="col-lulus-4" class="p-2 text-center font-bold text-emerald-600">0</td>
-                                <td id="col-lulus-5" class="p-2 text-center font-bold text-emerald-600">0</td>
-                                <td id="col-lulus-6" class="p-2 text-center font-bold text-emerald-600">0</td>
-                                <td id="col-lulus-7" class="p-2 text-center font-bold text-emerald-600">0</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
@@ -331,23 +263,7 @@
     <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center justify-around p-2 z-40 text-[10px] text-slate-600 dark:text-slate-300">
         <button onclick="filterBySession('all'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
             <i class="fa-solid fa-house text-sm text-indigo-500"></i>
-            <span>Semua</span>
-        </button>
-        <button onclick="filterBySession('8-Sept-2026 Pagi'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
-            <i class="fa-solid fa-calendar-day text-sm text-indigo-500"></i>
-            <span>8 Pagi</span>
-        </button>
-        <button onclick="filterBySession('9-Sept-2026 Pagi'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
-            <i class="fa-solid fa-calendar-day text-sm text-indigo-500"></i>
-            <span>9 Pagi</span>
-        </button>
-        <button onclick="filterBySession('10-Sept-2026 Pagi'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
-            <i class="fa-solid fa-calendar-day text-sm text-indigo-500"></i>
-            <span>10 Pagi</span>
-        </button>
-        <button onclick="filterBySession('11-Sept-2026 Pagi'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
-            <i class="fa-solid fa-calendar-day text-sm text-indigo-500"></i>
-            <span>11 Pagi</span>
+            <span>Semua Sesi</span>
         </button>
     </nav>
 
@@ -365,13 +281,6 @@
         let activeStatusFilter = "all";
         let activeSessionFilter = "all";
         let sessionChartInstance = null;
-
-        const targetColumns = [
-            "8-Sept-2026 Pagi", "8-Sept-2026 Siang",
-            "9-Sept-2026 Pagi", "9-Sept-2026 Siang",
-            "10-Sept-2026 Pagi", "10-Sept-2026 Siang",
-            "11-Sept-2026 Pagi", "11-Sept-2026 Siang"
-        ];
 
         document.addEventListener("DOMContentLoaded", () => {
             fetchSheetData();
@@ -462,40 +371,56 @@
             let lulusCount = 0;
             let remidiCount = 0;
 
-            // Mapping target session columns index in allHeaders
-            const colIndices = targetColumns.map(targetName => {
-                return allHeaders.findIndex(h => h.toLowerCase() === targetName.toLowerCase());
+            // Cari indeks kolom "Status Remidi / Lulus" (bisa berupa variasi nama serupa)
+            let statusColIdx = allHeaders.findIndex(h => {
+                const lower = h.toLowerCase();
+                return lower.includes("status remidi") || lower.includes("status lulus") || (lower.includes("status") && (lower.includes("remidi") || lower.includes("lulus")));
             });
 
-            let colTotals = new Array(8).fill(0);
-            let colLulus = new Array(8).fill(0);
+            // Jika tidak ketemu persis, coba cari kolom yang mengandung kata "lulus" atau "remidi"
+            if (statusColIdx === -1) {
+                statusColIdx = allHeaders.findIndex(h => {
+                    const lower = h.toLowerCase();
+                    return lower === "status remidi / lulus" || lower === "status";
+                });
+            }
+
+            let statusLulusPerBarisCounts = {};
 
             allDataRows.forEach(row => {
-                // Global status detection
-                row.forEach(cell => {
-                    const val = String(cell).trim().toLowerCase();
+                // Global status detection across the whole row or specific column
+                if (statusColIdx !== -1 && row[statusColIdx] !== undefined) {
+                    const val = String(row[statusColIdx]).trim().toLowerCase();
                     if (val === "lulus") lulusCount++;
                     if (val === "remidi" || val === "remedi") remidiCount++;
-                });
-
-                // Per column session evaluation
-                colIndices.forEach((cIdx, idx) => {
-                    if (cIdx !== -1 && row[cIdx] !== undefined) {
-                        const cellVal = String(row[cIdx]).trim();
-                        if (cellVal !== "" && cellVal !== "-") {
-                            colTotals[idx]++;
-                            if (cellVal.toLowerCase() === "lulus") {
-                                colLulus[idx]++;
-                            }
-                        }
-                    }
-                });
+                } else {
+                    // Fallback to searching entire row if exact column header isn't matched
+                    row.forEach(cell => {
+                        const val = String(cell).trim().toLowerCase();
+                        if (val === "lulus") lulusCount++;
+                        if (val === "remidi" || val === "remedi") remidiCount++;
+                    });
+                }
             });
 
-            // Update UI for summary table
-            colTotals.forEach((tot, idx) => {
-                document.getElementById(`col-total-${idx}`).innerText = tot;
-                document.getElementById(`col-lulus-${idx}`).innerText = colLulus[idx];
+            // Untuk Chart Grafik Kelulusan Sesi: hitung berapa orang yang lulus per kolom sesi atau grup
+            // Mengambil kolom-kolom tanggal/sesi yang ada di sheet secara dinamis selain kolom metadata utama
+            const sessionCols = allHeaders.filter(h => {
+                const low = h.toLowerCase();
+                return low.includes("sept") || low.includes("pagi") || low.includes("siang") || low.includes("sesi");
+            });
+
+            let sessionLabels = sessionCols.length > 0 ? sessionCols : allHeaders.slice(2, 10);
+            let sessionLulusData = sessionLabels.map(label => {
+                let cIdx = allHeaders.findIndex(h => h === label);
+                let count = 0;
+                if (cIdx !== -1) {
+                    allDataRows.forEach(row => {
+                        const cellVal = String(row[cIdx]).trim().toLowerCase();
+                        if (cellVal === "lulus") count++;
+                    });
+                }
+                return count;
             });
 
             const total = allDataRows.length;
@@ -506,12 +431,11 @@
             document.getElementById("stat-remidi").innerText = remidiCount;
             document.getElementById("stat-rate").innerText = `${rate}%`;
 
-            renderChart(colLulus, colTotals);
+            renderChart(sessionLabels, sessionLulusData);
         }
 
-        function renderChart(lulusData, totalData) {
+        function renderChart(labels, lulusData) {
             const ctx = document.getElementById('sessionChart').getContext('2d');
-            const labels = ["8 Pagi", "8 Siang", "9 Pagi", "9 Siang", "10 Pagi", "10 Siang", "11 Pagi", "11 Siang"];
             
             const isDark = document.body.classList.contains("dark");
             const textColor = isDark ? '#94a3b8' : '#64748b';
@@ -527,15 +451,9 @@
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Lulus',
+                            label: 'Jumlah Orang Lulus',
                             data: lulusData,
                             backgroundColor: '#05cd99',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Total Dinilai',
-                            data: totalData,
-                            backgroundColor: '#6366f1',
                             borderRadius: 4
                         }
                     ]
