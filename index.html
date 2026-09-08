@@ -15,6 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Chart.js DataLabels Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <!-- SheetJS (XLSX) CDN for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
     <style>
         * {
@@ -48,6 +50,21 @@
         .badge-join { background-color: #e9f3ff; color: #2b77e5; }
         .badge-absent { background-color: #fff8e6; color: #ffb800; }
         .badge-default { background-color: #f4f7fe; color: #707eae; }
+
+        /* Indikator Visual Baris Tabel Berdasarkan Status Kelulusan */
+        tr.row-status-lulus {
+            background-color: #f0fdf4 !important; /* Hijau muda lembut */
+        }
+        tr.row-status-lulus:hover {
+            background-color: #dcfce7 !important;
+        }
+
+        tr.row-status-remidi {
+            background-color: #fff1f2 !important; /* Merah muda lembut */
+        }
+        tr.row-status-remidi:hover {
+            background-color: #ffe4e6 !important;
+        }
 
         .table-responsive::-webkit-scrollbar { height: 6px; width: 6px; }
         .table-responsive::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -91,6 +108,21 @@
                     </p>
                 </div>
 
+                <!-- TOMBOL TOGGLE PERAN (ROLE-BASED VIEW) -->
+                <div class="bg-slate-800/90 border border-slate-700/80 rounded-xl p-3 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-indigo-300 uppercase tracking-wider"><i class="fa-solid fa-user-gear mr-1"></i> Mode Peran (*Role*)</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1.5">
+                        <button onclick="setRoleView('staff')" id="btn-role-staff" class="py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-[11px] font-semibold rounded-lg transition-colors text-center">
+                            <i class="fa-solid fa-user text-xs mr-1"></i> Anak Toko
+                        </button>
+                        <button onclick="setRoleView('management')" id="btn-role-management" class="py-1.5 px-2 bg-indigo-600 text-white text-[11px] font-semibold rounded-lg transition-colors text-center shadow-sm">
+                            <i class="fa-solid fa-user-shield text-xs mr-1"></i> Manajemen
+                        </button>
+                    </div>
+                </div>
+
                 <div class="py-1 border-b border-slate-800 pb-2">
                     <h2 class="text-sm font-bold text-white tracking-wide">Navigasi Utama</h2>
                 </div>
@@ -114,12 +146,12 @@
                 <!-- SIDEBAR KHUSUS INFO STAFF & PENCARIAN FILTER -->
                 <div class="pt-3 border-t border-slate-800 space-y-3">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Info Staff & Profil</h3>
+                        <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Kartu Ringkasan Personal</h3>
                     </div>
                     
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[11px]"></i>
-                        <input type="text" id="sidebar-search-staff" placeholder="Cari Nama / NIK staff..." oninput="handleSidebarSearch(this.value)" 
+                        <input type="text" id="sidebar-search-staff" placeholder="Ketik Nama / NIK staff..." oninput="handleSidebarSearch(this.value)" 
                                class="w-full pl-8 pr-3 py-2 text-xs bg-slate-800 border border-slate-700 text-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
 
@@ -148,27 +180,36 @@
         <main class="flex-1 p-3 md:p-6 overflow-x-hidden flex flex-col justify-between">
             <div class="max-w-7xl mx-auto w-full bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
                 
-                <div class="block md:hidden mb-4 p-3 bg-slate-900 text-white rounded-xl">
-                    <div class="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-2 mb-2">
+                <div class="block md:hidden mb-4 p-3 bg-slate-900 text-white rounded-xl space-y-2">
+                    <div class="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-2">
                         <span>Concept & Curation by <b class="text-slate-200">Novi Riyanto</b> <span id="mobile-app-version" class="text-indigo-400 font-mono font-bold"></span></span>
                         <span class="text-neon-green font-bold"><i class="fa-solid fa-bolt"></i> AutoSync</span>
                     </div>
-                    <div class="text-[10px] text-slate-400 flex justify-between items-center">
-                        <span>Last Update:</span>
-                        <span id="sync-timestamp-mobile" class="text-slate-200 font-medium">Memuat...</span>
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="text-[10px] text-slate-400">Mode Peran:</span>
+                        <div class="flex gap-1">
+                            <button onclick="setRoleView('staff')" id="btn-mobile-role-staff" class="px-2 py-1 bg-slate-800 text-slate-300 text-[10px] font-semibold rounded">Anak Toko</button>
+                            <button onclick="setRoleView('management')" id="btn-mobile-role-management" class="px-2 py-1 bg-indigo-600 text-white text-[10px] font-semibold rounded">Manajemen</button>
+                        </div>
                     </div>
                 </div>
 
                 <div class="pb-3 md:pb-4 mb-4 md:mb-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <h2 class="text-lg md:text-2xl font-bold text-slate-900" id="page-title">Nilai Post Test Sementara</h2>
-                    <div class="block md:hidden">
-                        <input type="text" placeholder="Cari staff untuk info profil..." oninput="handleSidebarSearch(this.value)" class="w-full sm:w-64 px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg">
+                    <div class="flex items-center gap-2">
+                        <!-- Tombol Download Laporan Toko (Ekspor Excel / PDF) -->
+                        <button onclick="exportStoreReport()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-excel"></i> Download Laporan Toko
+                        </button>
+                        <div class="block md:hidden">
+                            <input type="text" placeholder="Cari staff..." oninput="handleSidebarSearch(this.value)" class="w-36 px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg">
+                        </div>
                     </div>
                 </div>
 
                 <!-- FILTER CONTROL -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 md:p-4 mb-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-3">
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 md:p-4 mb-4 space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 md:gap-3">
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                             <input type="text" id="search-personal" placeholder="Cari NIK / Nama..." oninput="debounceFilter()" 
@@ -190,15 +231,27 @@
                                 <option value="Remidi">Remidi</option>
                             </select>
                         </div>
+                    </div>
 
-                        <button onclick="resetFilters()" class="w-full py-2 bg-slate-200 hover:bg-rose-500 hover:text-white text-slate-700 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                    <!-- PENYEMATAN FILTER CEPAT BERBASIS TOKO (STORE QUICK FILTER CHIPS) -->
+                    <div class="pt-2 border-t border-slate-200 flex flex-col gap-1.5">
+                        <span class="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
+                            <i class="fa-solid fa-bolt text-indigo-600"></i> Store Quick Filter (Pilih Cepat Toko Populer):
+                        </span>
+                        <div id="quick-store-chips" class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
+                            <span class="text-[11px] text-slate-400 italic">Memuat chips toko...</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-1">
+                        <button onclick="resetFilters()" class="px-3 py-1.5 bg-slate-200 hover:bg-rose-500 hover:text-white text-slate-700 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5">
                             <i class="fa-solid fa-rotate-left"></i> Reset Filter
                         </button>
                     </div>
                 </div>
 
-                <!-- KARTU STATISTIK UTAMA -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-6">
+                <!-- KARTU STATISTIK UTAMA (Manajemen View Only / Dapat disembunyikan untuk mode staff) -->
+                <div id="management-stats-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-6">
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
                         <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
                             <i class="fa-solid fa-user-group"></i>
@@ -412,6 +465,7 @@
         let rawData = [];
         let sessionChartInstance = null;
         let debounceTimer = null;
+        let currentRole = 'management'; // default role
 
         const SESSION_KEYS = [
             "8-Sept-2026 Pagi", "8-Sept-2026 Siang",
@@ -453,6 +507,30 @@
             document.getElementById("sync-timestamp").innerText = formatted;
             const mobileTs = document.getElementById("sync-timestamp-mobile");
             if (mobileTs) mobileTs.innerText = formatted;
+        }
+
+        function setRoleView(role) {
+            currentRole = role;
+            const btnStaff = document.getElementById("btn-role-staff");
+            const btnMgmt = document.getElementById("btn-role-management");
+            const btnMobStaff = document.getElementById("btn-mobile-role-staff");
+            const btnMobMgmt = document.getElementById("btn-mobile-role-management");
+            const mgmtStats = document.getElementById("management-stats-container");
+
+            if (role === 'staff') {
+                if(btnStaff) btnStaff.className = "py-1.5 px-2 bg-indigo-600 text-white text-[11px] font-semibold rounded-lg transition-colors text-center shadow-sm";
+                if(btnMgmt) btnMgmt.className = "py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-[11px] font-semibold rounded-lg transition-colors text-center";
+                if(btnMobStaff) btnMobStaff.className = "px-2 py-1 bg-indigo-600 text-white text-[10px] font-semibold rounded";
+                if(btnMobMgmt) btnMobMgmt.className = "px-2 py-1 bg-slate-800 text-slate-300 text-[10px] font-semibold rounded";
+                if(mgmtStats) mgmtStats.classList.add("hidden");
+            } else {
+                if(btnMgmt) btnMgmt.className = "py-1.5 px-2 bg-indigo-600 text-white text-[11px] font-semibold rounded-lg transition-colors text-center shadow-sm";
+                if(btnStaff) btnStaff.className = "py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-[11px] font-semibold rounded-lg transition-colors text-center";
+                if(btnMobMgmt) btnMobMgmt.className = "px-2 py-1 bg-indigo-600 text-white text-[10px] font-semibold rounded";
+                if(btnMobStaff) btnMobStaff.className = "px-2 py-1 bg-slate-800 text-slate-300 text-[10px] font-semibold rounded";
+                if(mgmtStats) mgmtStats.classList.remove("hidden");
+            }
+            applyFilters();
         }
 
         function switchView(viewName) {
@@ -506,7 +584,6 @@
                             return header ? header.trim().replace(/\s+/g, ' ') : '';
                         },
                         complete: function(results) {
-                            // Filter hanya baris yang Store-nya ada dalam daftar resmi Digimap (MAPTECH_STORE_CODES)
                             rawData = results.data.map(row => {
                                 const cleanRow = {};
                                 Object.keys(row).forEach(key => {
@@ -515,13 +592,13 @@
                                 return cleanRow;
                             }).filter(item => {
                                 const storeName = (item['Store'] || item['store'] || '').trim();
-                                // Validasi ketat nama toko harus mengandung/cocok dengan daftar kode resmi Digimap
                                 const isDigimapStore = MAPTECH_STORE_CODES.some(code => storeName.toUpperCase().includes(code.toUpperCase()));
                                 return isValidName(item['Nama'] || item['nama']) && isDigimapStore;
                             });
 
                             updateTimestamp();
                             populateStoreDropdown(rawData);
+                            renderQuickStoreChips(rawData);
                             renderAllData(rawData);
                         },
                         error: function(err) {
@@ -559,6 +636,39 @@
 
             storeSelect.innerHTML = "";
             storeSelect.appendChild(fragment);
+        }
+
+        function renderQuickStoreChips(data) {
+            const container = document.getElementById("quick-store-chips");
+            const storeCounts = {};
+
+            data.forEach(item => {
+                const store = (item['Store'] || item['store'] || '').trim();
+                if (store && store !== '-') {
+                    storeCounts[store] = (storeCounts[store] || 0) + 1;
+                }
+            });
+
+            // Urutkan toko berdasarkan jumlah staf terbanyak atau alfabetis
+            const sortedStores = Object.keys(storeCounts).sort((a, b) => storeCounts[b] - storeCounts[a]).slice(0, 15); // Ambil top 15 populer
+
+            if (sortedStores.length === 0) {
+                container.innerHTML = `<span class="text-[11px] text-slate-400 italic">Tidak ada toko tersedia.</span>`;
+                return;
+            }
+
+            let chipsHtml = `<button onclick="selectQuickStore('')" class="px-2.5 py-1 bg-slate-200 hover:bg-indigo-600 hover:text-white text-slate-700 text-[10px] font-bold rounded-md transition-colors">Semua Toko</button>`;
+            
+            sortedStores.forEach(store => {
+                chipsHtml += `<button onclick="selectQuickStore('${store}')" class="px-2.5 py-1 bg-white border border-slate-300 hover:bg-indigo-50 hover:border-indigo-500 text-slate-700 text-[10px] font-medium rounded-md transition-colors shadow-2xs">${store} (${storeCounts[store]})</button>`;
+            });
+
+            container.innerHTML = chipsHtml;
+        }
+
+        function selectQuickStore(storeName) {
+            document.getElementById("filter-store").value = storeName;
+            applyFilters();
         }
 
         function parseScore(val) {
@@ -621,11 +731,13 @@
                 }
 
                 let statusBadgeClass = calculatedStatus === 'Lulus' ? 'badge-lulus' : 'badge-remidi';
+                // Penentuan warna baris tabel: Hijau muda lembut untuk lulus, merah muda lembut untuk remidi
+                let rowHighlightClass = calculatedStatus === 'Lulus' ? 'row-status-lulus' : 'row-status-remidi';
 
                 const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.className = `transition-colors ${rowHighlightClass}`;
                 tr.innerHTML = `
-                    <td class="p-3 text-center font-bold text-slate-400">${index + 1}</td>
+                    <td class="p-3 text-center font-bold text-slate-500">${index + 1}</td>
                     <td class="p-3 font-medium">${store}</td>
                     <td class="p-3 font-semibold text-slate-900">${nama}</td>
                     <td class="p-3">${nik}</td>
@@ -715,7 +827,6 @@
             const remidiBody = document.getElementById("remidi-staff-body");
             let remidiList = [];
 
-            // Memastikan hanya membaca nilai staf di bawah 80 per sesi
             data.forEach(item => {
                 const nama = (item['Nama'] || item['nama'] || '-').trim();
                 const store = item['Store'] || item['store'] || '-';
@@ -798,12 +909,10 @@
                 };
             }).filter(s => s.avg > 0);
 
-            // Top Stores hanya membaca toko yang averagenya tertinggi
             storeArray.sort((a, b) => b.avg - a.avg);
             const maxAvg = storeArray.length > 0 ? storeArray[0].avg : 0;
             const topStores = storeArray.filter(s => Math.abs(s.avg - maxAvg) < 0.01);
 
-            // Bottom Stores Digimap (Skip Nilai Nol) - hanya membaca yang di bawah 80 namun skip jika nilainya nol
             const bottomStoresFiltered = storeArray.filter(s => s.avg < 80).sort((a, b) => a.avg - b.avg);
 
             topBody.innerHTML = topStores.length > 0 ? topStores.map((item, index) => `
@@ -858,7 +967,6 @@
 
             const rowAttended = `<tr><td class="p-2.5 font-bold text-slate-700">Total Peserta (Attended)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-bold text-indigo-600">${metrics.attended[k]}</td>`).join('') + `</tr>`;
             
-            // Average angka dibulatkan dan 1 angka dibelakang koma
             const sessionAverages = SESSION_KEYS.map(k => metrics.countValids[k] > 0 ? parseFloat((metrics.sum[k] / metrics.countValids[k]).toFixed(1)) : 0);
 
             const rowAverage = `<tr><td class="p-2.5 font-bold text-slate-700">Average Score</td>` + sessionAverages.map(avg => `<td class="p-2.5 text-center font-semibold text-emerald-600">${avg > 0 ? avg : '-'}</td>`).join('') + `</tr>`;
@@ -875,7 +983,6 @@
 
             if (sessionChartInstance) sessionChartInstance.destroy();
 
-            // Menggunakan Chart.js datalabels plugin untuk memasukkan informasi angka di dalam chart
             sessionChartInstance = new Chart(ctx, {
                 type: 'bar',
                 plugins: [ChartDataLabels],
@@ -914,6 +1021,66 @@
                     }
                 }
             });
+        }
+
+        // Fungsi Ekspor Data Laporan Toko ke Excel (SheetJS)
+        function exportStoreReport() {
+            const selectedStore = document.getElementById("filter-store").value.trim();
+            const exportTitle = selectedStore ? `Laporan_PostTest_${selectedStore}` : `Laporan_PostTest_Semua_Toko`;
+
+            // Ambil data tabel All Store yang sedang tampil setelah filter
+            const personalSearch = document.getElementById("search-personal").value.toLowerCase().trim();
+            const selectedStatus = document.getElementById("filter-status").value.toLowerCase().trim();
+
+            const filteredExportData = rawData.filter(item => {
+                const nama = (item['Nama'] || item['nama'] || '').toLowerCase();
+                const nik = (item['NIK'] || item['nik'] || '').toLowerCase();
+                const store = (item['Store'] || item['store'] || '').toLowerCase().trim();
+                const maxVal = parseScore(item['Max Score pt.1'] || item['Max Score']);
+                const status = getCalculatedStatus(maxVal).toLowerCase();
+
+                const matchPersonal = personalSearch === "" || nama.includes(personalSearch) || nik.includes(personalSearch);
+                const matchStore = selectedStore === "" || store === selectedStore.toLowerCase();
+                const matchStatus = selectedStatus === "" || status.includes(selectedStatus);
+
+                return matchPersonal && matchStore && matchStatus;
+            });
+
+            if (filteredExportData.length === 0) {
+                alert("Tidak ada data untuk diexport!");
+                return;
+            }
+
+            // Format data ke bentuk array objek bersih untuk SheetJS
+            const formattedRows = filteredExportData.map((item, idx) => {
+                const maxVal = parseScore(item['Max Score pt.1'] || item['Max Score']);
+                return {
+                    "No": idx + 1,
+                    "Store": item['Store'] || '',
+                    "Nama": item['Nama'] || '',
+                    "NIK": item['NIK'] || '',
+                    "Work Experience": item['Work Experience'] || '',
+                    "SEED Email": item['SEED Registered Email'] || '',
+                    "Positions": item['Positions'] || '',
+                    "8-Sept Pagi": item['8-Sept-2026 Pagi'] || '',
+                    "8-Sept Siang": item['8-Sept-2026 Siang'] || '',
+                    "9-Sept Pagi": item['9-Sept-2026 Pagi'] || '',
+                    "9-Sept Siang": item['9-Sept-2026 Siang'] || '',
+                    "10-Sept Pagi": item['10-Sept-2026 Pagi'] || '',
+                    "10-Sept Siang": item['10-Sept-2026 Siang'] || '',
+                    "11-Sept Pagi": item['11-Sept-2026 Pagi'] || '',
+                    "11-Sept Siang": item['11-Sept-2026 Siang'] || '',
+                    "Max Score": maxVal !== null ? maxVal : 0,
+                    "Status Kelulusan": getCalculatedStatus(maxVal)
+                };
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(formattedRows);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Nilai");
+
+            // Trigger download file excel
+            XLSX.writeFile(workbook, `${exportTitle}.xlsx`);
         }
 
         function debounceFilter() {
