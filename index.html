@@ -95,22 +95,31 @@
             </button>
         </div>
 
-        <!-- Sidebar Top Actions: Unified Dark Mode, Auto Sync & Indicator -->
+        <!-- Sidebar Top Actions: Unified Dark Mode & Auto Sync with Hard Rock FM -->
         <div class="p-4 border-b border-slate-100 dark:border-slate-700 space-y-3">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Mode Gelap</span>
-                <button onclick="toggleDarkMode()" id="dark-mode-toggle" class="w-10 h-6 bg-slate-200 dark:bg-indigo-600 rounded-full relative transition-colors p-1">
+            <button onclick="toggleDarkMode()" class="w-full flex items-center justify-between group text-left">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Mode Gelap</span>
+                <div id="dark-mode-toggle" class="w-10 h-6 bg-slate-200 dark:bg-indigo-600 rounded-full relative transition-colors p-1 pointer-events-none">
                     <div id="dark-mode-thumb" class="w-4 h-4 bg-white rounded-full transition-transform transform translate-x-0 dark:translate-x-4"></div>
-                </button>
-            </div>
+                </div>
+            </button>
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <span id="sync-indicator" class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm transition-colors"></span>
                     <span class="text-xs font-bold text-[#00FF00] drop-shadow-[0_0_2px_rgba(0,255,0,0.5)]">Auto Sync</span>
                 </div>
-                <button onclick="fetchSheetData()" class="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-colors flex items-center gap-1">
-                    <i class="fa-solid fa-rotate-right"></i> Sinkron
-                </button>
+            </div>
+            <!-- Pemutar Radio Hard Rock FM -->
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                        <i class="fa-solid fa-radio text-rose-500"></i> Hard Rock FM
+                    </span>
+                </div>
+                <audio controls class="w-full h-8" style="accent-color: #6366f1;">
+                    <source src="https://mas.mvradio.id/proxy/hardrock/stream" type="audio/mpeg">
+                    Browser Anda tidak mendukung elemen audio.
+                </audio>
             </div>
         </div>
 
@@ -147,9 +156,7 @@
                 <span class="font-bold text-slate-900 dark:text-white text-sm block">MAPTECH Dashboard</span>
                 <span class="text-[9px] text-slate-400">Concept & Curation by <span class="text-slate-600 dark:text-slate-300 font-semibold">Novi Riyanto</span></span>
             </div>
-            <button onclick="fetchSheetData()" class="text-indigo-600 dark:text-indigo-400 text-sm">
-                <i class="fa-solid fa-rotate-right"></i>
-            </button>
+            <div class="w-6"></div>
         </header>
 
         <main class="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto space-y-6">
@@ -170,7 +177,7 @@
                         <i class="fa-solid fa-users"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Peserta (Max Score pt.1)</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Peserta Digimap (Max Score pt.1)</span>
                         <h3 id="stat-total" class="text-xl font-bold text-slate-800 dark:text-white">0</h3>
                     </div>
                 </div>
@@ -180,7 +187,7 @@
                         <i class="fa-solid fa-circle-check"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Lulus (Nilai 80-100)</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Lulus Digimap (Nilai 80-100)</span>
                         <h3 id="stat-lulus" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">0</h3>
                     </div>
                 </div>
@@ -190,7 +197,7 @@
                         <i class="fa-solid fa-circle-xmark"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Remidi (Nilai &lt;80)</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Remidi Digimap (Nilai &lt;80)</span>
                         <h3 id="stat-remidi" class="text-xl font-bold text-rose-600 dark:text-rose-400">0</h3>
                     </div>
                 </div>
@@ -208,10 +215,10 @@
                     </div>
                 </div>
 
-                <!-- Donut Chart: Status Kelulusan Total Max Score pt.1 -->
+                <!-- Donut Chart: Status Kelulusan Total Max Score pt.1 (Digimap Only) -->
                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status Kelulusan (Max Score pt.1)</h3>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status Kelulusan Digimap (Max Score pt.1)</h3>
                     </div>
                     <div class="relative w-full h-72 sm:h-80 flex items-center justify-center">
                         <canvas id="donutChart"></canvas>
@@ -338,22 +345,19 @@
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
                     
-                    // Ambil nama lokasi via reverse geocoding & cuaca via Open-Meteo
-                    fetch(`https://geocoding-api.open-meteo.com/v1/search?name=current&count=1&language=id&format=json`) // Fallback / gunakan koordinat langsung
                     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`)
                         .then(res => res.json())
                         .then(data => {
                             const temp = data.current.temperature_2m;
                             const wcode = data.current.weather_code;
                             document.getElementById("weather-location").innerText = `Lokasi Anda (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
-                            document.getElementById("weather-desc").innerText = `${temp}°C — ${getWeatherDescription(wcode)}`;
+                            document.getElementById("weather-desc").innerText = `${temp}°C — ${getWeatherCodeDescription(wcode)}`;
                         })
                         .catch(() => {
                             document.getElementById("weather-location").innerText = "Surabaya";
                             document.getElementById("weather-desc").innerText = "28°C — Cerah Berawan";
                         });
                 }, () => {
-                    // Default Surabaya jika izin lokasi ditolak
                     document.getElementById("weather-location").innerText = "Surabaya";
                     document.getElementById("weather-desc").innerText = "29°C — Berawan";
                 });
@@ -364,7 +368,6 @@
         }
 
         function getWeatherCodeDescription(code) {
-            // WMO Weather interpretation codes
             if (code === 0) return "Cerah";
             if (code >= 1 && code <= 3) return "Cerah Berawan";
             if (code >= 45 && code <= 48) return "Berkabut";
@@ -393,7 +396,6 @@
                         header: false,
                         skipEmptyLines: 'greedy',
                         complete: function(results) {
-                            // Indikator Hijau Aktif
                             syncIndicator.className = "w-3 h-3 rounded-full bg-emerald-500 shadow-sm transition-colors shadow-[0_0_8px_#10b981]";
                             
                             const rawRows = results.data;
@@ -428,7 +430,6 @@
                 })
                 .catch(err => {
                     console.error("Error fetching sheet:", err);
-                    // Indikator Merah Offline/Gagal
                     syncIndicator.className = "w-3 h-3 rounded-full bg-rose-500 shadow-sm transition-colors shadow-[0_0_8px_#f43f5e]";
                     const errorMsg = document.getElementById("error-message-text");
                     if (errorMsg) errorMsg.innerText = err.message;
@@ -444,7 +445,6 @@
 
             let maxScoreIdx = allHeaders.findIndex(h => h.toLowerCase().includes("max score pt.1"));
 
-            // Hitung untuk donut chart dari kolom Max Score pt.1
             let maxScoreLulus = 0;
             let maxScoreBelum = 0;
 
@@ -453,23 +453,30 @@
             });
 
             allDataRows.forEach(row => {
-                if (maxScoreIdx !== -1 && row[maxScoreIdx] !== undefined) {
-                    const valStr = String(row[maxScoreIdx]).trim();
-                    const numVal = parseFloat(valStr);
-                    if (valStr !== "" && !isNaN(numVal)) {
-                        totalPesertaCount++;
-                        if (numVal >= 80) {
-                            maxScoreLulus++;
+                // Filter khusus data Digimap (asumsi kolom perusahaan/store/nama mengandung kata 'digimap', atau cek jika baris relevan)
+                let rowString = row.join(" ").toLowerCase();
+                let isDigimap = rowString.includes("digimap");
+
+                // Jika data baris termasuk Digimap, hitung untuk statistik & donut chart Max Score pt.1
+                if (isDigimap) {
+                    if (maxScoreIdx !== -1 && row[maxScoreIdx] !== undefined) {
+                        const valStr = String(row[maxScoreIdx]).trim();
+                        const numVal = parseFloat(valStr);
+                        if (valStr !== "" && !isNaN(numVal)) {
+                            totalPesertaCount++;
+                            if (numVal >= 80) {
+                                maxScoreLulus++;
+                            } else {
+                                maxScoreBelum++;
+                            }
                         } else {
-                            maxScoreBelum++; // Nol atau belum lulus/di bawah 80
+                            maxScoreBelum++;
                         }
-                    } else {
-                        maxScoreBelum++;
                     }
                 }
 
                 sessionIndices.forEach(idx => {
-                    if (idx !== -1 && row[idx] !== undefined) {
+                    if (isDigimap && idx !== -1 && row[idx] !== undefined) {
                         const cellStr = String(row[idx]).trim();
                         const val = parseFloat(cellStr);
                         if (!isNaN(val) && val !== 0) {
@@ -487,8 +494,10 @@
                 let count = 0;
                 if (idx !== -1) {
                     allDataRows.forEach(row => {
-                        const val = parseFloat(String(row[idx]).trim());
-                        if (!isNaN(val) && val === 100) count++;
+                        if (row.join(" ").toLowerCase().includes("digimap")) {
+                            const val = parseFloat(String(row[idx]).trim());
+                            if (!isNaN(val) && val === 100) count++;
+                        }
                     });
                 }
                 return count;
@@ -498,8 +507,10 @@
                 let count = 0;
                 if (idx !== -1) {
                     allDataRows.forEach(row => {
-                        const val = parseFloat(String(row[idx]).trim());
-                        if (!isNaN(val) && val === 90) count++;
+                        if (row.join(" ").toLowerCase().includes("digimap")) {
+                            const val = parseFloat(String(row[idx]).trim());
+                            if (!isNaN(val) && val === 90) count++;
+                        }
                     });
                 }
                 return count;
@@ -509,8 +520,10 @@
                 let count = 0;
                 if (idx !== -1) {
                     allDataRows.forEach(row => {
-                        const val = parseFloat(String(row[idx]).trim());
-                        if (!isNaN(val) && val === 80) count++;
+                        if (row.join(" ").toLowerCase().includes("digimap")) {
+                            const val = parseFloat(String(row[idx]).trim());
+                            if (!isNaN(val) && val === 80) count++;
+                        }
                     });
                 }
                 return count;
@@ -528,7 +541,6 @@
             const textColor = isDark ? '#94a3b8' : '#64748b';
             const gridColor = isDark ? '#334155' : '#f1f5f9';
 
-            // 1. Render Bar Chart
             const ctxBar = document.getElementById('sessionChart').getContext('2d');
             if (sessionChartInstance) sessionChartInstance.destroy();
 
@@ -568,7 +580,6 @@
                 plugins: [ChartDataLabels]
             });
 
-            // 2. Render Donut Chart (Max Score pt.1)
             const ctxDonut = document.getElementById('donutChart').getContext('2d');
             if (donutChartInstance) donutChartInstance.destroy();
 
