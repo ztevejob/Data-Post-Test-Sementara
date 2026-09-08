@@ -74,7 +74,6 @@
         body.dark .table-responsive::-webkit-scrollbar-track { background: #1e293b; }
         body.dark .table-responsive::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
 
-        /* Sidebar transition */
         #sidebar {
             transition: transform 0.3s ease-in-out;
         }
@@ -111,11 +110,14 @@
             </div>
         </div>
 
-        <!-- Sidebar Navigation based on Headers / Sesi -->
+        <!-- Sidebar Navigation -->
         <div class="flex-1 overflow-y-auto p-4 space-y-1">
-            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Navigasi Sesi Ujian</p>
-            <button onclick="filterBySession('all')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-house w-4 text-center text-indigo-500"></i> Semua Sesi
+            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Menu Utama</p>
+            <button onclick="switchView('all')" id="nav-btn-all" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-house w-4 text-center"></i> Semua Sesi
+            </button>
+            <button onclick="switchView('remidi')" id="nav-btn-remidi" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation w-4 text-center text-rose-500"></i> Tabel Remidi
             </button>
         </div>
 
@@ -127,7 +129,7 @@
     </aside>
 
     <!-- MAIN CONTENT CONTAINER -->
-    <div class="flex-1 lg:ml-64 flex flex-col min-h-screen pb-16 lg:pb-0">
+    <div class="flex-1 lg:ml-64 flex flex-col min-h-screen pb-20 lg:pb-0">
         
         <!-- MOBILE NAVBAR TOP -->
         <header class="lg:hidden bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4 flex items-center justify-between sticky top-0 z-40">
@@ -151,14 +153,14 @@
                 <button onclick="fetchSheetData()" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold transition-colors">Coba Lagi</button>
             </div>
 
-            <!-- STATISTIK UTAMA -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            <!-- STATISTIK UTAMA (Updated: Tanpa Kelulusan, Total Peserta dari Max Score pt.1, Lulus 80-100, Remidi <80) -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl flex items-center gap-3 shadow-sm">
                     <div class="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg shrink-0">
                         <i class="fa-solid fa-users"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Peserta</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Peserta (Max Score pt.1)</span>
                         <h3 id="stat-total" class="text-xl font-bold text-slate-800 dark:text-white">0</h3>
                     </div>
                 </div>
@@ -168,7 +170,7 @@
                         <i class="fa-solid fa-circle-check"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Lulus</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Lulus (Nilai 80-100)</span>
                         <h3 id="stat-lulus" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">0</h3>
                     </div>
                 </div>
@@ -178,25 +180,14 @@
                         <i class="fa-solid fa-circle-xmark"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Remidi</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Remidi (Nilai <80)</span>
                         <h3 id="stat-remidi" class="text-xl font-bold text-rose-600 dark:text-rose-400">0</h3>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl flex items-center gap-3 shadow-sm">
-                    <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-lg shrink-0">
-                        <i class="fa-solid fa-chart-pie"></i>
-                    </div>
-                    <div>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Kelulusan</span>
-                        <h3 id="stat-rate" class="text-xl font-bold text-slate-800 dark:text-white">0%</h3>
                     </div>
                 </div>
             </div>
 
             <!-- SECTION: CHART ONLY -->
-            <div class="grid grid-cols-1 gap-6">
-                <!-- CHART SECTION -->
+            <div id="chart-section" class="grid grid-cols-1 gap-6">
                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col justify-between">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Grafik Kelulusan Sesi</h3>
                     <div class="relative w-full h-64">
@@ -213,12 +204,6 @@
                 </div>
 
                 <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
-                    <div class="flex items-center bg-slate-100 dark:bg-slate-700 p-1 rounded-xl text-xs font-semibold shrink-0">
-                        <button onclick="setFilterStatus('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-slate-800 dark:text-white bg-white dark:bg-slate-600 shadow-sm transition-all">Semua</button>
-                        <button onclick="setFilterStatus('lulus')" id="filter-lulus" class="px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-300 hover:text-emerald-600 transition-all">Lulus</button>
-                        <button onclick="setFilterStatus('remidi')" id="filter-remidi" class="px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-300 hover:text-rose-600 transition-all">Remidi</button>
-                    </div>
-
                     <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded-xl shrink-0">
                         <span>Tampilkan:</span>
                         <select id="page-size" onchange="changePageSize()" class="bg-transparent font-bold text-slate-700 dark:text-slate-200 outline-none cursor-pointer">
@@ -233,6 +218,9 @@
 
             <!-- MAIN DATA TABLE -->
             <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <h3 id="table-title" class="font-bold text-xs uppercase tracking-wider text-slate-600 dark:text-slate-300">Semua Sesi Ujian</h3>
+                </div>
                 <div class="table-responsive overflow-x-auto max-h-[550px]">
                     <table class="w-full text-xs text-left whitespace-nowrap">
                         <thead id="table-head" class="bg-slate-100 dark:bg-slate-700 sticky top-0 z-10 border-b border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200">
@@ -259,11 +247,15 @@
         </main>
     </div>
 
-    <!-- MOBILE BOTTOM NAVIGATION (GAWAI VIEW) -->
+    <!-- MOBILE BOTTOM NAVIGATION (SIMILAR TO APP EXPERIENCE) -->
     <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center justify-around p-2 z-40 text-[10px] text-slate-600 dark:text-slate-300">
-        <button onclick="filterBySession('all'); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 p-1">
-            <i class="fa-solid fa-house text-sm text-indigo-500"></i>
+        <button onclick="switchView('all'); window.scrollTo({top: 0, behavior: 'smooth'})" id="mobile-nav-all" class="flex flex-col items-center gap-1 p-2 text-indigo-600 dark:text-indigo-400 font-bold">
+            <i class="fa-solid fa-house text-base"></i>
             <span>Semua Sesi</span>
+        </button>
+        <button onclick="switchView('remidi'); window.scrollTo({top: 0, behavior: 'smooth'})" id="mobile-nav-remidi" class="flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400">
+            <i class="fa-solid fa-triangle-exclamation text-base"></i>
+            <span>Tabel Remidi</span>
         </button>
     </nav>
 
@@ -272,14 +264,20 @@
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&range=A1:T&gid=0`;
         const MAX_COLUMNS = 20;
 
+        const targetSessionCols = [
+            "8-Sept-2026 Pagi", "8-Sept-2026 Siang", 
+            "9-Sept-2026 Pagi", "9-Sept-2026 Siang", 
+            "10-Sept-2026 Pagi", "10-Sept-2026 Siang", 
+            "11-Sept-2026 Pagi", "11-Sept-2026 Siang"
+        ];
+
         let allHeaders = [];
         let allDataRows = [];
         let filteredRows = [];
         
         let currentPage = 1;
         let pageSize = 25;
-        let activeStatusFilter = "all";
-        let activeSessionFilter = "all";
+        let currentViewMode = "all"; // 'all' or 'remidi'
         let sessionChartInstance = null;
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -298,7 +296,6 @@
             if(sessionChartInstance) updateChartTheme();
         }
 
-        // Initialize theme preference
         if (localStorage.getItem("darkMode") === "true") {
             document.body.classList.add("dark");
         }
@@ -368,75 +365,67 @@
         }
 
         function calculateStatsAndSummaries() {
+            let totalPesertaCount = 0;
             let lulusCount = 0;
             let remidiCount = 0;
 
-            // Cari indeks kolom "Status Remidi / Lulus" (bisa berupa variasi nama serupa)
-            let statusColIdx = allHeaders.findIndex(h => {
-                const lower = h.toLowerCase();
-                return lower.includes("status remidi") || lower.includes("status lulus") || (lower.includes("status") && (lower.includes("remidi") || lower.includes("lulus")));
+            // Indeks kolom Max Score pt.1
+            let maxScoreIdx = allHeaders.findIndex(h => h.toLowerCase().includes("max score pt.1"));
+
+            // Indeks kolom sesi yang ditentukan
+            let sessionIndices = targetSessionCols.map(colName => {
+                return allHeaders.findIndex(h => h.trim().toLowerCase() === colName.toLowerCase());
             });
-
-            // Jika tidak ketemu persis, coba cari kolom yang mengandung kata "lulus" atau "remidi"
-            if (statusColIdx === -1) {
-                statusColIdx = allHeaders.findIndex(h => {
-                    const lower = h.toLowerCase();
-                    return lower === "status remidi / lulus" || lower === "status";
-                });
-            }
-
-            let statusLulusPerBarisCounts = {};
 
             allDataRows.forEach(row => {
-                // Global status detection across the whole row or specific column
-                if (statusColIdx !== -1 && row[statusColIdx] !== undefined) {
-                    const val = String(row[statusColIdx]).trim().toLowerCase();
-                    if (val === "lulus") lulusCount++;
-                    if (val === "remidi" || val === "remedi") remidiCount++;
-                } else {
-                    // Fallback to searching entire row if exact column header isn't matched
-                    row.forEach(cell => {
-                        const val = String(cell).trim().toLowerCase();
-                        if (val === "lulus") lulusCount++;
-                        if (val === "remidi" || val === "remedi") remidiCount++;
-                    });
+                // Total Peserta: Hitung yang sudah mendapatkan nilai dari kolom Max Score pt.1
+                if (maxScoreIdx !== -1 && row[maxScoreIdx] !== undefined) {
+                    const valStr = String(row[maxScoreIdx]).trim();
+                    const numVal = parseFloat(valStr);
+                    if (valStr !== "" && !isNaN(numVal)) {
+                        totalPesertaCount++;
+                    }
                 }
+
+                // Hitung Lulus (80-100) dan Remidi (<80, abaikan nol) dari kolom sesi target
+                sessionIndices.forEach(idx => {
+                    if (idx !== -1 && row[idx] !== undefined) {
+                        const cellStr = String(row[idx]).trim();
+                        const val = parseFloat(cellStr);
+                        if (!isNaN(val) && val !== 0) {
+                            if (val >= 80 && val <= 100) {
+                                lulusCount++;
+                            } else if (val < 80 && val > 0) {
+                                remidiCount++;
+                            }
+                        }
+                    }
+                });
             });
 
-            // Untuk Chart Grafik Kelulusan Sesi: hitung berapa orang yang lulus per kolom sesi atau grup
-            // Mengambil kolom-kolom tanggal/sesi yang ada di sheet secara dinamis selain kolom metadata utama
-            const sessionCols = allHeaders.filter(h => {
-                const low = h.toLowerCase();
-                return low.includes("sept") || low.includes("pagi") || low.includes("siang") || low.includes("sesi");
-            });
-
-            let sessionLabels = sessionCols.length > 0 ? sessionCols : allHeaders.slice(2, 10);
-            let sessionLulusData = sessionLabels.map(label => {
-                let cIdx = allHeaders.findIndex(h => h === label);
+            // Grafik Kelulusan Sesi: hitung berapa orang yang lulus (nilai 80-100) per sesi target
+            let sessionLulusData = sessionIndices.map(idx => {
                 let count = 0;
-                if (cIdx !== -1) {
+                if (idx !== -1) {
                     allDataRows.forEach(row => {
-                        const cellVal = String(row[cIdx]).trim().toLowerCase();
-                        if (cellVal === "lulus") count++;
+                        const val = parseFloat(String(row[idx]).trim());
+                        if (!isNaN(val) && val >= 80 && val <= 100) {
+                            count++;
+                        }
                     });
                 }
                 return count;
             });
 
-            const total = allDataRows.length;
-            const rate = total > 0 ? Math.round((lulusCount / total) * 100) : 0;
-
-            document.getElementById("stat-total").innerText = total;
+            document.getElementById("stat-total").innerText = totalPesertaCount;
             document.getElementById("stat-lulus").innerText = lulusCount;
             document.getElementById("stat-remidi").innerText = remidiCount;
-            document.getElementById("stat-rate").innerText = `${rate}%`;
 
-            renderChart(sessionLabels, sessionLulusData);
+            renderChart(targetSessionCols, sessionLulusData);
         }
 
         function renderChart(labels, lulusData) {
             const ctx = document.getElementById('sessionChart').getContext('2d');
-            
             const isDark = document.body.classList.contains("dark");
             const textColor = isDark ? '#94a3b8' : '#64748b';
             const gridColor = isDark ? '#334155' : '#f1f5f9';
@@ -448,10 +437,10 @@
             sessionChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: labels.map(l => l.replace("-2026", "")),
                     datasets: [
                         {
-                            label: 'Jumlah Orang Lulus',
+                            label: 'Jumlah Orang Lulus (Nilai 80-100)',
                             data: lulusData,
                             backgroundColor: '#05cd99',
                             borderRadius: 4
@@ -500,52 +489,67 @@
             sessionChartInstance.update();
         }
 
-        function setFilterStatus(status) {
-            activeStatusFilter = status;
-            ["all", "lulus", "remidi"].forEach(s => {
-                const btn = document.getElementById(`filter-${s}`);
-                if (s === status) {
-                    btn.className = "px-3 py-1.5 rounded-lg text-slate-900 dark:text-white bg-white dark:bg-slate-600 shadow-sm font-bold transition-all";
-                } else {
-                    btn.className = "px-3 py-1.5 rounded-lg text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white transition-all";
-                }
-            });
-            applyFilter();
-        }
+        function switchView(mode) {
+            currentViewMode = mode;
+            
+            // Update UI Sidebar & Bottom Nav
+            const btnAllDesktop = document.getElementById("nav-btn-all");
+            const btnRemidiDesktop = document.getElementById("nav-btn-remidi");
+            const btnAllMobile = document.getElementById("mobile-nav-all");
+            const btnRemidiMobile = document.getElementById("mobile-nav-remidi");
+            const chartSection = document.getElementById("chart-section");
+            const tableTitle = document.getElementById("table-title");
 
-        function filterBySession(sessionName) {
-            activeSessionFilter = sessionName;
+            if (mode === 'remidi') {
+                btnRemidiDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 transition-colors flex items-center gap-2";
+                btnAllDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2";
+                
+                btnRemidiMobile.className = "flex flex-col items-center gap-1 p-2 text-rose-600 dark:text-rose-400 font-bold";
+                btnAllMobile.className = "flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400";
+                
+                chartSection.style.display = "none";
+                tableTitle.innerText = "Tabel Remidi (Nilai < 80, Abaikan Nol)";
+            } else {
+                btnAllDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 transition-colors flex items-center gap-2";
+                btnRemidiDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2";
+                
+                btnAllMobile.className = "flex flex-col items-center gap-1 p-2 text-indigo-600 dark:text-indigo-400 font-bold";
+                btnRemidiMobile.className = "flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400";
+                
+                chartSection.style.display = "grid";
+                tableTitle.innerText = "Semua Sesi Ujian";
+            }
+
             applyFilter();
         }
 
         function applyFilter() {
             const query = document.getElementById("search-input").value.toLowerCase().trim();
+            let sessionIndices = targetSessionCols.map(colName => {
+                return allHeaders.findIndex(h => h.trim().toLowerCase() === colName.toLowerCase());
+            });
 
             filteredRows = allDataRows.filter(row => {
                 const matchesSearch = query === "" || row.some(cell => String(cell).toLowerCase().includes(query));
 
-                let matchesStatus = true;
-                if (activeStatusFilter !== "all") {
-                    matchesStatus = row.some(cell => {
-                        const val = String(cell).trim().toLowerCase();
-                        if (activeStatusFilter === "lulus") return val === "lulus";
-                        if (activeStatusFilter === "remidi") return val === "remidi" || val === "remedi";
-                        return false;
+                if (!matchesSearch) return false;
+
+                if (currentViewMode === 'remidi') {
+                    // Hanya ambil baris yang memiliki setidaknya satu nilai remidi (<80 dan bukan 0/kosong) pada kolom sesi target
+                    let hasRemidi = false;
+                    sessionIndices.forEach(idx => {
+                        if (idx !== -1 && row[idx] !== undefined) {
+                            const valStr = String(row[idx]).trim();
+                            const val = parseFloat(valStr);
+                            if (valStr !== "" && !isNaN(val) && val > 0 && val < 80) {
+                                hasRemidi = true;
+                            }
+                        }
                     });
+                    return hasRemidi;
                 }
 
-                let matchesSession = true;
-                if (activeSessionFilter !== "all") {
-                    const cIdx = allHeaders.findIndex(h => h.toLowerCase() === activeSessionFilter.toLowerCase());
-                    if (cIdx !== -1) {
-                        const cellVal = String(row[cIdx]).trim().toLowerCase();
-                        matchesSession = cellVal !== "" && cellVal !== "-";
-                    } else {
-                        matchesSession = false;
-                    }
-                }
-
-                return matchesSearch && matchesStatus && matchesSession;
+                return true;
             });
 
             currentPage = 1;
@@ -560,11 +564,7 @@
 
         function renderEmptyTable() {
             const tbody = document.getElementById("table-body");
-            tbody.innerHTML = `<tr><td colspan="100%" class="text-center py-8 text-slate-400">Data tidak ditemukan di Google Sheets.</td></tr>`;
-            document.getElementById("stat-total").innerText = "0";
-            document.getElementById("stat-lulus").innerText = "0";
-            document.getElementById("stat-remidi").innerText = "0";
-            document.getElementById("stat-rate").innerText = "0%";
+            tbody.innerHTML = `<tr><td colspan="100%" class="text-center py-8 text-slate-400">Data tidak ditemukan.</td></tr>`;
             document.getElementById("pagination-info").innerText = "Menampilkan 0 data";
             document.getElementById("pagination-buttons").innerHTML = "";
         }
@@ -594,6 +594,10 @@
             const startIdx = (currentPage - 1) * pageSize;
             const pageData = filteredRows.slice(startIdx, startIdx + pageSize);
 
+            let sessionIndices = targetSessionCols.map(colName => {
+                return allHeaders.findIndex(h => h.trim().toLowerCase() === colName.toLowerCase());
+            });
+
             const fragment = document.createDocumentFragment();
             pageData.forEach((row) => {
                 const tr = document.createElement("tr");
@@ -604,11 +608,20 @@
                     td.className = "p-3 border-b border-slate-100 dark:border-slate-700";
                     const cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? String(row[colIndex]).trim() : "";
                     
-                    const lowerVal = cellVal.toLowerCase();
-                    if (lowerVal === "lulus") {
-                        td.innerHTML = `<span class="badge badge-lulus"><i class="fa-solid fa-check text-[10px]"></i> Lulus</span>`;
-                    } else if (lowerVal === "remidi" || lowerVal === "remedi") {
-                        td.innerHTML = `<span class="badge badge-remidi"><i class="fa-solid fa-xmark text-[10px]"></i> Remidi</span>`;
+                    // Jika kolom termasuk sesi target, tandai jika remidi (<80, >0) atau lulus (80-100)
+                    if (sessionIndices.includes(colIndex)) {
+                        const num = parseFloat(cellVal);
+                        if (cellVal !== "" && !isNaN(num) && num > 0) {
+                            if (num < 80) {
+                                td.innerHTML = `<span class="badge badge-remidi"><i class="fa-solid fa-xmark text-[10px]"></i> ${cellVal}</span>`;
+                            } else if (num >= 80 && num <= 100) {
+                                td.innerHTML = `<span class="badge badge-lulus"><i class="fa-solid fa-check text-[10px]"></i> ${cellVal}</span>`;
+                            } else {
+                                td.innerText = cellVal;
+                            }
+                        } else {
+                            td.innerText = cellVal !== "" ? cellVal : "-";
+                        }
                     } else {
                         td.innerText = cellVal !== "" ? cellVal : "-";
                     }
