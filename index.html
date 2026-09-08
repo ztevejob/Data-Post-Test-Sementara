@@ -55,10 +55,23 @@
         <!-- SIDEBAR NAVIGATION -->
         <aside class="w-full md:w-64 bg-slate-900 text-slate-200 p-4 flex flex-col justify-between select-none flex-shrink-0">
             <div>
-                <!-- Header / Brand -->
-                <div class="px-3 py-2 mb-4 md:mb-6 flex items-center justify-between">
-                    <h2 class="text-lg font-bold text-white tracking-wide">Dashboard Assessment</h2>
-                    <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">v2.1</span>
+                <!-- Status Auto Sync & Last Update (Di Paling Atas Sidebar) -->
+                <div class="mb-4 bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-emerald-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrows-rotate fa-spin text-emerald-400"></i> Auto Sync Live Data
+                        </span>
+                        <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded-full font-mono">Active</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 flex items-center gap-1">
+                        <i class="fa-regular fa-clock text-slate-500"></i> Update: <span id="sync-timestamp" class="text-slate-300 font-medium">Memuat...</span>
+                    </p>
+                </div>
+
+                <!-- Header / Brand (Disamakan dengan Judul Nilai Post Test Sementara) -->
+                <div class="px-1 py-2 mb-4 md:mb-6 border-b border-slate-800 pb-3">
+                    <h2 class="text-base font-bold text-white tracking-wide leading-tight">Nilai Post Test Sementara</h2>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Live Assessment Portal</p>
                 </div>
 
                 <!-- Navigation Links -->
@@ -98,19 +111,13 @@
         <main class="flex-1 p-4 md:p-6 overflow-x-hidden flex flex-col justify-between">
             <div class="max-w-7xl mx-auto w-full bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
                 
-                <!-- HEADER DASHBOARD -->
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 mb-6 border-b border-slate-100 gap-3">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-900" id="page-title">Nilai Post Test Sementara</h2>
-                        <p class="text-xs md:text-sm text-slate-500">Live Sync Data Assessment Google Sheets</p>
-                    </div>
-                    <div class="flex items-center gap-2 bg-emerald-50 text-emerald-600 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold">
-                        <i class="fa-solid fa-arrows-rotate fa-spin"></i>
-                        <span>Auto Sync Live Data</span>
-                    </div>
+                <!-- HEADER DASHBOARD UTAMA -->
+                <div class="pb-4 mb-6 border-b border-slate-100">
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-900" id="page-title">Nilai Post Test Sementara</h2>
+                    <p class="text-xs md:text-sm text-slate-500">Live Sync Data Assessment Google Sheets</p>
                 </div>
 
-                <!-- 1. FILTER CONTROL (Paling Atas) -->
+                <!-- FILTER CONTROL -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <div class="relative">
@@ -141,7 +148,7 @@
                     </div>
                 </div>
 
-                <!-- 2. KARTU STATISTIK UTAMA -->
+                <!-- KARTU STATISTIK UTAMA -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
                         <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
@@ -187,9 +194,8 @@
                 <!-- VIEW 1: SUMMARY TAB -->
                 <div id="view-summary" class="space-y-6">
                     
-                    <!-- CHART VISUALISASI SUMMARY (GRID 2 CHART) -->
+                    <!-- CHART VISUALISASI SUMMARY -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <!-- Chart Bar Sesi -->
                         <div class="lg:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
                             <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
                                 <i class="fa-solid fa-chart-column text-indigo-600"></i> Chart Performa Rata-Rata per Sesi
@@ -199,7 +205,6 @@
                             </div>
                         </div>
 
-                        <!-- Chart Donut Status Kelengkapan Nilai Peserta -->
                         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
                             <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
                                 <i class="fa-solid fa-chart-pie text-indigo-600"></i> Kelengkapan Nilai Peserta
@@ -298,7 +303,6 @@
                             <i class="fa-solid fa-ranking-star text-indigo-600"></i> Ranking Toko (Top 10 vs Bottom 10)
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Top 10 Table -->
                             <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-4">
                                 <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center justify-between">
                                     <span><i class="fa-solid fa-arrow-trend-up"></i> Top 10 Stores</span>
@@ -321,7 +325,6 @@
                                 </div>
                             </div>
 
-                            <!-- Bottom 10 Table -->
                             <div class="bg-rose-50/50 border border-rose-200 rounded-xl p-4">
                                 <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
                                     <span><i class="fa-solid fa-arrow-trend-down"></i> Bottom 10 Stores</span>
@@ -348,45 +351,70 @@
 
                 </div>
 
-                <!-- VIEW 2: ALL STORE TAB (TABEL DATA LENGKAP) -->
-                <div id="view-all-store" class="hidden">
-                    <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-table-list text-indigo-600"></i> Detail Peserta & Nilai Post Test All Store
-                    </h3>
-                    <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl max-h-[600px]">
-                        <table class="w-full text-xs text-left whitespace-nowrap">
-                            <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
-                                <tr>
-                                    <th class="p-3">Store</th>
-                                    <th class="p-3">Nama</th>
-                                    <th class="p-3">NIK</th>
-                                    <th class="p-3">Work Experience</th>
-                                    <th class="p-3">SEED Registered Email</th>
-                                    <th class="p-3">Positions</th>
-                                    <th class="p-3 text-center bg-indigo-50">13-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
-                                    <th class="p-3 text-center bg-indigo-50">13-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
-                                    <th class="p-3 text-center bg-indigo-50">14-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
-                                    <th class="p-3 text-center bg-indigo-50">14-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
-                                    <th class="p-3 text-center bg-indigo-50">15-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
-                                    <th class="p-3 text-center bg-indigo-50">15-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
-                                    <th class="p-3 text-center bg-indigo-50">16-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
-                                    <th class="p-3 text-center bg-indigo-50">16-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
-                                    <th class="p-3">Keterangan</th>
-                                    <th class="p-3 text-center">Min Score</th>
-                                    <th class="p-3 text-center">Max Score</th>
-                                    <th class="p-3">Status Join</th>
-                                    <th class="p-3">Status Final</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-body-allstore" class="divide-y divide-slate-100">
-                                <tr>
-                                    <td colspan="19" class="text-center py-6 text-indigo-600">
-                                        <i class="fa-solid fa-spinner fa-spin"></i> Memuat data dari Google Sheets...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- VIEW 2: ALL STORE TAB -->
+                <div id="view-all-store" class="hidden space-y-6">
+                    
+                    <!-- TABEL RINGKASAN STORE & AVERAGE -->
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-store text-indigo-600"></i> Ringkasan Performa Rata-Rata Store
+                        </h3>
+                        <div class="table-responsive max-h-64 overflow-y-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-xs text-left">
+                                <thead class="bg-slate-100 sticky top-0 border-b border-slate-200 z-10">
+                                    <tr>
+                                        <th class="p-2.5 text-slate-700">#</th>
+                                        <th class="p-2.5 text-slate-700">Store</th>
+                                        <th class="p-2.5 text-center text-slate-700">Jumlah Peserta</th>
+                                        <th class="p-2.5 text-right text-indigo-600 font-bold">Average Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="store-summary-body" class="divide-y divide-slate-100 bg-white">
+                                    <tr><td colspan="4" class="text-center py-4 text-slate-400">Memuat ringkasan store...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
+                    <!-- TABEL DETAIL PESERTA ALL STORE -->
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-table-list text-indigo-600"></i> Detail Peserta & Nilai Post Test All Store
+                        </h3>
+                        <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl max-h-[500px]">
+                            <table class="w-full text-xs text-left whitespace-nowrap">
+                                <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
+                                    <tr>
+                                        <th class="p-3">Store</th>
+                                        <th class="p-3">Nama</th>
+                                        <th class="p-3">NIK</th>
+                                        <th class="p-3">Work Experience</th>
+                                        <th class="p-3">SEED Registered Email</th>
+                                        <th class="p-3">Positions</th>
+                                        <th class="p-3 text-center bg-indigo-50">13-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">13-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">14-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">14-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">15-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">15-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">16-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">16-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center">Max Score</th>
+                                        <th class="p-3">Status Join</th>
+                                        <th class="p-3">Status Final</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body-allstore" class="divide-y divide-slate-100 bg-white">
+                                    <tr>
+                                        <td colspan="17" class="text-center py-6 text-indigo-600">
+                                            <i class="fa-solid fa-spinner fa-spin"></i> Memuat data dari Google Sheets...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -414,6 +442,13 @@
         document.addEventListener("DOMContentLoaded", () => {
             fetchSheetData();
         });
+
+        function updateTimestamp() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById("sync-timestamp").innerText = `${dateStr}, ${timeStr} WIB`;
+        }
 
         function switchView(viewName) {
             const viewSummary = document.getElementById("view-summary");
@@ -443,6 +478,7 @@
                 skipEmptyLines: true,
                 complete: function(results) {
                     rawData = results.data;
+                    updateTimestamp();
                     populateStoreDropdown(rawData);
                     renderAllData(rawData);
                 },
@@ -450,7 +486,7 @@
                     console.error("Error fetching CSV:", err);
                     document.getElementById("table-body-allstore").innerHTML = `
                         <tr>
-                            <td colspan="19" class="text-center py-4 text-rose-500">
+                            <td colspan="17" class="text-center py-4 text-rose-500">
                                 Gagal memuat data dari Google Sheets.
                             </td>
                         </tr>`;
@@ -479,16 +515,73 @@
 
         function renderAllData(data) {
             renderTableAllStore(data);
+            renderStoreAggregateTable(data);
             renderStatsAndSummary(data);
             renderMonitoringTables(data);
         }
 
+        /* -------------------------------------------------------------
+           1. TABEL ALL STORE SUMMARY (STORE & AVERAGE)
+        ------------------------------------------------------------- */
+        function renderStoreAggregateTable(data) {
+            const tbody = document.getElementById("store-summary-body");
+            tbody.innerHTML = "";
+
+            const storeMap = {};
+
+            data.forEach(item => {
+                const store = item['Store'];
+                if (!store) return;
+                const maxVal = parseScore(item['Max Score pt.1']);
+
+                if (!storeMap[store]) {
+                    storeMap[store] = { count: 0, totalScore: 0, scoreEntries: 0 };
+                }
+
+                storeMap[store].count++;
+                if (maxVal !== null) {
+                    storeMap[store].totalScore += maxVal;
+                    storeMap[store].scoreEntries++;
+                }
+            });
+
+            const storeArray = Object.keys(storeMap).map(store => {
+                const entries = storeMap[store].scoreEntries;
+                const total = storeMap[store].totalScore;
+                return {
+                    store: store,
+                    count: storeMap[store].count,
+                    avg: entries > 0 ? (total / entries) : 0
+                };
+            }).sort((a, b) => a.store.localeCompare(b.store));
+
+            if (storeArray.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-3 text-slate-400">Tidak ada data store</td></tr>`;
+                return;
+            }
+
+            storeArray.forEach((item, index) => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-2.5 font-bold text-slate-400">${index + 1}</td>
+                    <td class="p-2.5 font-semibold text-slate-800">${item.store}</td>
+                    <td class="p-2.5 text-center text-slate-600">${item.count}</td>
+                    <td class="p-2.5 text-right font-bold text-indigo-600">${item.avg.toFixed(1)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* -------------------------------------------------------------
+           2. TABEL DETAIL ALL STORE (KETERANGAN & MIN SCORE DIHAPUS)
+        ------------------------------------------------------------- */
         function renderTableAllStore(data) {
             const tbody = document.getElementById("table-body-allstore");
             tbody.innerHTML = "";
 
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="19" class="text-center py-4 text-slate-400">Data tidak ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="17" class="text-center py-4 text-slate-400">Data tidak ditemukan.</td></tr>`;
                 return;
             }
 
@@ -509,8 +602,6 @@
                 const d16p = item['16-7-2026 Pagi'] || '-';
                 const d16s = item['16-7-2026 Siang'] || '-';
 
-                const ket = item['Keterangan'] || '-';
-                const minVal = parseScore(item['Min Score pt.1']);
                 const maxVal = parseScore(item['Max Score pt.1']);
                 const join = item['Keterangan Join / Tidak Join'] || '-';
                 const status = item['Status Remidi / Lulus'] || '-';
@@ -546,8 +637,6 @@
                     <td class="p-3 text-center">${d15s}</td>
                     <td class="p-3 text-center">${d16p}</td>
                     <td class="p-3 text-center">${d16s}</td>
-                    <td class="p-3">${ket}</td>
-                    <td class="p-3 text-center font-semibold">${minVal !== null ? minVal : '-'}</td>
                     <td class="p-3 text-center font-semibold text-indigo-600">${maxVal !== null ? maxVal : '-'}</td>
                     <td class="p-3"><span class="badge ${joinBadgeClass}">${join}</span></td>
                     <td class="p-3"><span class="badge ${statusBadgeClass}">${status}</span></td>
@@ -557,7 +646,7 @@
         }
 
         /* -------------------------------------------------------------
-           PERHITUNGAN DAN RENDER REMIDI VS MISSING TABLE (SIDE BY SIDE)
+           3. MONITORING TABLES (REMIDI VS MISSING SCORE BASED ON NAMA & MAX SCORE)
         ------------------------------------------------------------- */
         function renderMonitoringTables(data) {
             const remidiBody = document.getElementById("remidi-staff-body");
@@ -575,10 +664,9 @@
                 const status = (item['Status Remidi / Lulus'] || '').trim();
                 const maxVal = parseScore(item['Max Score pt.1']);
 
-                // Filter hanya yang memiliki nama valid
                 if (!nama || nama === '-') return;
 
-                // 1. Cek Kelengkapan Nilai untuk Chart (Nama vs Max Score pt.1)
+                // Evaluasi hanya dari Nama & Max Score pt.1
                 if (maxVal !== null && maxVal > 0) {
                     hasScoreCount++;
                 } else {
@@ -586,17 +674,14 @@
                     missingList.push({ nama, store });
                 }
 
-                // 2. Cek Staff Remidi
                 if (status.toLowerCase().includes('remidi')) {
                     remidiList.push({ nama, store, maxVal: maxVal !== null ? maxVal : '-' });
                 }
             });
 
-            // Update Badge Count
             document.getElementById("badge-count-remidi").innerText = `${remidiList.length} Staff`;
             document.getElementById("badge-count-missing").innerText = `${missingList.length} Staff`;
 
-            // Render Table Staff Remidi
             remidiBody.innerHTML = remidiList.length > 0 ? remidiList.map(item => `
                 <tr class="hover:bg-rose-100/50">
                     <td class="py-1.5 px-2 font-semibold text-slate-800">${item.nama}</td>
@@ -605,7 +690,6 @@
                 </tr>
             `).join('') : `<tr><td colspan="3" class="text-center py-3 text-slate-400">Tidak ada staff remidi</td></tr>`;
 
-            // Render Table Staff Nilai Tidak Ditemukan
             missingBody.innerHTML = missingList.length > 0 ? missingList.map(item => `
                 <tr class="hover:bg-amber-100/50">
                     <td class="py-1.5 px-2 font-semibold text-slate-800">${item.nama}</td>
@@ -614,7 +698,6 @@
                 </tr>
             `).join('') : `<tr><td colspan="3" class="text-center py-3 text-slate-400">Semua nilai peserta lengkap</td></tr>`;
 
-            // Render Donut Chart Status Kelengkapan Nilai
             renderStatusChart(hasScoreCount, missingScoreCount);
         }
 
@@ -709,6 +792,10 @@
             `).join('') : `<tr><td colspan="4" class="text-center py-2 text-slate-400">Tidak ada data</td></tr>`;
         }
 
+        /* -------------------------------------------------------------
+           4. SESI SUMMARY: METRIK NILAI TIDAK MUNCUL / ABSENCE
+           HANYA BERDASARKAN HASIL EVALUASI NAMA & MAX SCORE PT.1
+        ------------------------------------------------------------- */
         function renderSessionSummaryAndChart(data) {
             const summaryBody = document.getElementById("session-summary-body");
             const metrics = { attended: {}, sum: {}, countValids: {}, failed: {}, missing: {} };
@@ -722,6 +809,12 @@
             });
 
             data.forEach(item => {
+                const nama = item['Nama'] ? item['Nama'].trim() : '';
+                if (!nama || nama === '-') return;
+
+                const maxVal = parseScore(item['Max Score pt.1']);
+                const isOverallMissing = (maxVal === null || maxVal <= 0);
+
                 SESSION_KEYS.forEach(key => {
                     const rawVal = item[key];
                     const numVal = parseScore(rawVal);
@@ -733,10 +826,11 @@
                             metrics.sum[key] += numVal;
                             metrics.countValids[key]++;
                             if (numVal < 70) metrics.failed[key]++;
-                        } else {
-                            metrics.missing[key]++;
                         }
-                    } else {
+                    }
+
+                    // Hanya dihitung jika peserta terdaftar tetapi Max Score pt.1 tidak ditemukan / 0
+                    if (isOverallMissing) {
                         metrics.missing[key]++;
                     }
                 });
@@ -750,16 +844,13 @@
 
             const rowFailed = `<tr><td class="p-2.5 font-bold text-slate-700">Tidak Lulus (&lt;70)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-semibold text-rose-500">${metrics.failed[k]}</td>`).join('') + `</tr>`;
 
-            const rowMissing = `<tr><td class="p-2.5 font-bold text-slate-500">Nilai Tidak Muncul / Absence</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center text-amber-600">${metrics.missing[k]}</td>`).join('') + `</tr>`;
+            const rowMissing = `<tr><td class="p-2.5 font-bold text-slate-500">Nilai Tidak Muncul / Absence</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center text-amber-600 font-semibold">${metrics.missing[k]}</td>`).join('') + `</tr>`;
 
             summaryBody.innerHTML = rowAttended + rowAverage + rowFailed + rowMissing;
 
             renderSummaryChart(sessionAverages);
         }
 
-        /* -------------------------------------------------------------
-           CHART RENDERING LOGIC (SESSION BAR CHART & STATUS DONUT CHART)
-        ------------------------------------------------------------- */
         function renderSummaryChart(averagesData) {
             const ctx = document.getElementById('sessionChart').getContext('2d');
 
