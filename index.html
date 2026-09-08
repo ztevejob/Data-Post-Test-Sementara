@@ -61,8 +61,9 @@
     <div id="login-modal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md p-6 md:p-8 relative">
             <div class="text-center mb-6">
-                <div class="w-12 h-12 bg-indigo-600 rounded-xl mx-auto flex items-center justify-center text-white text-xl font-bold mb-3 shadow-lg shadow-indigo-500/30">
-                    <i class="fa-solid fa-lock"></i>
+                <!-- LOGO DENGAN GAMBAR/IKON ORANG -->
+                <div class="w-14 h-14 bg-indigo-600 rounded-full mx-auto flex items-center justify-center text-white text-2xl font-bold mb-3 shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-user-circle"></i>
                 </div>
                 <h2 class="text-xl font-bold text-slate-900">Login User MAPTECH</h2>
                 <p class="text-xs text-slate-500 mt-1">Silakan pilih Kode Toko dan masukkan password akses Anda</p>
@@ -97,7 +98,7 @@
             </form>
             
             <div class="mt-6 text-center text-[10px] text-slate-400 border-t border-slate-100 pt-3">
-                Concept & Curation by <b class="text-slate-600">Novi Riyanto</b>
+                Concept & Curation by <b class="text-slate-600">Novi Riyanto</b> <span id="login-app-version" class="text-indigo-600 font-mono font-bold"></span>
             </div>
         </div>
     </div>
@@ -110,9 +111,26 @@
             
             <!-- Tampilan Desktop & Tablet (Disembunyikan di Mobile) -->
             <div class="hidden md:block w-full">
-                <!-- CONCEPT & CURATION -->
-                <div class="px-1 mb-2 text-[10px] text-slate-400 font-medium tracking-tight border-l-2 border-indigo-500 pl-2">
-                    Concept & Curation by <span class="text-slate-200 font-semibold">Novi Riyanto</span>
+                
+                <!-- USER INFO & LOGOUT BUTTON (Paling Atas Sidebar Desktop) -->
+                <div class="bg-slate-800/90 border border-slate-700/80 rounded-xl p-3 mb-4 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white" id="user-avatar-initial">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="text-xs overflow-hidden">
+                            <p class="font-bold text-white truncate" id="user-display-store">Store</p>
+                            <p class="text-[10px] text-slate-400">MAPTECH User</p>
+                        </div>
+                    </div>
+                    <button onclick="handleLogout()" title="Logout" class="text-slate-400 hover:text-rose-400 text-sm p-1.5 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+
+                <!-- CONCEPT & CURATION & VERSI -->
+                <div class="px-1 mb-3 text-[10px] text-slate-400 font-medium tracking-tight border-l-2 border-indigo-500 pl-2">
+                    Concept & Curation by <span class="text-slate-200 font-semibold">Novi Riyanto</span> <span id="sidebar-app-version" class="text-indigo-400 font-mono font-bold ml-1"></span>
                 </div>
 
                 <!-- Status AutoSync -->
@@ -152,24 +170,6 @@
                 </nav>
             </div>
 
-            <!-- Footer Desktop (Disembunyikan di Mobile) -->
-            <div class="hidden md:block border-t border-slate-800 pt-4 mt-6">
-                <div class="flex items-center justify-between px-2">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white" id="user-avatar-initial">
-                            M
-                        </div>
-                        <div class="text-xs">
-                            <p class="font-medium text-white" id="user-display-store">Store</p>
-                            <p class="text-slate-500">MAPTECH User</p>
-                        </div>
-                    </div>
-                    <button onclick="handleLogout()" title="Logout" class="text-slate-400 hover:text-rose-400 text-sm p-1.5 transition-colors">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </button>
-                </div>
-            </div>
-
             <!-- MENU DOCK MOBILE (Hanya Tampil di Perangkat Gawai) -->
             <nav class="flex md:hidden w-full items-center justify-around">
                 <button onclick="switchView('summary')" id="nav-mobile-summary" class="flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors">
@@ -183,10 +183,17 @@
                     <span id="badge-mobile-team-count" class="absolute -top-1 right-2 bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">0</span>
                 </button>
 
-                <button onclick="handleLogout()" class="flex flex-col items-center justify-center py-1 px-3 text-rose-400 hover:text-rose-300 font-medium transition-colors">
-                    <i class="fa-solid fa-right-from-bracket text-lg mb-0.5"></i>
-                    <span class="text-[10px]">Logout</span>
-                </button>
+                <!-- INFO USER & LOGOUT MOBILE (Terkumpul di Menu Bawah Kanan) -->
+                <div class="flex items-center gap-1 bg-slate-800/80 pl-2 pr-1 py-1 rounded-lg border border-slate-700/60">
+                    <div class="text-right">
+                        <p class="text-[9px] font-bold text-slate-200 leading-tight" id="user-display-store-mobile">Store</p>
+                        <p class="text-[8px] text-slate-400 leading-tight">User</p>
+                    </div>
+                    <button onclick="handleLogout()" class="flex flex-col items-center justify-center py-1 px-2 text-rose-400 hover:text-rose-300 font-medium transition-colors" title="Logout">
+                        <i class="fa-solid fa-right-from-bracket text-base"></i>
+                        <span class="text-[9px]">Logout</span>
+                    </button>
+                </div>
             </nav>
         </aside>
 
@@ -197,7 +204,7 @@
                 <!-- HEADER MOBILE BANNER (Tampil Khusus di Mobile untuk Info AutoSync & Curator) -->
                 <div class="block md:hidden mb-4 p-3 bg-slate-900 text-white rounded-xl">
                     <div class="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-2 mb-2">
-                        <span>Concept & Curation by <b class="text-slate-200">Novi Riyanto</b></span>
+                        <span>Concept & Curation by <b class="text-slate-200">Novi Riyanto</b> <span id="mobile-app-version" class="text-indigo-400 font-mono font-bold"></span></span>
                         <span class="text-neon-green font-bold"><i class="fa-solid fa-bolt"></i> AutoSync</span>
                     </div>
                     <div class="text-[10px] text-slate-400 flex justify-between items-center">
@@ -517,6 +524,7 @@
     </div>
 
     <script>
+        // URL FETCH DATA CSV GOOGLE SHEET BARU
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-qqVF7ni3YNO19bT149rKAXNvemlgIvWYpJ0-QOs9F6WAJJ-c-Z3XqDl83jrbfoip7zu2D5aWYxfa/pub?output=csv";
 
         // Daftar Kode Toko MAPTECH
@@ -546,10 +554,33 @@
             '11-Sept-2026 Pagi', '11-Sept-2026 Siang'
         ];
 
+        // FUNGSI GENERATE VERSI DENGAN TITIK (YYYY.MM.DD.HH.MM)
+        function generateVersionString() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${year}.${month}.${day}.${hours}.${minutes}`;
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
+            initVersionDisplay();
             initLoginModal();
             checkAuth();
         });
+
+        function initVersionDisplay() {
+            const versionStr = `v${generateVersionString()}`;
+            const loginVer = document.getElementById("login-app-version");
+            const sidebarVer = document.getElementById("sidebar-app-version");
+            const mobileVer = document.getElementById("mobile-app-version");
+
+            if (loginVer) loginVer.innerText = versionStr;
+            if (sidebarVer) sidebarVer.innerText = versionStr;
+            if (mobileVer) mobileVer.innerText = versionStr;
+        }
 
         function initLoginModal() {
             const selectEl = document.getElementById("login-username");
@@ -569,9 +600,14 @@
                 document.getElementById("login-modal").classList.add("hidden");
                 document.getElementById("app-wrapper").classList.remove("hidden");
                 
-                // Update UI User
-                document.getElementById("user-display-store").innerText = loggedInStore;
-                document.getElementById("user-avatar-initial").innerText = loggedInStore.charAt(0);
+                // Update UI Display User Toko Desktop & Mobile
+                const userDisplay = document.getElementById("user-display-store");
+                const userDisplayMobile = document.getElementById("user-display-store-mobile");
+                const avatarInitial = document.getElementById("user-avatar-initial");
+
+                if (userDisplay) userDisplay.innerText = loggedInStore;
+                if (userDisplayMobile) userDisplayMobile.innerText = loggedInStore;
+                if (avatarInitial) avatarInitial.innerText = loggedInStore.charAt(0);
                 
                 fetchSheetData();
             } else {
