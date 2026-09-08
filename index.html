@@ -77,7 +77,7 @@
                 <!-- Header / Brand -->
                 <div class="px-1 py-2 mb-4 md:mb-6 border-b border-slate-800 pb-3">
                     <h2 class="text-base font-bold text-white tracking-wide leading-tight">Nilai Post Test Sementara</h2>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Live Assessment Portal</p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Assessment Portal</p>
                 </div>
 
                 <!-- Navigation Links -->
@@ -120,10 +120,9 @@
                 <!-- HEADER DASHBOARD UTAMA -->
                 <div class="pb-4 mb-6 border-b border-slate-100">
                     <h2 class="text-xl md:text-2xl font-bold text-slate-900" id="page-title">Nilai Post Test Sementara</h2>
-                    <p class="text-xs md:text-sm text-slate-500">Live Sync Data Assessment Google Sheets</p>
                 </div>
 
-                <!-- FILTER CONTROL (RESPONSIF & RINGAN) -->
+                <!-- FILTER CONTROL -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <div class="relative">
@@ -211,7 +210,7 @@
                             </div>
                         </div>
 
-                        <!-- Kelengkapan Nilai Peserta (Tulisan Sub-judul Dihapus) -->
+                        <!-- Kelengkapan Nilai Peserta -->
                         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
                             <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
                                 <i class="fa-solid fa-chart-pie text-indigo-600"></i> Kelengkapan Nilai Peserta
@@ -222,7 +221,7 @@
                         </div>
                     </div>
 
-                    <!-- TABEL SIDE BY SIDE: STAFF REMIDI VS NILAI TIDAK DITEMUKAN -->
+                    <!-- TABEL MONITORING KHUSUS -->
                     <div>
                         <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Monitoring Khusus Staff (Remidi & Nilai Belum Muncul)
@@ -254,7 +253,7 @@
                             <!-- Tabel Staff Nilai Tidak Ditemukan -->
                             <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-4">
                                 <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-2 flex items-center justify-between">
-                                    <span><i class="fa-solid fa-circle-question"></i> Nilai Tidak Ditemukan / Kosong</span>
+                                    <span><i class="fa-solid fa-circle-question"></i> Nilai Belum Keluar / Kosong</span>
                                     <span id="badge-count-missing" class="text-[10px] bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full font-bold">0 Staff</span>
                                 </h4>
                                 <div class="table-responsive max-h-56 overflow-y-auto">
@@ -391,6 +390,7 @@
                             <table class="w-full text-xs text-left whitespace-nowrap">
                                 <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
                                     <tr>
+                                        <th class="p-3 text-center">No</th>
                                         <th class="p-3">Store</th>
                                         <th class="p-3">Nama</th>
                                         <th class="p-3">NIK</th>
@@ -405,15 +405,15 @@
                                         <th class="p-3 text-center bg-indigo-50">15-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
                                         <th class="p-3 text-center bg-indigo-50">16-7-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
                                         <th class="p-3 text-center bg-indigo-50">16-7-2026<br><span class="font-normal text-[10px]">Siang</span></th>
-                                        <th class="p-3 text-center">Max Score</th>
+                                        <th class="p-3 text-center font-bold text-indigo-600">Max Score</th>
                                         <th class="p-3">Status Join</th>
                                         <th class="p-3">Status Final</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body-allstore" class="divide-y divide-slate-100 bg-white">
                                     <tr>
-                                        <td colspan="17" class="text-center py-6 text-indigo-600">
-                                            <i class="fa-solid fa-spinner fa-spin"></i> Memuat data dari Google Sheets...
+                                        <td colspan="18" class="text-center py-6 text-indigo-600">
+                                            <i class="fa-solid fa-spinner fa-spin"></i> Memuat data...
                                         </td>
                                     </tr>
                                 </tbody>
@@ -478,13 +478,21 @@
             }
         }
 
+        /* MEMVALIDASI NAMA TERISI & BUKAN KOSONG/DASH */
+        function isValidName(nama) {
+            if (!nama) return false;
+            const clean = String(nama).trim();
+            return clean !== '' && clean !== '-';
+        }
+
         function fetchSheetData() {
             Papa.parse(CSV_URL, {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    rawData = results.data;
+                    // Filter awal: Lewati baris yang tidak memiliki Nama valid
+                    rawData = results.data.filter(item => isValidName(item['Nama']));
                     updateTimestamp();
                     populateStoreDropdown(rawData);
                     renderAllData(rawData);
@@ -493,19 +501,17 @@
                     console.error("Error fetching CSV:", err);
                     document.getElementById("table-body-allstore").innerHTML = `
                         <tr>
-                            <td colspan="17" class="text-center py-4 text-rose-500">
-                                Gagal memuat data dari Google Sheets.
+                            <td colspan="18" class="text-center py-4 text-rose-500">
+                                Gagal memuat data.
                             </td>
                         </tr>`;
                 }
             });
         }
 
-        /* MEMASUKKAN SELURUH TOKO TANPA DUPLIKASI DAN TERURUT ALFABETIS */
         function populateStoreDropdown(data) {
             const storeSelect = document.getElementById("filter-store");
             
-            // Mengambil semua unik nama toko dari dataset
             const storeSet = new Set();
             data.forEach(item => {
                 const storeName = item['Store'] ? item['Store'].trim() : '';
@@ -516,7 +522,6 @@
 
             const sortedStores = Array.from(storeSet).sort((a, b) => a.localeCompare(b));
 
-            // Fragmenting DOM Insertion untuk performa ringan
             const fragment = document.createDocumentFragment();
             const defaultOption = document.createElement("option");
             defaultOption.value = "";
@@ -548,7 +553,6 @@
             renderMonitoringTables(data);
         }
 
-        /* RINGKASAN AGREGAT STORE */
         function renderStoreAggregateTable(data) {
             const tbody = document.getElementById("store-summary-body");
             tbody.innerHTML = "";
@@ -601,21 +605,21 @@
             tbody.appendChild(fragment);
         }
 
-        /* TABEL DETAIL ALL STORE */
+        /* TABEL DETAIL ALL STORE DENGAN NOMOR URUT DAN URUTAN KOLOM ATRIBUT UTAMA */
         function renderTableAllStore(data) {
             const tbody = document.getElementById("table-body-allstore");
             tbody.innerHTML = "";
 
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="17" class="text-center py-4 text-slate-400">Data tidak ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="18" class="text-center py-4 text-slate-400">Data tidak ditemukan.</td></tr>`;
                 return;
             }
 
             const fragment = document.createDocumentFragment();
 
-            data.forEach(item => {
+            data.forEach((item, index) => {
                 const store = item['Store'] || '-';
-                const nama = item['Nama'] ? item['Nama'].trim() : '-';
+                const nama = item['Nama'].trim();
                 const nik = item['NIK'] || '-';
                 const exp = item['Work Experience'] || '-';
                 const email = item['SEED Registered Email'] || '-';
@@ -651,6 +655,7 @@
                 const tr = document.createElement("tr");
                 tr.className = "hover:bg-slate-50 transition-colors";
                 tr.innerHTML = `
+                    <td class="p-3 text-center font-bold text-slate-400">${index + 1}</td>
                     <td class="p-3 font-medium">${store}</td>
                     <td class="p-3 font-semibold text-slate-900">${nama}</td>
                     <td class="p-3">${nik}</td>
@@ -675,7 +680,7 @@
             tbody.appendChild(fragment);
         }
 
-        /* MONITORING TABEL KHUSUS */
+        /* MONITORING TABEL KHUSUS & PERHITUNGAN SCORE STATUS */
         function renderMonitoringTables(data) {
             const remidiBody = document.getElementById("remidi-staff-body");
             const missingBody = document.getElementById("missing-staff-body");
@@ -687,12 +692,10 @@
             let missingScoreCount = 0;
 
             data.forEach(item => {
-                const nama = item['Nama'] ? item['Nama'].trim() : '';
+                const nama = item['Nama'].trim();
                 const store = item['Store'] || '-';
                 const status = (item['Status Remidi / Lulus'] || '').trim();
                 const maxVal = parseScore(item['Max Score pt.1']);
-
-                if (!nama || nama === '-') return;
 
                 if (maxVal !== null && maxVal > 0) {
                     hasScoreCount++;
@@ -721,25 +724,24 @@
                 <tr class="hover:bg-amber-100/50">
                     <td class="py-1.5 px-2 font-semibold text-slate-800">${item.nama}</td>
                     <td class="py-1.5 px-2 text-slate-600">${item.store}</td>
-                    <td class="py-1.5 px-2 text-center"><span class="badge badge-absent">Nilai Kosong</span></td>
+                    <td class="py-1.5 px-2 text-center"><span class="badge badge-absent">Belum Keluar</span></td>
                 </tr>
             `).join('') : `<tr><td colspan="3" class="text-center py-3 text-slate-400">Semua nilai peserta lengkap</td></tr>`;
 
             renderStatusChart(hasScoreCount, missingScoreCount);
         }
 
+        /* KALKULASI STATISTIK UTAMA (AKURAT & TIDAK TIMPANG) */
         function renderStatsAndSummary(data) {
             let totalMinScore = 0;
             let totalMaxScore = 0;
             let totalPassed = 0;
             let validMinCount = 0;
             let validMaxCount = 0;
-            let totalNamaCount = 0;
+
+            const totalPeserta = data.length; // Karena sudah di-filter di awal (Nama terisi saja)
 
             data.forEach(item => {
-                const nama = item['Nama'] ? item['Nama'].trim() : '';
-                if (nama !== '' && nama !== '-') totalNamaCount++;
-
                 const minVal = parseScore(item['Min Score pt.1']);
                 const maxVal = parseScore(item['Max Score pt.1']);
 
@@ -752,13 +754,13 @@
 
             const avgMin = validMinCount > 0 ? (totalMinScore / validMinCount).toFixed(1) : 0;
             const avgMax = validMaxCount > 0 ? (totalMaxScore / validMaxCount).toFixed(1) : 0;
-            const passRate = totalNamaCount > 0 ? ((totalPassed / totalNamaCount) * 100).toFixed(0) + "%" : "0%";
+            const passRate = totalPeserta > 0 ? ((totalPassed / totalPeserta) * 100).toFixed(0) + "%" : "0%";
 
-            document.getElementById("stat-total").innerText = totalNamaCount;
+            document.getElementById("stat-total").innerText = totalPeserta;
             document.getElementById("stat-avg-min").innerText = avgMin;
             document.getElementById("stat-avg-max").innerText = avgMax;
             document.getElementById("stat-pass-rate").innerText = passRate;
-            document.getElementById("badge-team-count").innerText = totalNamaCount;
+            document.getElementById("badge-team-count").innerText = totalPeserta;
 
             renderStoreRankings(data);
             renderSessionSummaryAndChart(data);
@@ -832,9 +834,6 @@
             });
 
             data.forEach(item => {
-                const nama = item['Nama'] ? item['Nama'].trim() : '';
-                if (!nama || nama === '-') return;
-
                 const maxVal = parseScore(item['Max Score pt.1']);
                 const isOverallMissing = (maxVal === null || maxVal <= 0);
 
@@ -866,7 +865,7 @@
 
             const rowFailed = `<tr><td class="p-2.5 font-bold text-slate-700">Tidak Lulus (&lt;70)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-semibold text-rose-500">${metrics.failed[k]}</td>`).join('') + `</tr>`;
 
-            const rowMissing = `<tr><td class="p-2.5 font-bold text-slate-500">Nilai Tidak Muncul / Absence</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center text-amber-600 font-semibold">${metrics.missing[k]}</td>`).join('') + `</tr>`;
+            const rowMissing = `<tr><td class="p-2.5 font-bold text-slate-500">Nilai Belum Keluar / Absence</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center text-amber-600 font-semibold">${metrics.missing[k]}</td>`).join('') + `</tr>`;
 
             summaryBody.innerHTML = rowAttended + rowAverage + rowFailed + rowMissing;
 
@@ -933,7 +932,6 @@
             });
         }
 
-        /* DEBOUNCE UNTUK OPTIMASI PERFORMANSA FILTER TEKS */
         function debounceFilter() {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
