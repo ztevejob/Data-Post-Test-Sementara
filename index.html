@@ -27,10 +27,10 @@
             color: #2b3674;
         }
 
-        /* Neon Purple Utility */
-        .text-neon-purple {
-            color: #c084fc;
-            text-shadow: 0 0 8px rgba(192, 132, 252, 0.6);
+        /* Neon Green Utility */
+        .text-neon-green {
+            color: #39ff14;
+            text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
         }
 
         /* Status Badges */
@@ -72,10 +72,10 @@
                 <!-- Status AutoSync -->
                 <div class="mb-4 bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 flex flex-col gap-1.5">
                     <div class="flex items-center justify-between">
-                        <span class="text-[12px] font-bold text-neon-purple tracking-wide flex items-center gap-1.5">
-                            <i class="fa-solid fa-bolt text-purple-400"></i> AutoSync
+                        <span class="text-[12px] font-bold text-neon-green tracking-wide flex items-center gap-1.5">
+                            <i class="fa-solid fa-bolt text-emerald-400"></i> AutoSync
                         </span>
-                        <span class="text-[9px] bg-purple-500/10 text-purple-300 border border-purple-500/30 px-1.5 py-0.5 rounded-full font-mono">Active</span>
+                        <span class="text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-mono">Active</span>
                     </div>
                     <p class="text-[10px] text-slate-400 flex items-center gap-1">
                         <i class="fa-regular fa-clock text-slate-500"></i> Update: <span id="sync-timestamp" class="text-slate-300 font-medium">Memuat...</span>
@@ -85,7 +85,6 @@
                 <!-- Header / Brand -->
                 <div class="px-1 py-2 mb-4 border-b border-slate-800 pb-3">
                     <h2 class="text-base font-bold text-white tracking-wide leading-tight">Nilai Post Test Sementara</h2>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Assessment Portal</p>
                 </div>
 
                 <!-- Navigation Links Desktop -->
@@ -143,7 +142,7 @@
                 <div class="block md:hidden mb-4 p-3 bg-slate-900 text-white rounded-xl">
                     <div class="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-2 mb-2">
                         <span>Concept & Curation by <b class="text-slate-200">Novi Riyanto</b></span>
-                        <span class="text-neon-purple font-bold"><i class="fa-solid fa-bolt"></i> AutoSync</span>
+                        <span class="text-neon-green font-bold"><i class="fa-solid fa-bolt"></i> AutoSync</span>
                     </div>
                     <div class="text-[10px] text-slate-400 flex justify-between items-center">
                         <span>Last Update:</span>
@@ -191,21 +190,21 @@
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-4 mb-6">
                     <div class="bg-slate-50 border border-slate-200 p-3 md:p-4 rounded-xl flex items-center gap-3">
                         <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-base md:text-lg">
-                            <i class="fa-solid fa-users"></i>
+                            <i class="fa-solid fa-user-group"></i>
                         </div>
                         <div>
-                            <span class="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Peserta</span>
-                            <h3 id="stat-total" class="text-base md:text-lg font-bold text-slate-800">0</h3>
+                            <span class="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Karyawan</span>
+                            <h3 id="stat-total-karyawan" class="text-base md:text-lg font-bold text-slate-800">0</h3>
                         </div>
                     </div>
 
                     <div class="bg-slate-50 border border-slate-200 p-3 md:p-4 rounded-xl flex items-center gap-3">
                         <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-base md:text-lg">
-                            <i class="fa-solid fa-chart-line"></i>
+                            <i class="fa-solid fa-users"></i>
                         </div>
                         <div>
-                            <span class="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">Avg Min Score</span>
-                            <h3 id="stat-avg-min" class="text-base md:text-lg font-bold text-slate-800">0</h3>
+                            <span class="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Peserta</span>
+                            <h3 id="stat-total" class="text-base md:text-lg font-bold text-slate-800">0 / 0</h3>
                         </div>
                     </div>
 
@@ -224,7 +223,7 @@
                             <i class="fa-solid fa-user-check"></i>
                         </div>
                         <div>
-                            <span class="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">Pass Rate</span>
+                            <span class="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">Pass Rate (&ge;80)</span>
                             <h3 id="stat-pass-rate" class="text-base md:text-lg font-bold text-slate-800">0%</h3>
                         </div>
                     </div>
@@ -464,6 +463,20 @@
     <script>
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-qqVF7ni3YNO19bT149rKAXNvemlgIvWYpJ0-QOs9F6WAJJ-c-Z3XqDl83jrbfoip7zu2D5aWYxfa/pub?output=csv";
 
+        // Daftar Kode Toko MAPTECH
+        const MAPTECH_STORE_CODES = [
+            "M108", "M116", "M117", "M118", "M119", "M120", "M121", "M122", "M123", "M124", 
+            "M125", "M126", "M127", "M128", "M129", "M130", "M131", "M201", "M203", "M205", 
+            "M206", "M212", "M214", "M215", "M216", "M217", "M218", "M219", "M220", "M221", 
+            "M222", "M223", "M224", "M225", "M226", "M227", "M228", "M229", "M230", "M231", 
+            "M232", "M233", "M234", "M235", "M236", "M237", "M238", "M239", "M240", "M241", 
+            "M243", "M244", "M245", "M246", "M247", "M248", "M249", "M250", "M251", "M252", 
+            "M253", "M254", "M255", "M256", "M257", "M258", "M259", "M260", "M261", "M262", 
+            "M263", "M264", "M265", "M266", "M267", "M268", "M269", "M270", "M271", "M272", 
+            "M273", "M274", "M275", "M276", "M277", "M278", "M279", "M281", "M282", "M283", 
+            "M284", "M285", "M286", "M287", "M288", "M289", "M290", "M293", "M294", "M295"
+        ];
+
         let rawData = [];
         let sessionChartInstance = null;
         let statusChartInstance = null;
@@ -594,6 +607,11 @@
             return isNaN(num) ? null : num;
         }
 
+        function getCalculatedStatus(maxVal) {
+            if (maxVal === null || maxVal === undefined) return 'Remidi';
+            return maxVal >= 80 ? 'Lulus' : 'Remidi';
+        }
+
         function renderAllData(data) {
             renderTableAllStore(data);
             renderStoreAggregateTable(data);
@@ -683,7 +701,9 @@
 
                 const maxVal = parseScore(item['Max Score pt.1']);
                 const join = item['Keterangan Join / Tidak Join'] || '-';
-                const status = item['Status Remidi / Lulus'] || '-';
+                
+                // Pass rate standard 80
+                const calculatedStatus = getCalculatedStatus(maxVal);
 
                 let joinBadgeClass = 'badge-default';
                 if (String(join).toLowerCase().includes('join') && !String(join).toLowerCase().includes('tidak')) {
@@ -692,12 +712,7 @@
                     joinBadgeClass = 'badge-absent';
                 }
 
-                let statusBadgeClass = 'badge-default';
-                if (String(status).toLowerCase().includes('lulus')) {
-                    statusBadgeClass = 'badge-lulus';
-                } else if (String(status).toLowerCase().includes('remidi')) {
-                    statusBadgeClass = 'badge-remidi';
-                }
+                let statusBadgeClass = calculatedStatus === 'Lulus' ? 'badge-lulus' : 'badge-remidi';
 
                 const tr = document.createElement("tr");
                 tr.className = "hover:bg-slate-50 transition-colors";
@@ -719,7 +734,7 @@
                     <td class="p-3 text-center">${d16s}</td>
                     <td class="p-3 text-center font-semibold text-indigo-600">${maxVal !== null ? maxVal : 0}</td>
                     <td class="p-3"><span class="badge ${joinBadgeClass}">${join}</span></td>
-                    <td class="p-3"><span class="badge ${statusBadgeClass}">${status}</span></td>
+                    <td class="p-3"><span class="badge ${statusBadgeClass}">${calculatedStatus}</span></td>
                 `;
                 fragment.appendChild(tr);
             });
@@ -740,17 +755,17 @@
             data.forEach(item => {
                 const nama = item['Nama'].trim();
                 const store = item['Store'] || '-';
-                const status = (item['Status Remidi / Lulus'] || '').trim();
                 const maxVal = parseScore(item['Max Score pt.1']);
+                const status = getCalculatedStatus(maxVal);
 
-                if (maxVal !== null && maxVal > 0) {
+                if (maxVal !== null) {
                     hasScoreCount++;
                 } else {
                     missingScoreCount++;
                     missingList.push({ nama, store });
                 }
 
-                if (status.toLowerCase().includes('remidi')) {
+                if (status === 'Remidi') {
                     remidiList.push({ nama, store, maxVal: maxVal !== null ? maxVal : 0 });
                 }
             });
@@ -778,37 +793,37 @@
         }
 
         function renderStatsAndSummary(data) {
-            let totalMinScore = 0;
             let totalMaxScore = 0;
             let totalPassed = 0;
-            let validMinCount = 0;
             let validMaxCount = 0;
+            let ratedStaffCount = 0;
 
-            const totalPeserta = data.length;
+            const totalKaryawan = data.length;
 
             data.forEach(item => {
-                const minVal = parseScore(item['Min Score pt.1']);
                 const maxVal = parseScore(item['Max Score pt.1']);
 
-                if (minVal !== null) { totalMinScore += minVal; validMinCount++; }
-                if (maxVal !== null) { totalMaxScore += maxVal; validMaxCount++; }
+                if (maxVal !== null) { 
+                    totalMaxScore += maxVal; 
+                    validMaxCount++; 
+                    ratedStaffCount++;
+                }
 
-                const status = item['Status Remidi / Lulus'] || '';
-                if (String(status).trim().toLowerCase() === 'lulus') totalPassed++;
+                const status = getCalculatedStatus(maxVal);
+                if (status === 'Lulus') totalPassed++;
             });
 
-            const avgMin = validMinCount > 0 ? (totalMinScore / validMinCount).toFixed(1) : 0;
             const avgMax = validMaxCount > 0 ? (totalMaxScore / validMaxCount).toFixed(1) : 0;
-            const passRate = totalPeserta > 0 ? ((totalPassed / totalPeserta) * 100).toFixed(0) + "%" : "0%";
+            const passRate = totalKaryawan > 0 ? ((totalPassed / totalKaryawan) * 100).toFixed(0) + "%" : "0%";
 
-            document.getElementById("stat-total").innerText = totalPeserta;
-            document.getElementById("stat-avg-min").innerText = avgMin;
+            document.getElementById("stat-total-karyawan").innerText = totalKaryawan;
+            document.getElementById("stat-total").innerText = `${ratedStaffCount} / ${totalKaryawan}`;
             document.getElementById("stat-avg-max").innerText = avgMax;
             document.getElementById("stat-pass-rate").innerText = passRate;
             
-            document.getElementById("badge-team-count").innerText = totalPeserta;
+            document.getElementById("badge-team-count").innerText = totalKaryawan;
             const mobileBadge = document.getElementById("badge-mobile-team-count");
-            if (mobileBadge) mobileBadge.innerText = totalPeserta;
+            if (mobileBadge) mobileBadge.innerText = totalKaryawan;
 
             renderStoreRankings(data);
             renderSessionSummaryAndChart(data);
@@ -883,7 +898,7 @@
 
             data.forEach(item => {
                 const maxVal = parseScore(item['Max Score pt.1']);
-                const isOverallMissing = (maxVal === null || maxVal <= 0);
+                const isOverallMissing = (maxVal === null);
 
                 SESSION_KEYS.forEach(key => {
                     const rawVal = item[key];
@@ -895,7 +910,7 @@
                         if (numVal !== null) {
                             metrics.sum[key] += numVal;
                             metrics.countValids[key]++;
-                            if (numVal < 70) metrics.failed[key]++;
+                            if (numVal < 80) metrics.failed[key]++;
                         }
                     }
 
@@ -911,7 +926,7 @@
 
             const rowAverage = `<tr><td class="p-2.5 font-bold text-slate-700">Average Score</td>` + sessionAverages.map(avg => `<td class="p-2.5 text-center font-semibold text-emerald-600">${avg > 0 ? avg : '-'}</td>`).join('') + `</tr>`;
 
-            const rowFailed = `<tr><td class="p-2.5 font-bold text-slate-700">Tidak Lulus (&lt;70)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-semibold text-rose-500">${metrics.failed[k]}</td>`).join('') + `</tr>`;
+            const rowFailed = `<tr><td class="p-2.5 font-bold text-slate-700">Tidak Lulus (&lt;80)</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center font-semibold text-rose-500">${metrics.failed[k]}</td>`).join('') + `</tr>`;
 
             const rowMissing = `<tr><td class="p-2.5 font-bold text-slate-500">Nilai Belum Keluar / Absence</td>` + SESSION_KEYS.map(k => `<td class="p-2.5 text-center text-amber-600 font-semibold">${metrics.missing[k]}</td>`).join('') + `</tr>`;
 
@@ -996,7 +1011,8 @@
                 const nama = (item['Nama'] || '').toLowerCase();
                 const nik = (item['NIK'] || '').toLowerCase();
                 const store = (item['Store'] || '').toLowerCase().trim();
-                const status = (item['Status Remidi / Lulus'] || '').toLowerCase();
+                const maxVal = parseScore(item['Max Score pt.1']);
+                const status = getCalculatedStatus(maxVal).toLowerCase();
 
                 const matchPersonal = personalSearch === "" || nama.includes(personalSearch) || nik.includes(personalSearch);
                 const matchStore = selectedStore === "" || store === selectedStore;
