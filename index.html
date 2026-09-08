@@ -11,12 +11,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- PapaParse for Google Sheets CSV Parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Chart.js DataLabels Plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <!-- SheetJS (XLSX) CDN for Excel Export -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
     <style>
         * {
@@ -70,159 +64,74 @@
         .table-responsive::-webkit-scrollbar-thumb { background: #c3cadb; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 pb-16 md:pb-0">
+<body class="bg-slate-100 text-slate-800 p-3 md:p-6">
 
     <!-- MAIN APP WRAPPER -->
-    <div id="app-wrapper" class="flex flex-col md:flex-row min-h-screen">
+    <div class="max-w-7xl mx-auto w-full bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
         
-        <!-- SIDEBAR UTAMA & INFO STAFF -->
-        <aside class="fixed bottom-0 left-0 right-0 z-50 bg-slate-900 border-t border-slate-800 p-2 md:relative md:w-80 md:border-t-0 md:p-4 flex md:flex-col justify-between select-none flex-shrink-0 overflow-y-auto">
-            
-            <div class="hidden md:block w-full space-y-4">
-                <div class="bg-slate-800/90 border border-slate-700/80 rounded-xl p-3 flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white">
-                            <i class="fa-solid fa-store"></i>
-                        </div>
-                        <div class="text-xs overflow-hidden">
-                            <p class="font-bold text-white truncate">MAPTECH Dashboard</p>
-                            <p class="text-[10px] text-slate-400">Digimap Retail</p>
-                        </div>
-                    </div>
-                </div>
+        <!-- ERROR MESSAGE CONTAINER -->
+        <div id="error-alert" class="hidden mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-rose-500 text-base"></i>
+                <span id="error-message-text">Gagal memperbarui data dari Google Sheets. Pastikan hak akses spreadsheet sudah 'Anyone with the link'.</span>
+            </div>
+            <button onclick="fetchSheetData()" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold transition-colors">Coba Lagi</button>
+        </div>
 
-                <div class="px-1 text-[10px] text-slate-400 font-medium tracking-tight border-l-2 border-indigo-500 pl-2">
-                    Concept & Curation by <span class="text-slate-200 font-semibold">Novi Riyanto</span>
-                </div>
+        <!-- HEADER SECTION -->
+        <div class="pb-3 md:pb-4 mb-4 md:mb-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+                <h2 class="text-lg md:text-2xl font-bold text-slate-900" id="page-title">Nilai Post Test Sementara</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Concept & Curation by <span class="text-slate-600 font-semibold">Novi Riyanto</span></p>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg w-fit">
+                <span class="flex items-center gap-1.5 font-bold text-emerald-600">
+                    <i class="fa-solid fa-bolt"></i> AutoSync
+                </span>
+                <span class="text-slate-300">|</span>
+                <span id="sync-timestamp">Memuat...</span>
+            </div>
+        </div>
 
-                <div class="bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 flex flex-col gap-1.5">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[12px] font-bold text-neon-green tracking-wide flex items-center gap-1.5">
-                            <i class="fa-solid fa-bolt text-emerald-400"></i> AutoSync
-                        </span>
-                        <span id="sync-status-badge" class="text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-mono">Active</span>
-                    </div>
-                    <p class="text-[10px] text-slate-400 flex items-center gap-1">
-                        <i class="fa-regular fa-clock text-slate-500"></i> Update: <span id="sync-timestamp" class="text-slate-300 font-medium">Memuat...</span>
-                    </p>
+        <!-- KARTU STATISTIK UTAMA -->
+        <div id="management-stats-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-6">
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-user-group"></i>
                 </div>
-
-                <div class="py-1 border-b border-slate-800 pb-2">
-                    <h2 class="text-sm font-bold text-white tracking-wide">Navigasi Utama</h2>
+                <div>
+                    <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Karyawan</span>
+                    <h3 id="stat-total-karyawan" class="text-xl font-bold text-slate-800">0</h3>
                 </div>
-
-                <nav class="space-y-1">
-                    <button id="nav-all-store" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium bg-indigo-600 text-white transition-colors">
-                        <div class="flex items-center gap-2.5">
-                            <i class="fa-solid fa-store"></i>
-                            <span>All Store Table</span>
-                        </div>
-                        <span id="badge-team-count" class="bg-indigo-500/20 text-indigo-400 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-indigo-500/30">0</span>
-                    </button>
-                </nav>
             </div>
 
-            <!-- MENU DOCK MOBILE -->
-            <nav class="flex md:hidden w-full items-center justify-around">
-                <button id="nav-mobile-all-store" class="flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors relative">
-                    <i class="fa-solid fa-store text-lg mb-0.5"></i>
-                    <span class="text-[10px]">All Store</span>
-                    <span id="badge-mobile-team-count" class="absolute -top-1 right-2 bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">0</span>
-                </button>
-            </nav>
-        </aside>
-
-        <!-- MAIN CONTENT AREA -->
-        <main class="flex-1 p-3 md:p-6 overflow-x-hidden flex flex-col justify-between">
-            <div class="max-w-7xl mx-auto w-full bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
-                
-                <!-- ERROR MESSAGE CONTAINER -->
-                <div id="error-alert" class="hidden mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-triangle-exclamation text-rose-500 text-base"></i>
-                        <span id="error-message-text">Gagal memperbarui data dari Google Sheets. Pastikan hak akses spreadsheet sudah 'Anyone with the link'.</span>
-                    </div>
-                    <button onclick="fetchSheetData()" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold transition-colors">Coba Lagi</button>
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-users"></i>
                 </div>
-
-                <div class="block md:hidden mb-4 p-3 bg-slate-900 text-white rounded-xl space-y-2">
-                    <div class="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-2">
-                        <span>Concept & Curation by <b class="text-slate-200">Novi Riyanto</b></span>
-                        <span class="text-neon-green font-bold"><i class="fa-solid fa-bolt"></i> AutoSync</span>
-                    </div>
+                <div>
+                    <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Peserta (Aktif Sesi)</span>
+                    <h3 id="stat-total" class="text-xl font-bold text-slate-800">0</h3>
                 </div>
-
-                <div class="pb-3 md:pb-4 mb-4 md:mb-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <h2 class="text-lg md:text-2xl font-bold text-slate-900" id="page-title">Nilai Post Test Sementara</h2>
-                </div>
-
-                <!-- KARTU STATISTIK UTAMA -->
-                <div id="management-stats-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-6">
-                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
-                            <i class="fa-solid fa-user-group"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Karyawan</span>
-                            <h3 id="stat-total-karyawan" class="text-xl font-bold text-slate-800">0</h3>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Peserta (Aktif Sesi)</span>
-                            <h3 id="stat-total" class="text-xl font-bold text-slate-800">0</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW ALL STORE TAB -->
-                <div id="view-all-store" class="space-y-6">
-                    <div>
-                        <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-table-list text-indigo-600"></i> Detail Peserta & Nilai Post Test All Store
-                        </h3>
-                        <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl max-h-[500px]">
-                            <table class="w-full text-xs text-left whitespace-nowrap">
-                                <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
-                                    <tr>
-                                        <th class="p-3">Store</th>
-                                        <th class="p-3">Nama</th>
-                                        <th class="p-3">NIK</th>
-                                        <th class="p-3">Work Experience</th>
-                                        <th class="p-3">SEED Registered Email</th>
-                                        <th class="p-3">Positions</th>
-                                        <th class="p-3 text-center bg-indigo-50">8-Sept-2026 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50">8-Sept-2026 Siang</th>
-                                        <th class="p-3 text-center bg-indigo-50">9-Sept-2026 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50">9-Sept-2026 Siang</th>
-                                        <th class="p-3 text-center bg-indigo-50">10-Sept-2026 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50">10-Sept-2026 Siang</th>
-                                        <th class="p-3 text-center bg-indigo-50">11-Sept-2026 Pagi</th>
-                                        <th class="p-3 text-center bg-indigo-50">11-Sept-2026 Siang</th>
-                                        <th class="p-3">Keterangan Min Score pt.1</th>
-                                        <th class="p-3 text-center font-bold text-indigo-600">Max Score pt.1</th>
-                                        <th class="p-3">Keterangan Join / Tidak Join</th>
-                                        <th class="p-3">Status Remidi / Lulus</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-body-allstore" class="divide-y divide-slate-100 bg-white">
-                                    <tr>
-                                        <td colspan="18" class="text-center py-6 text-indigo-600">
-                                            <i class="fa-solid fa-spinner fa-spin"></i> Memuat data...
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-        </main>
+        </div>
+
+        <!-- TABEL DATA LANGSUNG DARI FETCH -->
+        <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl max-h-[600px]">
+            <table class="w-full text-xs text-left whitespace-nowrap">
+                <thead id="table-head" class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
+                    <!-- Header generated dynamically from fetch -->
+                </thead>
+                <tbody id="table-body" class="divide-y divide-slate-100 bg-white">
+                    <tr>
+                        <td class="text-center py-6 text-indigo-600">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Memuat data dari Google Sheets...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
     <script>
@@ -265,8 +174,6 @@
 
         function fetchSheetData() {
             const errorAlert = document.getElementById("error-alert");
-            const syncBadge = document.getElementById("sync-status-badge");
-            
             errorAlert.classList.add("hidden");
 
             fetch(CSV_URL)
@@ -282,16 +189,14 @@
                             return header ? header.trim().replace(/\s+/g, ' ') : '';
                         },
                         complete: function(results) {
-                            // Ambil seluruh baris yang memiliki kolom "Nama" valid
+                            // Filter baris yang memiliki "Nama" valid
                             rawData = results.data.filter(item => {
                                 const nama = getVal(item, 'Nama');
                                 return nama !== '-' && nama !== '';
                             });
 
                             updateTimestamp();
-                            syncBadge.className = "text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-mono";
-                            syncBadge.innerText = "Active";
-                            renderAllData(rawData);
+                            renderAllData(rawData, results.meta.fields);
                         },
                         error: function(err) {
                             throw new Error("Gagal memparsing data CSV: " + err.message);
@@ -301,8 +206,6 @@
                 .catch(err => {
                     console.error("Error fetching CSV:", err);
                     errorAlert.classList.remove("hidden");
-                    syncBadge.className = "text-[9px] bg-rose-500/10 text-rose-300 border border-rose-500/30 px-1.5 py-0.5 rounded-full font-mono";
-                    syncBadge.innerText = "Error Sync";
                 });
         }
 
@@ -318,81 +221,108 @@
             return maxVal >= 80 ? 'Lulus' : 'Remidi';
         }
 
-        function renderAllData(data) {
-            renderTableAllStore(data);
+        function renderAllData(data, fields) {
+            renderDynamicTable(data, fields);
             renderStatsAndSummary(data);
         }
 
-        function renderTableAllStore(data) {
-            const tbody = document.getElementById("table-body-allstore");
+        function renderDynamicTable(data, fields) {
+            const thead = document.getElementById("table-head");
+            const tbody = document.getElementById("table-body");
+            
+            thead.innerHTML = "";
             tbody.innerHTML = "";
 
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="18" class="text-center py-6 text-slate-400">Data tidak ditemukan di Google Sheets.</td></tr>`;
+                tbody.innerHTML = `<tr><td class="text-center py-6 text-slate-400">Data tidak ditemukan di Google Sheets.</td></tr>`;
                 return;
             }
 
+            // Gunakan header dari meta parsing CSV jika tersedia, jika tidak ambil dari keys objek pertama
+            const headers = fields && fields.length > 0 ? fields : Object.keys(data[0]);
+
+            // 1. Render Header secara langsung dari fetch Google Sheets
+            const trHead = document.createElement("tr");
+            headers.forEach(headerText => {
+                const th = document.createElement("th");
+                th.className = "p-3 font-semibold text-slate-700 bg-slate-100";
+                
+                // Styling khusus untuk kolom sesi tanggal
+                if (SESSION_KEYS.some(k => k.toLowerCase() === headerText.toLowerCase())) {
+                    th.className += " text-center bg-indigo-50/70";
+                }
+                
+                th.innerText = headerText;
+                trHead.appendChild(th);
+            });
+            
+            // Tambahkan Header Status Tambahan jika belum ada di Sheet
+            const hasStatusCol = headers.some(h => h.toLowerCase().includes('status remidi'));
+            if (!hasStatusCol) {
+                const thStatus = document.createElement("th");
+                thStatus.className = "p-3 font-semibold text-slate-700 bg-slate-100";
+                thStatus.innerText = "Status Remidi / Lulus";
+                trHead.appendChild(thStatus);
+            }
+            
+            thead.appendChild(trHead);
+
+            // 2. Render Baris Data
             const fragment = document.createDocumentFragment();
 
             data.forEach((item) => {
-                const store = getVal(item, 'Store');
-                const nama = getVal(item, 'Nama');
-                const nik = getVal(item, 'NIK');
-                const exp = getVal(item, 'Work Experience');
-                const email = getVal(item, 'SEED Registered Email');
-                const pos = getVal(item, 'Positions');
-
-                const d8p = getVal(item, '8-Sept-2026 Pagi');
-                const d8s = getVal(item, '8-Sept-2026 Siang');
-                const d9p = getVal(item, '9-Sept-2026 Pagi');
-                const d9s = getVal(item, '9-Sept-2026 Siang');
-                const d10p = getVal(item, '10-Sept-2026 Pagi');
-                const d10s = getVal(item, '10-Sept-2026 Siang');
-                const d11p = getVal(item, '11-Sept-2026 Pagi');
-                const d11s = getVal(item, '11-Sept-2026 Siang');
-
-                const minScoreDesc = getVal(item, 'Keterangan Min Score pt.1');
-                
                 let rawMaxScore = getVal(item, 'Max Score pt.1');
                 if (rawMaxScore === '-') rawMaxScore = getVal(item, 'Max Score');
-                
                 const maxVal = parseScore(rawMaxScore);
-                const join = getVal(item, 'Keterangan Join / Tidak Join');
-                
                 const calculatedStatus = getCalculatedStatus(maxVal);
 
-                let joinBadgeClass = 'badge-default';
-                if (String(join).toLowerCase().includes('join') && !String(join).toLowerCase().includes('tidak')) {
-                    joinBadgeClass = 'badge-join';
-                } else if (String(join).toLowerCase().includes('tidak')) {
-                    joinBadgeClass = 'badge-absent';
-                }
-
-                let statusBadgeClass = calculatedStatus === 'Lulus' ? 'badge-lulus' : 'badge-remidi';
                 let rowHighlightClass = calculatedStatus === 'Lulus' ? 'row-status-lulus' : 'row-status-remidi';
 
                 const tr = document.createElement("tr");
                 tr.className = `transition-colors ${rowHighlightClass}`;
-                tr.innerHTML = `
-                    <td class="p-3 font-medium">${store}</td>
-                    <td class="p-3 font-semibold text-slate-900">${nama}</td>
-                    <td class="p-3">${nik}</td>
-                    <td class="p-3">${exp}</td>
-                    <td class="p-3">${email}</td>
-                    <td class="p-3">${pos}</td>
-                    <td class="p-3 text-center">${d8p}</td>
-                    <td class="p-3 text-center">${d8s}</td>
-                    <td class="p-3 text-center">${d9p}</td>
-                    <td class="p-3 text-center">${d9s}</td>
-                    <td class="p-3 text-center">${d10p}</td>
-                    <td class="p-3 text-center">${d10s}</td>
-                    <td class="p-3 text-center">${d11p}</td>
-                    <td class="p-3 text-center">${d11s}</td>
-                    <td class="p-3">${minScoreDesc}</td>
-                    <td class="p-3 text-center font-semibold text-indigo-600">${maxVal !== null ? maxVal : 0}</td>
-                    <td class="p-3"><span class="badge ${joinBadgeClass}">${join}</span></td>
-                    <td class="p-3"><span class="badge ${statusBadgeClass}">${calculatedStatus}</span></td>
-                `;
+
+                headers.forEach(headerText => {
+                    const td = document.createElement("td");
+                    td.className = "p-3";
+                    const cellVal = getVal(item, headerText);
+
+                    // Formating khusus tampilan cell
+                    if (SESSION_KEYS.some(k => k.toLowerCase() === headerText.toLowerCase())) {
+                        td.className += " text-center";
+                        td.innerText = cellVal;
+                    } else if (headerText.toLowerCase().includes('join')) {
+                        let joinBadgeClass = 'badge-default';
+                        if (cellVal.toLowerCase().includes('join') && !cellVal.toLowerCase().includes('tidak')) {
+                            joinBadgeClass = 'badge-join';
+                        } else if (cellVal.toLowerCase().includes('tidak')) {
+                            joinBadgeClass = 'badge-absent';
+                        }
+                        td.innerHTML = `<span class="badge ${joinBadgeClass}">${cellVal}</span>`;
+                    } else if (headerText.toLowerCase().includes('status remidi')) {
+                        let statusBadgeClass = calculatedStatus === 'Lulus' ? 'badge-lulus' : 'badge-remidi';
+                        td.innerHTML = `<span class="badge ${statusBadgeClass}">${calculatedStatus}</span>`;
+                    } else if (headerText.toLowerCase().includes('max score')) {
+                        td.className += " text-center font-semibold text-indigo-600";
+                        td.innerText = maxVal !== null ? maxVal : cellVal;
+                    } else if (headerText.toLowerCase() === 'nama') {
+                        td.className += " font-semibold text-slate-900";
+                        td.innerText = cellVal;
+                    } else {
+                        td.innerText = cellVal;
+                    }
+
+                    tr.appendChild(td);
+                });
+
+                // Jika kolom status belum ada di sheet, lampirkan badge kalkulasi status di akhir
+                if (!hasStatusCol) {
+                    const tdStatus = document.createElement("td");
+                    tdStatus.className = "p-3";
+                    let statusBadgeClass = calculatedStatus === 'Lulus' ? 'badge-lulus' : 'badge-remidi';
+                    tdStatus.innerHTML = `<span class="badge ${statusBadgeClass}">${calculatedStatus}</span>`;
+                    tr.appendChild(tdStatus);
+                }
+
                 fragment.appendChild(tr);
             });
 
@@ -412,9 +342,6 @@
 
             document.getElementById("stat-total-karyawan").innerText = totalKaryawan;
             document.getElementById("stat-total").innerText = totalPesertaSet.size;
-            document.getElementById("badge-team-count").innerText = totalKaryawan;
-            const mobileBadge = document.getElementById("badge-mobile-team-count");
-            if (mobileBadge) mobileBadge.innerText = totalKaryawan;
         }
     </script>
 </body>
