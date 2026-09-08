@@ -92,7 +92,7 @@
                 </div>
 
                 <div class="px-1 text-[10px] text-slate-400 font-medium tracking-tight border-l-2 border-indigo-500 pl-2">
-                    Concept & Curation by <span class="text-slate-200 font-semibold">Novi Riyanto</span> <span id="sidebar-app-version" class="text-indigo-400 font-mono font-bold ml-1"></span>
+                    Concept & Curation by <span class="text-slate-200 font-semibold">Novi Riyanto</span>
                 </div>
 
                 <div class="bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 flex flex-col gap-1.5">
@@ -105,21 +105,6 @@
                     <p class="text-[10px] text-slate-400 flex items-center gap-1">
                         <i class="fa-regular fa-clock text-slate-500"></i> Update: <span id="sync-timestamp" class="text-slate-300 font-medium">Memuat...</span>
                     </p>
-                </div>
-
-                <!-- TOMBOL TOGGLE PERAN -->
-                <div class="bg-slate-800/90 border border-slate-700/80 rounded-xl p-3 space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-indigo-300 uppercase tracking-wider"><i class="fa-solid fa-user-gear mr-1"></i> Mode Peran</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-1.5">
-                        <button onclick="setRoleView('staff')" id="btn-role-staff" class="py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-[11px] font-semibold rounded-lg transition-colors text-center">
-                            <i class="fa-solid fa-user text-xs mr-1"></i> Anak Toko
-                        </button>
-                        <button onclick="setRoleView('management')" id="btn-role-management" class="py-1.5 px-2 bg-indigo-600 text-white text-[11px] font-semibold rounded-lg transition-colors text-center shadow-sm">
-                            <i class="fa-solid fa-user-shield text-xs mr-1"></i> Manajemen
-                        </button>
-                    </div>
                 </div>
 
                 <div class="py-1 border-b border-slate-800 pb-2">
@@ -141,23 +126,6 @@
                         <span id="badge-team-count" class="bg-indigo-500/20 text-indigo-400 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-indigo-500/30">0</span>
                     </button>
                 </nav>
-
-                <!-- PENCARIAN STAFF DI SIDEBAR -->
-                <div class="pt-3 border-t border-slate-800 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Kartu Ringkasan Personal</h3>
-                    </div>
-                    
-                    <div class="relative">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[11px]"></i>
-                        <input type="text" id="sidebar-search-staff" placeholder="Ketik Nama / NIK staff..." oninput="handleSidebarSearch(this.value)" 
-                               class="w-full pl-8 pr-3 py-2 text-xs bg-slate-800 border border-slate-700 text-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-
-                    <div id="staff-profile-card" class="bg-slate-800/90 border border-slate-700/80 rounded-xl p-3 text-[11px] space-y-2 max-h-[380px] overflow-y-auto">
-                        <p class="text-slate-400 text-center italic py-4">Ketik nama/NIK pada kolom pencarian di atas untuk menampilkan profil lengkap staff.</p>
-                    </div>
-                </div>
             </div>
 
             <!-- MENU DOCK MOBILE -->
@@ -180,25 +148,13 @@
                 
                 <div class="block md:hidden mb-4 p-3 bg-slate-900 text-white rounded-xl space-y-2">
                     <div class="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-2">
-                        <span>Concept & Curation by <b class="text-slate-200">Novi Riyanto</b> <span id="mobile-app-version" class="text-indigo-400 font-mono font-bold"></span></span>
+                        <span>Concept & Curation by <b class="text-slate-200">Novi Riyanto</b></span>
                         <span class="text-neon-green font-bold"><i class="fa-solid fa-bolt"></i> AutoSync</span>
-                    </div>
-                    <div class="flex items-center justify-between pt-1">
-                        <span class="text-[10px] text-slate-400">Mode Peran:</span>
-                        <div class="flex gap-1">
-                            <button onclick="setRoleView('staff')" id="btn-mobile-role-staff" class="px-2 py-1 bg-slate-800 text-slate-300 text-[10px] font-semibold rounded">Anak Toko</button>
-                            <button onclick="setRoleView('management')" id="btn-mobile-role-management" class="px-2 py-1 bg-indigo-600 text-white text-[10px] font-semibold rounded">Manajemen</button>
-                        </div>
                     </div>
                 </div>
 
                 <div class="pb-3 md:pb-4 mb-4 md:mb-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <h2 class="text-lg md:text-2xl font-bold text-slate-900" id="page-title">Nilai Post Test Sementara</h2>
-                    <div class="flex items-center gap-2">
-                        <button onclick="exportStoreReport()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-1.5">
-                            <i class="fa-solid fa-file-excel"></i> Download Laporan Toko
-                        </button>
-                    </div>
                 </div>
 
                 <!-- FILTER CONTROL -->
@@ -524,7 +480,6 @@
 
         let rawData = [];
         let sessionChartInstance = null;
-        let currentRole = 'management';
 
         const SESSION_KEYS = [
             "8-Sept-2026 Pagi", "8-Sept-2026 Siang",
@@ -533,30 +488,10 @@
             "11-Sept-2026 Pagi", "11-Sept-2026 Siang"
         ];
 
-        function generateVersionString() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            return `${year}.${month}.${day}.${hours}.${minutes}`;
-        }
-
         document.addEventListener("DOMContentLoaded", () => {
-            initVersionDisplay();
             populateStoreDropdown();
             fetchSheetData();
         });
-
-        function initVersionDisplay() {
-            const versionStr = `v${generateVersionString()}`;
-            const sidebarVer = document.getElementById("sidebar-app-version");
-            const mobileVer = document.getElementById("mobile-app-version");
-
-            if (sidebarVer) sidebarVer.innerText = versionStr;
-            if (mobileVer) mobileVer.innerText = versionStr;
-        }
 
         function updateTimestamp() {
             const now = new Date();
@@ -565,30 +500,6 @@
             const formatted = `${dateStr}, ${timeStr} WIB`;
             
             document.getElementById("sync-timestamp").innerText = formatted;
-        }
-
-        function setRoleView(role) {
-            currentRole = role;
-            const btnStaff = document.getElementById("btn-role-staff");
-            const btnMgmt = document.getElementById("btn-role-management");
-            const btnMobStaff = document.getElementById("btn-mobile-role-staff");
-            const btnMobMgmt = document.getElementById("btn-mobile-role-management");
-            const mgmtStats = document.getElementById("management-stats-container");
-
-            if (role === 'staff') {
-                if(btnStaff) btnStaff.className = "py-1.5 px-2 bg-indigo-600 text-white text-[11px] font-semibold rounded-lg transition-colors text-center shadow-sm";
-                if(btnMgmt) btnMgmt.className = "py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-[11px] font-semibold rounded-lg transition-colors text-center";
-                if(btnMobStaff) btnMobStaff.className = "px-2 py-1 bg-indigo-600 text-white text-[10px] font-semibold rounded";
-                if(btnMobMgmt) btnMobMgmt.className = "px-2 py-1 bg-slate-800 text-slate-300 text-[10px] font-semibold rounded";
-                if(mgmtStats) mgmtStats.classList.add("hidden");
-            } else {
-                if(btnMgmt) btnMgmt.className = "py-1.5 px-2 bg-indigo-600 text-white text-[11px] font-semibold rounded-lg transition-colors text-center shadow-sm";
-                if(btnStaff) btnStaff.className = "py-1.5 px-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-[11px] font-semibold rounded-lg transition-colors text-center";
-                if(btnMobMgmt) btnMobMgmt.className = "px-2 py-1 bg-indigo-600 text-white text-[10px] font-semibold rounded";
-                if(btnMobStaff) btnMobStaff.className = "px-2 py-1 bg-slate-800 text-slate-300 text-[10px] font-semibold rounded";
-                if(mgmtStats) mgmtStats.classList.remove("hidden");
-            }
-            applyFilters();
         }
 
         function switchView(viewName) {
@@ -769,66 +680,6 @@
             });
 
             tbody.appendChild(fragment);
-        }
-
-        function handleSidebarSearch(keyword) {
-            const container = document.getElementById("staff-profile-card");
-            const query = keyword.toLowerCase().trim();
-
-            if (!query) {
-                container.innerHTML = `<p class="text-slate-400 text-center italic py-4">Ketik nama/NIK pada kolom pencarian di atas untuk menampilkan profil lengkap staff.</p>`;
-                return;
-            }
-
-            const matchedStaff = rawData.find(item => {
-                const nama = (item['Nama'] || item['nama'] || '').toLowerCase();
-                const nik = (item['NIK'] || item['nik'] || '').toLowerCase();
-                return nama.includes(query) || nik.includes(query);
-            });
-
-            if (!matchedStaff) {
-                container.innerHTML = `<p class="text-rose-400 text-center italic py-4">Staff tidak ditemukan.</p>`;
-                return;
-            }
-
-            const store = matchedStaff['Store'] || '-';
-            const nama = matchedStaff['Nama'] || '-';
-            const nik = matchedStaff['NIK'] || '-';
-            const exp = matchedStaff['Work Experience'] || '-';
-            const email = matchedStaff['SEED Registered Email'] || '-';
-            const pos = matchedStaff['Positions'] || '-';
-            const joinStatus = matchedStaff['Keterangan Join / Tidak Join'] || '-';
-            const maxVal = parseScore(matchedStaff['Max Score pt.1'] || matchedStaff['Max Score']);
-            const passStatus = getCalculatedStatus(maxVal);
-
-            let scoresHtml = '';
-            SESSION_KEYS.forEach(key => {
-                const scoreVal = matchedStaff[key] !== undefined && matchedStaff[key] !== null && matchedStaff[key] !== '' ? matchedStaff[key] : '-';
-                scoresHtml += `<div class="flex justify-between bg-slate-900/60 px-2 py-1 rounded"><span class="text-slate-400">${key}:</span><span class="font-bold text-slate-200">${scoreVal}</span></div>`;
-            });
-
-            container.innerHTML = `
-                <div class="space-y-1.5 border-b border-slate-700 pb-2 mb-2">
-                    <p class="text-xs font-bold text-indigo-300 truncate">${nama}</p>
-                    <p class="text-[10px] text-slate-400">NIK: ${nik}</p>
-                </div>
-                <div class="space-y-1 text-[11px]">
-                    <div><span class="text-slate-400 block text-[9px]">Store</span><span class="font-semibold text-slate-200">${store}</span></div>
-                    <div><span class="text-slate-400 block text-[9px]">Work Experience</span><span class="font-semibold text-slate-200">${exp}</span></div>
-                    <div><span class="text-slate-400 block text-[9px]">SEED Registered Email</span><span class="font-semibold text-slate-200 break-all">${email}</span></div>
-                    <div><span class="text-slate-400 block text-[9px]">Positions</span><span class="font-semibold text-slate-200">${pos}</span></div>
-                </div>
-                <div class="pt-2 border-t border-slate-700">
-                    <p class="text-[10px] font-bold text-indigo-400 mb-1">Kolom Nilai Sesi:</p>
-                    <div class="grid grid-cols-1 gap-1 max-h-32 overflow-y-auto pr-1">
-                        ${scoresHtml}
-                    </div>
-                </div>
-                <div class="pt-2 border-t border-slate-700 space-y-1">
-                    <div><span class="text-slate-400 block text-[9px]">Keterangan Join / Tidak Join</span><span class="font-semibold text-blue-400">${joinStatus}</span></div>
-                    <div><span class="text-slate-400 block text-[9px]">Status Remidi / Lulus</span><span class="font-semibold ${passStatus === 'Lulus' ? 'text-emerald-400' : 'text-rose-400'}">${passStatus}</span></div>
-                </div>
-            `;
         }
 
         function renderMonitoringTables(data) {
@@ -1017,56 +868,6 @@
                     }
                 }
             });
-        }
-
-        function exportStoreReport() {
-            const selectedStore = document.getElementById("filter-store").value.trim();
-            const exportTitle = selectedStore ? `Laporan_PostTest_${selectedStore.replace(/\s+/g, '_')}` : `Laporan_PostTest_Semua_Toko`;
-            const selectedStatus = document.getElementById("filter-status").value.toLowerCase().trim();
-
-            const filteredExportData = rawData.filter(item => {
-                const store = (item['Store'] || item['store'] || '').trim();
-                const maxVal = parseScore(item['Max Score pt.1'] || item['Max Score']);
-                const status = getCalculatedStatus(maxVal).toLowerCase();
-
-                const matchStore = selectedStore === "" || store.toLowerCase().includes(selectedStore.toLowerCase()) || selectedStore.toLowerCase().includes(store.toLowerCase());
-                const matchStatus = selectedStatus === "" || status.includes(selectedStatus);
-
-                return matchStore && matchStatus;
-            });
-
-            if (filteredExportData.length === 0) {
-                alert("Tidak ada data untuk diexport!");
-                return;
-            }
-
-            const formattedRows = filteredExportData.map((item, idx) => {
-                const maxVal = parseScore(item['Max Score pt.1'] || item['Max Score']);
-                return {
-                    "No": idx + 1,
-                    "Store": item['Store'] || '',
-                    "Nama": item['Nama'] || '',
-                    "NIK": item['NIK'] || '',
-                    "Work Experience": item['Work Experience'] || '',
-                    "SEED Email": item['SEED Registered Email'] || '',
-                    "Positions": item['Positions'] || '',
-                    "8-Sept Pagi": item['8-Sept-2026 Pagi'] || '',
-                    "8-Sept Siang": item['8-Sept-2026 Siang'] || '',
-                    "9-Sept Pagi": item['9-Sept-2026 Pagi'] || '',
-                    "9-Sept Siang": item['9-Sept-2026 Siang'] || '',
-                    "10-Sept Pagi": item['10-Sept-2026 Pagi'] || '',
-                    "10-Sept Siang": item['10-Sept-2026 Siang'] || '',
-                    "11-Sept Pagi": item['11-Sept-2026 Pagi'] || '',
-                    "11-Sept Siang": item['11-Sept-2026 Siang'] || '',
-                    "Max Score": maxVal !== null ? maxVal : 0,
-                    "Status Kelulusan": getCalculatedStatus(maxVal)
-                };
-            });
-
-            const worksheet = XLSX.utils.json_to_sheet(formattedRows);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Nilai");
-            XLSX.writeFile(workbook, `${exportTitle}.xlsx`);
         }
 
         function applyFilters() {
