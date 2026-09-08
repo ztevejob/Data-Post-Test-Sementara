@@ -3,258 +3,550 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Monitoring Pelatihan</title>
+    <title>Nilai Post Test Sementara - MAPTECH</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- PapaParse CDN untuk parsing CSV -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- PapaParse for Google Sheets CSV Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 9999px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
         }
-        .badge-lulus { background-color: #d1fae5; color: #065f46; }
-        .badge-remidi { background-color: #fee2e2; color: #991b1b; }
-        .badge-join { background-color: #e0e7ff; color: #3730a3; }
-        .badge-absent { background-color: #f3f4f6; color: #4b5563; }
+
+        body {
+            background-color: #f4f7fe;
+            color: #2b3674;
+        }
+
+        /* Neon Green Utility */
+        .text-neon-green {
+            color: #39ff14;
+            text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .badge-lulus { background-color: #e6f9f0; color: #05cd99; }
+        .badge-remidi { background-color: #ffeef0; color: #ee5d50; }
+        .badge-join { background-color: #e9f3ff; color: #2b77e5; }
+        .badge-absent { background-color: #fff8e6; color: #ffb800; }
+        .badge-default { background-color: #f4f7fe; color: #707eae; }
+
+        /* Custom Scrollbar */
+        .table-responsive::-webkit-scrollbar { height: 6px; width: 6px; }
+        .table-responsive::-webkit-scrollbar-track { background: #f1f1f1; }
+        .table-responsive::-webkit-scrollbar-thumb { background: #c3cadb; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-100 font-sans antialiased text-slate-800">
+<body class="bg-slate-100 text-slate-800 pb-16 md:pb-0">
 
-    <div class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="bg-indigo-700 text-white shadow-md">
-            <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+    <!-- MODAL LOGIN USER MAPTECH -->
+    <div id="login-modal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md p-6 md:p-8 relative">
+            <div class="text-center mb-6">
+                <!-- LOGO DENGAN GAMBAR/IKON ORANG -->
+                <div class="w-14 h-14 bg-indigo-600 rounded-full mx-auto flex items-center justify-center text-white text-2xl font-bold mb-3 shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-user-circle"></i>
+                </div>
+                <h2 class="text-xl font-bold text-slate-900">Login User MAPTECH</h2>
+                <p class="text-xs text-slate-500 mt-1">Silakan pilih Kode Toko dan masukkan password akses Anda</p>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight">Dashboard Monitoring Pelatihan</h1>
-                    <p class="text-xs text-indigo-200 mt-0.5">Sistem Pelacakan Kehadiran dan Penilaian Peserta</p>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Kode Toko (Username)</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-store absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <select id="login-username" required class="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="" disabled selected>-- Pilih Kode Toko --</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="mt-3 md:mt-0 flex items-center space-x-3">
-                    <span class="text-xs bg-indigo-800 px-3 py-1.5 rounded-full border border-indigo-600">
-                        Total Peserta: <strong id="badge-team-count">0</strong>
-                    </span>
-                    <button onclick="loadSheetData()" class="text-xs bg-white text-indigo-700 font-semibold px-3 py-1.5 rounded shadow hover:bg-indigo-50 transition">
-                        Refresh Data
-                    </button>
-                </div>
-            </div>
-        </header>
 
-        <!-- Main Content -->
-        <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-key absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="password" id="login-password" placeholder="Masukkan password" required class="w-full pl-9 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+
+                <div id="login-error" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 rounded-lg p-2.5 text-center font-medium">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i> Password salah! Silakan coba lagi.
+                </div>
+
+                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg transition-colors shadow-md shadow-indigo-600/30 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Masuk Aplikasi
+                </button>
+            </form>
             
-            <!-- Statistik Utama -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Karyawan</p>
-                    <h3 id="stat-total-karyawan" class="text-2xl font-bold text-slate-900 mt-1">0</h3>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sudah Dinilai</p>
-                    <h3 id="stat-total" class="text-2xl font-bold text-indigo-600 mt-1">0 / 0</h3>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rata-rata Nilai Max</p>
-                    <h3 id="stat-avg-max" class="text-2xl font-bold text-emerald-600 mt-1">0</h3>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pass Rate (>=80)</p>
-                    <h3 id="stat-pass-rate" class="text-2xl font-bold text-blue-600 mt-1">0%</h3>
-                </div>
+            <div class="mt-6 text-center text-[10px] text-slate-400 border-t border-slate-100 pt-3">
+                Concept & Curation by <b class="text-slate-600">Novi Riyanto</b> <span id="login-app-version" class="text-indigo-600 font-mono font-bold"></span>
             </div>
-
-            <!-- Bagian Grafik & Monitoring Khusus -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Grafik Status / Kehadiran -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-sm mb-3">Distribusi Kelengkapan Nilai</h3>
-                        <div class="relative h-48 w-full flex justify-center items-center">
-                            <canvas id="statusChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Daftar Remidi & Belum Keluar Nilai -->
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Remidi -->
-                    <div class="flex flex-col border border-rose-100 rounded-lg p-3 bg-rose-50/30">
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="font-bold text-rose-700 text-xs uppercase tracking-wide">Daftar Remidi (&lt;80)</h4>
-                            <span id="badge-count-remidi" class="badge badge-remidi">0 Staff</span>
-                        </div>
-                        <div class="overflow-y-auto max-h-44 pr-1">
-                            <table class="w-full text-xs text-left">
-                                <tbody id="remidi-staff-body">
-                                    <tr><td colspan="3" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Missing / Belum Keluar -->
-                    <div class="flex flex-col border border-amber-100 rounded-lg p-3 bg-amber-50/30">
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="font-bold text-amber-700 text-xs uppercase tracking-wide">Nilai Belum Keluar</h4>
-                            <span id="badge-count-missing" class="badge bg-amber-100 text-amber-800">0 Staff</span>
-                        </div>
-                        <div class="overflow-y-auto max-h-44 pr-1">
-                            <table class="w-full text-xs text-left">
-                                <tbody id="missing-staff-body">
-                                    <tr><td colspan="3" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Peringkat Store -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="font-bold text-emerald-700 text-sm mb-3">Top 10 Store (Rata-rata Nilai Tertinggi)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left">
-                            <thead>
-                                <tr class="border-b border-slate-200 text-slate-500">
-                                    <th class="py-2 px-2 font-semibold">#</th>
-                                    <th class="py-2 px-2 font-semibold">Store</th>
-                                    <th class="py-2 px-2 font-semibold text-center">Peserta</th>
-                                    <th class="py-2 px-2 font-semibold text-right">Rata-rata</th>
-                                </tr>
-                            </thead>
-                            <tbody id="top-store-body">
-                                <tr><td colspan="4" class="text-center py-2 text-slate-400">Memuat data...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="font-bold text-rose-700 text-sm mb-3">10 Store Perlu Perhatian (Rata-rata Terendah)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left">
-                            <thead>
-                                <tr class="border-b border-slate-200 text-slate-500">
-                                    <th class="py-2 px-2 font-semibold">#</th>
-                                    <th class="py-2 px-2 font-semibold">Store</th>
-                                    <th class="py-2 px-2 font-semibold text-center">Peserta</th>
-                                    <th class="py-2 px-2 font-semibold text-right">Rata-rata</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bottom-store-body">
-                                <tr><td colspan="4" class="text-center py-2 text-slate-400">Memuat data...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ringkasan Sesi Pelatihan -->
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                <h3 class="font-bold text-slate-800 text-sm mb-3">Ringkasan Per Sesi Pelatihan</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-xs text-left">
-                        <thead>
-                            <tr class="border-b border-slate-200 text-slate-500">
-                                <th class="p-2.5 font-semibold">Metrik Sesi</th>
-                                <th class="p-2.5 text-center font-semibold">8 Sep (Pagi)</th>
-                                <th class="p-2.5 text-center font-semibold">8 Sep (Siang)</th>
-                                <th class="p-2.5 text-center font-semibold">9 Sep (Pagi)</th>
-                                <th class="p-2.5 text-center font-semibold">9 Sep (Siang)</th>
-                                <th class="p-2.5 text-center font-semibold">10 Sep (Pagi)</th>
-                                <th class="p-2.5 text-center font-semibold">10 Sep (Siang)</th>
-                                <th class="p-2.5 text-center font-semibold">11 Sep (Pagi)</th>
-                                <th class="p-2.5 text-center font-semibold">11 Sep (Siang)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="session-summary-body" class="divide-y divide-slate-100">
-                            <tr><td colspan="9" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4 pt-4 border-t border-slate-100">
-                    <div class="relative h-56 w-full">
-                        <canvas id="sessionChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tabel Data Keseluruhan Store (Agregasi Store) -->
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                <h3 class="font-bold text-slate-800 text-sm mb-3">Rekapitulasi Agregat per Store</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-xs text-left">
-                        <thead>
-                            <tr class="border-b border-slate-200 text-slate-500">
-                                <th class="p-2.5 font-semibold w-12">#</th>
-                                <th class="p-2.5 font-semibold">Store</th>
-                                <th class="p-2.5 font-semibold text-center">Jumlah Peserta</th>
-                                <th class="p-2.5 font-semibold text-right">Rata-rata Nilai Max</th>
-                            </tr>
-                        </thead>
-                        <tbody id="store-summary-body" class="divide-y divide-slate-100">
-                            <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Tabel Detail Seluruh Peserta -->
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
-                    <h3 class="font-bold text-slate-800 text-sm">Daftar Lengkap Peserta Pelatihan</h3>
-                    <input type="text" id="searchInput" placeholder="Cari nama, store, NIK..." onkeyup="filterTable()" class="text-xs border border-slate-300 rounded px-3 py-1.5 w-full sm:w-64 focus:outline-none focus:border-indigo-500">
-                </div>
-                <div class="overflow-x-auto max-h-[500px]">
-                    <table class="w-full text-xs text-left border-collapse">
-                        <thead class="sticky top-0 bg-slate-50 shadow-sm">
-                            <tr class="border-b border-slate-200 text-slate-500">
-                                <th class="p-3 font-semibold">#</th>
-                                <th class="p-3 font-semibold">Store</th>
-                                <th class="p-3 font-semibold">Nama</th>
-                                <th class="p-3 font-semibold">NIK</th>
-                                <th class="p-3 font-semibold">Work Exp</th>
-                                <th class="p-3 font-semibold">Email</th>
-                                <th class="p-3 font-semibold">Position</th>
-                                <th class="p-3 font-semibold text-center">8 Sep P</th>
-                                <th class="p-3 font-semibold text-center">8 Sep S</th>
-                                <th class="p-3 font-semibold text-center">9 Sep P</th>
-                                <th class="p-3 font-semibold text-center">9 Sep S</th>
-                                <th class="p-3 font-semibold text-center">10 Sep P</th>
-                                <th class="p-3 font-semibold text-center">10 Sep S</th>
-                                <th class="p-3 font-semibold text-center">11 Sep P</th>
-                                <th class="p-3 font-semibold text-center">11 Sep S</th>
-                                <th class="p-3 font-semibold text-center">Max Score</th>
-                                <th class="p-3 font-semibold">Join Status</th>
-                                <th class="p-3 font-semibold">Status Kelulusan</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body-allstore" class="divide-y divide-slate-100">
-                            <tr><td colspan="18" class="text-center py-4 text-slate-400">Memuat data...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Footer -->
-        <footer class="bg-white border-t border-slate-200 mt-auto py-4 text-center text-xs text-slate-500">
-            Dashboard Monitoring &copy; 2026 - All rights reserved
-        </footer>
+        </div>
     </div>
 
-    <!-- Script Utama -->
-    <script>
-        // Ganti URL CSV Google Sheet Anda di sini
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT.../pub?output=csv';
+    <!-- MAIN APP WRAPPER -->
+    <div id="app-wrapper" class="flex flex-col md:flex-row min-h-screen hidden">
+        
+        <!-- SIDEBAR (PC/Laptop/Tablet) & BOTTOM DOCK (Mobile Gawai) -->
+        <aside class="fixed bottom-0 left-0 right-0 z-50 bg-slate-900 border-t border-slate-800 p-2 md:relative md:w-64 md:border-t-0 md:p-4 flex md:flex-col justify-between select-none flex-shrink-0">
+            
+            <!-- Tampilan Desktop & Tablet (Disembunyikan di Mobile) -->
+            <div class="hidden md:block w-full">
+                
+                <!-- USER INFO & LOGOUT BUTTON (Paling Atas Sidebar Desktop) -->
+                <div class="bg-slate-800/90 border border-slate-700/80 rounded-xl p-3 mb-4 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white" id="user-avatar-initial">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="text-xs overflow-hidden">
+                            <p class="font-bold text-white truncate" id="user-display-store">Store</p>
+                            <p class="text-[10px] text-slate-400">MAPTECH User</p>
+                        </div>
+                    </div>
+                    <button onclick="handleLogout()" title="Logout" class="text-slate-400 hover:text-rose-400 text-sm p-1.5 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
 
+                <!-- CONCEPT & CURATION & VERSI -->
+                <div class="px-1 mb-3 text-[10px] text-slate-400 font-medium tracking-tight border-l-2 border-indigo-500 pl-2">
+                    Concept & Curation by <span class="text-slate-200 font-semibold">Novi Riyanto</span> <span id="sidebar-app-version" class="text-indigo-400 font-mono font-bold ml-1"></span>
+                </div>
+
+                <!-- Status AutoSync -->
+                <div class="mb-4 bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[12px] font-bold text-neon-green tracking-wide flex items-center gap-1.5">
+                            <i class="fa-solid fa-bolt text-emerald-400"></i> AutoSync
+                        </span>
+                        <span class="text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-mono">Active</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 flex items-center gap-1">
+                        <i class="fa-regular fa-clock text-slate-500"></i> Update: <span id="sync-timestamp" class="text-slate-300 font-medium">Memuat...</span>
+                    </p>
+                </div>
+
+                <!-- Header / Brand -->
+                <div class="px-1 py-2 mb-4 border-b border-slate-800 pb-3">
+                    <h2 class="text-base font-bold text-white tracking-wide leading-tight">Nilai Post Test Sementara</h2>
+                </div>
+
+                <!-- Navigation Links Desktop -->
+                <nav class="space-y-1">
+                    <button onclick="switchView('summary')" id="nav-summary" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span>Summary</span>
+                        </div>
+                    </button>
+                    
+                    <button onclick="switchView('all-store')" id="nav-all-store" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-store"></i>
+                            <span>All Store</span>
+                        </div>
+                        <span id="badge-team-count" class="bg-indigo-500/20 text-indigo-400 text-xs font-semibold px-2 py-0.5 rounded-full border border-indigo-500/30">0</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- MENU DOCK MOBILE (Hanya Tampil di Perangkat Gawai) -->
+            <nav class="flex md:hidden w-full items-center justify-around">
+                <button onclick="switchView('summary')" id="nav-mobile-summary" class="flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors">
+                    <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i>
+                    <span class="text-[10px]">Summary</span>
+                </button>
+                
+                <button onclick="switchView('all-store')" id="nav-mobile-all-store" class="flex flex-col items-center justify-center py-1 px-3 text-slate-400 hover:text-white font-medium transition-colors relative">
+                    <i class="fa-solid fa-store text-lg mb-0.5"></i>
+                    <span class="text-[10px]">All Store</span>
+                    <span id="badge-mobile-team-count" class="absolute -top-1 right-2 bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+                </button>
+
+                <!-- INFO USER & LOGOUT MOBILE (Terkumpul di Menu Bawah Kanan) -->
+                <div class="flex items-center gap-1 bg-slate-800/80 pl-2 pr-1 py-1 rounded-lg border border-slate-700/60">
+                    <div class="text-right">
+                        <p class="text-[9px] font-bold text-slate-200 leading-tight" id="user-display-store-mobile">Store</p>
+                        <p class="text-[8px] text-slate-400 leading-tight">User</p>
+                    </div>
+                    <button onclick="handleLogout()" class="flex flex-col items-center justify-center py-1 px-2 text-rose-400 hover:text-rose-300 font-medium transition-colors" title="Logout">
+                        <i class="fa-solid fa-right-from-bracket text-base"></i>
+                        <span class="text-[9px]">Logout</span>
+                    </button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 p-3 md:p-6 overflow-x-hidden flex flex-col justify-between">
+            <div class="max-w-7xl mx-auto w-full bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
+                
+                <!-- HEADER MOBILE BANNER (Tampil Khusus di Mobile untuk Info AutoSync & Curator) -->
+                <div class="block md:hidden mb-4 p-3 bg-slate-900 text-white rounded-xl">
+                    <div class="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-2 mb-2">
+                        <span>Concept & Curation by <b class="text-slate-200">Novi Riyanto</b> <span id="mobile-app-version" class="text-indigo-400 font-mono font-bold"></span></span>
+                        <span class="text-neon-green font-bold"><i class="fa-solid fa-bolt"></i> AutoSync</span>
+                    </div>
+                    <div class="text-[10px] text-slate-400 flex justify-between items-center">
+                        <span>Last Update:</span>
+                        <span id="sync-timestamp-mobile" class="text-slate-200 font-medium">Memuat...</span>
+                    </div>
+                </div>
+
+                <!-- HEADER DASHBOARD UTAMA -->
+                <div class="pb-3 md:pb-4 mb-4 md:mb-6 border-b border-slate-100">
+                    <h2 class="text-lg md:text-2xl font-bold text-slate-900" id="page-title">Nilai Post Test Sementara</h2>
+                </div>
+
+                <!-- FILTER CONTROL -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 md:p-4 mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-3">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="search-personal" placeholder="Cari NIK / Nama..." oninput="debounceFilter()" 
+                                   class="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                        <div>
+                            <select id="filter-store" onchange="applyFilters()" 
+                                    class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Semua Toko (Memuat...) --</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <select id="filter-status" onchange="applyFilters()" 
+                                    class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Semua Status --</option>
+                                <option value="Lulus">Lulus</option>
+                                <option value="Remidi">Remidi</option>
+                            </select>
+                        </div>
+
+                        <button onclick="resetFilters()" class="w-full py-2 bg-slate-200 hover:bg-rose-500 hover:text-white text-slate-700 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-left"></i> Reset Filter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KARTU STATISTIK UTAMA -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-4 mb-6">
+                    <div class="bg-slate-50 border border-slate-200 p-3 md:p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-base md:text-lg">
+                            <i class="fa-solid fa-user-group"></i>
+                        </div>
+                        <div>
+                            <span class="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Karyawan</span>
+                            <h3 id="stat-total-karyawan" class="text-base md:text-lg font-bold text-slate-800">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-3 md:p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-base md:text-lg">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <span class="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">Total Peserta</span>
+                            <h3 id="stat-total" class="text-base md:text-lg font-bold text-slate-800">0 / 0</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-3 md:p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-base md:text-lg">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div>
+                            <span class="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">Avg Max Score</span>
+                            <h3 id="stat-avg-max" class="text-base md:text-lg font-bold text-slate-800">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-3 md:p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-base md:text-lg">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <div>
+                            <span class="text-[9px] md:text-[10px] text-slate-500 uppercase font-bold tracking-wider">Pass Rate (&ge;80)</span>
+                            <h3 id="stat-pass-rate" class="text-base md:text-lg font-bold text-slate-800">0%</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 1: SUMMARY TAB -->
+                <div id="view-summary" class="space-y-6">
+                    
+                    <!-- CHART VISUALISASI SUMMARY -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div class="lg:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
+                            <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-column text-indigo-600"></i> Chart Performa Rata-Rata per Sesi
+                            </h3>
+                            <div class="relative w-full h-52 md:h-64">
+                                <canvas id="sessionChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Kelengkapan Nilai Peserta -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
+                            <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-indigo-600"></i> Kelengkapan Nilai Peserta
+                            </h3>
+                            <div class="relative w-full h-48 md:h-56 flex items-center justify-center">
+                                <canvas id="scoreStatusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABEL MONITORING KHUSUS -->
+                    <div>
+                        <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Monitoring Khusus Staff (Remidi & Nilai Belum Muncul)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            <!-- Tabel Staff Remidi -->
+                            <div class="bg-rose-50/60 border border-rose-200 rounded-xl p-3 md:p-4">
+                                <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-user-xmark"></i> Daftar Staff Remidi</span>
+                                    <span id="badge-count-remidi" class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full font-bold">0 Staff</span>
+                                </h4>
+                                <div class="table-responsive max-h-56 overflow-y-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="sticky top-0 bg-rose-100 text-rose-900 border-b border-rose-200">
+                                            <tr>
+                                                <th class="py-2 px-2 text-left">Nama</th>
+                                                <th class="py-2 px-2 text-left">Toko</th>
+                                                <th class="py-2 px-2 text-right">Max Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="remidi-staff-body" class="divide-y divide-rose-100">
+                                            <tr><td colspan="3" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Tabel Staff Nilai Tidak Ditemukan -->
+                            <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-3 md:p-4">
+                                <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-circle-question"></i> Nilai Belum Keluar / Kosong</span>
+                                    <span id="badge-count-missing" class="text-[10px] bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full font-bold">0 Staff</span>
+                                </h4>
+                                <div class="table-responsive max-h-56 overflow-y-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="sticky top-0 bg-amber-100 text-amber-900 border-b border-amber-200">
+                                            <tr>
+                                                <th class="py-2 px-2 text-left">Nama</th>
+                                                <th class="py-2 px-2 text-left">Toko</th>
+                                                <th class="py-2 px-2 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="missing-staff-body" class="divide-y divide-amber-100">
+                                            <tr><td colspan="3" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- RINGKASAN SESI ASSESSMENT TABLE -->
+                    <div>
+                        <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check text-indigo-600"></i> Ringkasan Sesi Assessment (Pagi & Siang)
+                        </h3>
+                        <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-xs text-left">
+                                <thead>
+                                    <tr class="bg-slate-100 border-b border-slate-200">
+                                        <th class="p-3 text-slate-700">Metrik Assessment</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">8-Sept-2026 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">8-Sept-2026 Siang</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">9-Sept-2026 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">9-Sept-2026 Siang</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">10-Sept-2026 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">10-Sept-2026 Siang</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">11-Sept-2026 Pagi</th>
+                                        <th class="p-3 text-center bg-indigo-50/50">11-Sept-2026 Siang</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="session-summary-body" class="divide-y divide-slate-200">
+                                    <tr><td colspan="9" class="text-center py-4 text-slate-400">Memuat data sesi...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TOP 10 VS BOTTOM 10 -->
+                    <div>
+                        <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-ranking-star text-indigo-600"></i> Ranking Toko (Top 10 vs Bottom 10)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-3 md:p-4">
+                                <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-arrow-trend-up"></i> Top 10 Stores</span>
+                                    <span class="text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Highest</span>
+                                </h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead>
+                                            <tr class="border-b border-emerald-200 text-emerald-800">
+                                                <th class="py-2 px-2 text-left">#</th>
+                                                <th class="py-2 px-2 text-left">Nama Toko</th>
+                                                <th class="py-2 px-2 text-center">Peserta</th>
+                                                <th class="py-2 px-2 text-right">Avg Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="top-store-body">
+                                            <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="bg-rose-50/50 border border-rose-200 rounded-xl p-3 md:p-4">
+                                <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-arrow-trend-down"></i> Bottom 10 Stores</span>
+                                    <span class="text-[10px] bg-rose-200 text-rose-800 px-2 py-0.5 rounded-full font-bold">Lowest</span>
+                                </h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead>
+                                            <tr class="border-b border-rose-200 text-rose-800">
+                                                <th class="py-2 px-2 text-left">#</th>
+                                                <th class="py-2 px-2 text-left">Nama Toko</th>
+                                                <th class="py-2 px-2 text-center">Peserta</th>
+                                                <th class="py-2 px-2 text-right">Avg Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bottom-store-body">
+                                            <tr><td colspan="4" class="text-center py-3 text-slate-400">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- VIEW 2: ALL STORE TAB -->
+                <div id="view-all-store" class="hidden space-y-6">
+                    
+                    <!-- TABEL RINGKASAN STORE & AVERAGE -->
+                    <div>
+                        <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-store text-indigo-600"></i> Ringkasan Performa Rata-Rata Store
+                        </h3>
+                        <div class="table-responsive max-h-64 overflow-y-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-xs text-left">
+                                <thead class="bg-slate-100 sticky top-0 border-b border-slate-200 z-10">
+                                    <tr>
+                                        <th class="p-2.5 text-slate-700">#</th>
+                                        <th class="p-2.5 text-slate-700">Store</th>
+                                        <th class="p-2.5 text-center text-slate-700">Jumlah Peserta</th>
+                                        <th class="p-2.5 text-right text-indigo-600 font-bold">Average Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="store-summary-body" class="divide-y divide-slate-100 bg-white">
+                                    <tr><td colspan="4" class="text-center py-4 text-slate-400">Memuat ringkasan store...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TABEL DETAIL PESERTA ALL STORE -->
+                    <div>
+                        <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-table-list text-indigo-600"></i> Detail Peserta & Nilai Post Test All Store
+                        </h3>
+                        <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl max-h-[500px]">
+                            <table class="w-full text-xs text-left whitespace-nowrap">
+                                <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
+                                    <tr>
+                                        <th class="p-3 text-center">No</th>
+                                        <th class="p-3">Store</th>
+                                        <th class="p-3">Nama</th>
+                                        <th class="p-3">NIK</th>
+                                        <th class="p-3">Work Experience</th>
+                                        <th class="p-3">SEED Registered Email</th>
+                                        <th class="p-3">Positions</th>
+                                        <th class="p-3 text-center bg-indigo-50">8-Sept-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">8-Sept-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">9-Sept-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">9-Sept-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">10-Sept-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">10-Sept-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">11-Sept-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
+                                        <th class="p-3 text-center bg-indigo-50">11-Sept-2026<br><span class="font-normal text-[10px]">Siang</span></th>
+                                        <th class="p-3 text-center font-bold text-indigo-600">Max Score</th>
+                                        <th class="p-3">Status Join</th>
+                                        <th class="p-3">Status Final</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body-allstore" class="divide-y divide-slate-100 bg-white">
+                                    <tr>
+                                        <td colspan="18" class="text-center py-6 text-indigo-600">
+                                            <i class="fa-solid fa-spinner fa-spin"></i> Memuat data...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // URL FETCH DATA CSV GOOGLE SHEET BARU
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-qqVF7ni3YNO19bT149rKAXNvemlgIvWYpJ0-QOs9F6WAJJ-c-Z3XqDl83jrbfoip7zu2D5aWYxfa/pub?output=csv";
+
+        // Daftar Kode Toko MAPTECH
+        const MAPTECH_STORE_CODES = [
+            "M108", "M116", "M117", "M118", "M119", "M120", "M121", "M122", "M123", "M124", 
+            "M125", "M126", "M127", "M128", "M129", "M130", "M131", "M201", "M203", "M205", 
+            "M206", "M212", "M214", "M215", "M216", "M217", "M218", "M219", "M220", "M221", 
+            "M222", "M223", "M224", "M225", "M226", "M227", "M228", "M229", "M230", "M231", 
+            "M232", "M233", "M234", "M235", "M236", "M237", "M238", "M239", "M240", "M241", 
+            "M243", "M244", "M245", "M246", "M247", "M248", "M249", "M250", "M251", "M252", 
+            "M253", "M254", "M255", "M256", "M257", "M258", "M259", "M260", "M261", "M262", 
+            "M263", "M264", "M265", "M266", "M267", "M268", "M269", "M270", "M271", "M272", 
+            "M273", "M274", "M275", "M276", "M277", "M278", "M279", "M281", "M282", "M283", 
+            "M284", "M285", "M286", "M287", "M288", "M289", "M290", "M293", "M294", "M295"
+        ];
+
+        let rawData = [];
+        let sessionChartInstance = null;
+        let statusChartInstance = null;
+        let debounceTimer = null;
+
+        // Kunci Tanggal & Sesi September 2026
         const SESSION_KEYS = [
             '8-Sept-2026 Pagi', '8-Sept-2026 Siang',
             '9-Sept-2026 Pagi', '9-Sept-2026 Siang',
@@ -262,9 +554,204 @@
             '11-Sept-2026 Pagi', '11-Sept-2026 Siang'
         ];
 
-        let globalData = [];
-        let statusChartInstance = null;
-        let sessionChartInstance = null;
+        // FUNGSI GENERATE VERSI DENGAN TITIK (YYYY.MM.DD.HH.MM)
+        function generateVersionString() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${year}.${month}.${day}.${hours}.${minutes}`;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initVersionDisplay();
+            initLoginModal();
+            checkAuth();
+        });
+
+        function initVersionDisplay() {
+            const versionStr = `v${generateVersionString()}`;
+            const loginVer = document.getElementById("login-app-version");
+            const sidebarVer = document.getElementById("sidebar-app-version");
+            const mobileVer = document.getElementById("mobile-app-version");
+
+            if (loginVer) loginVer.innerText = versionStr;
+            if (sidebarVer) sidebarVer.innerText = versionStr;
+            if (mobileVer) mobileVer.innerText = versionStr;
+        }
+
+        function initLoginModal() {
+            const selectEl = document.getElementById("login-username");
+            selectEl.innerHTML = `<option value="" disabled selected>-- Pilih Kode Toko --</option>`;
+            
+            MAPTECH_STORE_CODES.forEach(code => {
+                const opt = document.createElement("option");
+                opt.value = code;
+                opt.textContent = code;
+                selectEl.appendChild(opt);
+            });
+        }
+
+        function checkAuth() {
+            const loggedInStore = sessionStorage.getItem("maptech_store");
+            if (loggedInStore) {
+                document.getElementById("login-modal").classList.add("hidden");
+                document.getElementById("app-wrapper").classList.remove("hidden");
+                
+                // Update UI Display User Toko Desktop & Mobile
+                const userDisplay = document.getElementById("user-display-store");
+                const userDisplayMobile = document.getElementById("user-display-store-mobile");
+                const avatarInitial = document.getElementById("user-avatar-initial");
+
+                if (userDisplay) userDisplay.innerText = loggedInStore;
+                if (userDisplayMobile) userDisplayMobile.innerText = loggedInStore;
+                if (avatarInitial) avatarInitial.innerText = loggedInStore.charAt(0);
+                
+                fetchSheetData();
+            } else {
+                document.getElementById("login-modal").classList.remove("hidden");
+                document.getElementById("app-wrapper").classList.add("hidden");
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById("login-username").value;
+            const password = document.getElementById("login-password").value;
+            const errorEl = document.getElementById("login-error");
+
+            if (password === "maptech") {
+                errorEl.classList.add("hidden");
+                sessionStorage.setItem("maptech_store", username);
+                checkAuth();
+            } else {
+                errorEl.classList.remove("hidden");
+            }
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem("maptech_store");
+            window.location.reload();
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            const formatted = `${dateStr}, ${timeStr} WIB`;
+            
+            document.getElementById("sync-timestamp").innerText = formatted;
+            const mobileTs = document.getElementById("sync-timestamp-mobile");
+            if (mobileTs) mobileTs.innerText = formatted;
+        }
+
+        function switchView(viewName) {
+            const viewSummary = document.getElementById("view-summary");
+            const viewAllStore = document.getElementById("view-all-store");
+            
+            const navSummary = document.getElementById("nav-summary");
+            const navAllStore = document.getElementById("nav-all-store");
+
+            const navMobileSummary = document.getElementById("nav-mobile-summary");
+            const navMobileAllStore = document.getElementById("nav-mobile-all-store");
+
+            if (viewName === 'summary') {
+                viewSummary.classList.remove("hidden");
+                viewAllStore.classList.add("hidden");
+                
+                navSummary.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition-colors";
+                navAllStore.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors";
+
+                navMobileSummary.className = "flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors";
+                navMobileAllStore.className = "flex flex-col items-center justify-center py-1 px-3 text-slate-400 hover:text-white font-medium transition-colors relative";
+            } else {
+                viewSummary.classList.add("hidden");
+                viewAllStore.classList.remove("hidden");
+
+                navAllStore.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition-colors";
+                navSummary.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 text-slate-400 hover:text-white transition-colors";
+
+                navMobileAllStore.className = "flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors relative";
+                navMobileSummary.className = "flex flex-col items-center justify-center py-1 px-3 text-slate-400 hover:text-white font-medium transition-colors";
+            }
+        }
+
+        function isValidName(nama) {
+            if (!nama) return false;
+            const clean = String(nama).trim();
+            return clean !== '' && clean !== '-';
+        }
+
+        function fetchSheetData() {
+            fetch(CSV_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(csvText => {
+                    Papa.parse(csvText, {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            rawData = results.data.filter(item => isValidName(item['Nama']));
+                            updateTimestamp();
+                            populateStoreDropdown(rawData);
+                            renderAllData(rawData);
+                        },
+                        error: function(err) {
+                            console.error("Error parsing CSV:", err);
+                            showFetchError("Gagal memparsing data CSV.");
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.error("Error fetching CSV:", err);
+                    showFetchError("Gagal mengambil data. Pastikan Google Sheet sudah berstatus 'Publish to the Web' dan koneksi internet stabil.");
+                });
+        }
+
+        function showFetchError(message) {
+            document.getElementById("table-body-allstore").innerHTML = `
+                <tr>
+                    <td colspan="18" class="text-center py-6 text-rose-500 font-medium">
+                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> ${message}
+                    </td>
+                </tr>`;
+        }
+
+        function populateStoreDropdown(data) {
+            const storeSelect = document.getElementById("filter-store");
+            
+            const storeSet = new Set();
+            data.forEach(item => {
+                const storeName = item['Store'] ? item['Store'].trim() : '';
+                if (storeName && storeName !== '-') {
+                    storeSet.add(storeName);
+                }
+            });
+
+            const sortedStores = Array.from(storeSet).sort((a, b) => a.localeCompare(b));
+
+            const fragment = document.createDocumentFragment();
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = `-- Semua Toko (${sortedStores.length} Toko) --`;
+            fragment.appendChild(defaultOption);
+
+            sortedStores.forEach(store => {
+                const option = document.createElement("option");
+                option.value = store;
+                option.textContent = store;
+                fragment.appendChild(option);
+            });
+
+            storeSelect.innerHTML = "";
+            storeSelect.appendChild(fragment);
+        }
 
         function parseScore(val) {
             if (val === undefined || val === null || val === '') return null;
@@ -273,50 +760,16 @@
             return isNaN(num) ? null : num;
         }
 
-        // Helper untuk mencari key kolom yang fleksibel terhadap spasi/simbol
-        function getScoreValue(item) {
-            for (let key in item) {
-                if (key.toLowerCase().includes('max score')) {
-                    return parseScore(item[key]);
-                }
-            }
-            return null;
-        }
-
         function getCalculatedStatus(maxVal) {
             if (maxVal === null || maxVal === undefined) return 'Remidi';
             return maxVal >= 80 ? 'Lulus' : 'Remidi';
         }
 
-        function loadSheetData() {
-            // Jika URL CSV belum diisi, buat dummy data untuk pengujian lokal/visualisasi awal
-            if (!CSV_URL || CSV_URL.includes('2PACX-1vT...')) {
-                console.warn("URL CSV belum disetel. Menggunakan sampel data kosong.");
-                globalData = [];
-                renderAll(globalData);
-                return;
-            }
-
-            Papa.parse(CSV_URL, {
-                download: true,
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    globalData = results.data;
-                    renderAll(globalData);
-                },
-                error: function(err) {
-                    console.error("Gagal mengambil data CSV:", err);
-                    alert("Gagal memuat data dari Google Sheet. Periksa kembali URL publikasi CSV.");
-                }
-            });
-        }
-
-        function renderAll(data) {
+        function renderAllData(data) {
+            renderTableAllStore(data);
+            renderStoreAggregateTable(data);
             renderStatsAndSummary(data);
             renderMonitoringTables(data);
-            renderStoreAggregateTable(data);
-            renderTableAllStore(data);
         }
 
         function renderStoreAggregateTable(data) {
@@ -328,7 +781,7 @@
             data.forEach(item => {
                 const store = item['Store'] ? item['Store'].trim() : '';
                 if (!store) return;
-                const maxVal = getScoreValue(item);
+                const maxVal = parseScore(item['Max Score pt.1']);
 
                 if (!storeMap[store]) {
                     storeMap[store] = { count: 0, totalScore: 0, scoreEntries: 0 };
@@ -384,7 +837,7 @@
 
             data.forEach((item, index) => {
                 const store = item['Store'] || '-';
-                const nama = item['Nama'] ? item['Nama'].trim() : '-';
+                const nama = item['Nama'].trim();
                 const nik = item['NIK'] || '-';
                 const exp = item['Work Experience'] || '-';
                 const email = item['SEED Registered Email'] || '-';
@@ -399,7 +852,7 @@
                 const d11p = item['11-Sept-2026 Pagi'] || '-';
                 const d11s = item['11-Sept-2026 Siang'] || '-';
 
-                const maxVal = getScoreValue(item);
+                const maxVal = parseScore(item['Max Score pt.1']);
                 const join = item['Keterangan Join / Tidak Join'] || '-';
                 
                 const calculatedStatus = getCalculatedStatus(maxVal);
@@ -452,9 +905,9 @@
             let missingScoreCount = 0;
 
             data.forEach(item => {
-                const nama = item['Nama'] ? item['Nama'].trim() : '-';
+                const nama = item['Nama'].trim();
                 const store = item['Store'] || '-';
-                const maxVal = getScoreValue(item);
+                const maxVal = parseScore(item['Max Score pt.1']);
                 const status = getCalculatedStatus(maxVal);
 
                 if (maxVal !== null) {
@@ -500,7 +953,7 @@
             const totalKaryawan = data.length;
 
             data.forEach(item => {
-                const maxVal = getScoreValue(item);
+                const maxVal = parseScore(item['Max Score pt.1']);
 
                 if (maxVal !== null) { 
                     totalMaxScore += maxVal; 
@@ -521,6 +974,8 @@
             document.getElementById("stat-pass-rate").innerText = passRate;
             
             document.getElementById("badge-team-count").innerText = totalKaryawan;
+            const mobileBadge = document.getElementById("badge-mobile-team-count");
+            if (mobileBadge) mobileBadge.innerText = totalKaryawan;
 
             renderStoreRankings(data);
             renderSessionSummaryAndChart(data);
@@ -534,7 +989,7 @@
             data.forEach(item => {
                 const store = item['Store'];
                 if (!store) return;
-                const maxScore = getScoreValue(item);
+                const maxScore = parseScore(item['Max Score pt.1']);
 
                 if (!storeStats[store]) {
                     storeStats[store] = { count: 0, totalScore: 0, scoreEntries: 0 };
@@ -594,7 +1049,7 @@
             });
 
             data.forEach(item => {
-                const maxVal = getScoreValue(item);
+                const maxVal = parseScore(item['Max Score pt.1']);
                 const isOverallMissing = (maxVal === null);
 
                 SESSION_KEYS.forEach(key => {
@@ -632,18 +1087,50 @@
             renderSummaryChart(sessionAverages);
         }
 
+        function renderSummaryChart(averagesData) {
+            const ctx = document.getElementById('sessionChart').getContext('2d');
+
+            if (sessionChartInstance) sessionChartInstance.destroy();
+
+            sessionChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: SESSION_KEYS,
+                    datasets: [{
+                        label: 'Average Score Sesi',
+                        data: averagesData,
+                        backgroundColor: 'rgba(99, 102, 241, 0.85)',
+                        borderColor: 'rgb(79, 70, 229)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
         function renderStatusChart(hasScore, missingScore) {
-            const ctx = document.getElementById('statusChart').getContext('2d');
+            const ctx = document.getElementById('scoreStatusChart').getContext('2d');
+
             if (statusChartInstance) statusChartInstance.destroy();
 
             statusChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Sudah Dinilai', 'Belum Ada Nilai'],
+                    labels: ['Sudah Ada Nilai', 'Belum Ada Nilai / Kosong'],
                     datasets: [{
                         data: [hasScore, missingScore],
                         backgroundColor: ['#10b981', '#f59e0b'],
-                        borderWidth: 0
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
                     }]
                 },
                 options: {
@@ -652,59 +1139,49 @@
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            labels: { boxWidth: 12, font: { size: 11 } }
-                        }
-                    }
-                }
-            });
-        }
-
-        function renderSummaryChart(averages) {
-            const ctx = document.getElementById('sessionChart').getContext('2d');
-            if (sessionChartInstance) sessionChartInstance.destroy();
-
-            sessionChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['8 Sep P', '8 Sep S', '9 Sep P', '9 Sep S', '10 Sep P', '10 Sep S', '11 Sep P', '11 Sep S'],
-                    datasets: [{
-                        label: 'Rata-rata Nilai Sesi',
-                        data: averages,
-                        backgroundColor: '#6366f1',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100
+                            labels: { boxWidth: 12, font: { size: 10 } }
                         }
                     },
-                    plugins: {
-                        legend: { display: false }
-                    }
+                    cutout: '65%'
                 }
             });
         }
 
-        function filterTable() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = globalData.filter(item => {
-                const store = (item['Store'] || '').toLowerCase();
-                const nama = (item['Nama'] || '').toLowerCase();
-                const nik = (item['NIK'] || '').toLowerCase();
-                return store.includes(query) || nama.includes(query) || nik.includes(query);
-            });
-            renderTableAllStore(filtered);
+        function debounceFilter() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                applyFilters();
+            }, 250);
         }
 
-        // Jalankan saat halaman dimuat
-        window.onload = function() {
-            loadSheetData();
-        };
+        function applyFilters() {
+            const personalSearch = document.getElementById("search-personal").value.toLowerCase().trim();
+            const selectedStore = document.getElementById("filter-store").value.toLowerCase().trim();
+            const selectedStatus = document.getElementById("filter-status").value.toLowerCase().trim();
+
+            const filteredData = rawData.filter(item => {
+                const nama = (item['Nama'] || '').toLowerCase();
+                const nik = (item['NIK'] || '').toLowerCase();
+                const store = (item['Store'] || '').toLowerCase().trim();
+                const maxVal = parseScore(item['Max Score pt.1']);
+                const status = getCalculatedStatus(maxVal).toLowerCase();
+
+                const matchPersonal = personalSearch === "" || nama.includes(personalSearch) || nik.includes(personalSearch);
+                const matchStore = selectedStore === "" || store === selectedStore;
+                const matchStatus = selectedStatus === "" || status.includes(selectedStatus);
+
+                return matchPersonal && matchStore && matchStatus;
+            });
+
+            renderAllData(filteredData);
+        }
+
+        function resetFilters() {
+            document.getElementById("search-personal").value = "";
+            document.getElementById("filter-store").value = "";
+            document.getElementById("filter-status").value = "";
+            renderAllData(rawData);
+        }
     </script>
 </body>
 </html>
