@@ -210,32 +210,56 @@
                     return response.text();
                 })
                 .then(csvText => {
-                    Papa.parse(csvText, {
-                        header: true,
-                        skipEmptyLines: true,
-                        complete: function(results) {
-                            if (results.meta && results.meta.fields) {
-                                rawHeaders = results.meta.fields;
-                            } else if (results.data.length > 0) {
-                                rawHeaders = Object.keys(results.data[0]);
-                            } else {
-                                rawHeaders = [];
-                            }
+                    // PARSE MATRIKS ARRAY UNTUK MENEMUKAN BARIS HEADER SECARA OTOMATIS
+                    const parsed = Papa.parse(csvText, { skipEmptyLines: true });
+                    const rows = parsed.data;
 
-                            rawData = results.data;
+                    if (!rows || rows.length === 0) {
+                        throw new Error("Data spreadsheet kosong.");
+                    }
 
-                            updateTimestamp();
-                            syncBadge.className = "text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-mono";
-                            syncBadge.innerText = "Active";
-                            
-                            renderTableHeader(rawHeaders);
-                            renderTableBody(rawData);
-                            updateStats(rawData.length, rawHeaders.length);
-                        },
-                        error: function(err) {
-                            throw new Error("Gagal memparsing data CSV: " + err.message);
+                    // Cari baris yang mengandung kolom 'Store' & 'Nama'
+                    let headerIndex = -1;
+                    for (let i = 0; i < Math.min(rows.length, 10); i++) {
+                        const rowStr = rows[i].join(" ").toLowerCase();
+                        if (rowStr.includes("store") && rowStr.includes("nama")) {
+                            headerIndex = i;
+                            break;
                         }
-                    });
+                    }
+
+                    if (headerIndex === -1) headerIndex = 0;
+
+                    // Mengambil nama header asli dan membersihkan spasi berlebih
+                    rawHeaders = rows[headerIndex].map(h => String(h).trim()).filter(h => h !== "");
+                    
+                    // Memetakan baris data secara murni mengikuti indeks header
+                    rawData = [];
+                    for (let i = headerIndex + 1; i < rows.length; i++) {
+                        const rowArr = rows[i];
+                        if (!rowArr || rowArr.length === 0) continue;
+
+                        let rowObj = {};
+                        let hasData = false;
+                        
+                        rawHeaders.forEach((headerName, colIdx) => {
+                            const val = rowArr[colIdx] !== undefined ? String(rowArr[colIdx]).trim() : "";
+                            rowObj[headerName] = val;
+                            if (val !== "") hasData = true;
+                        });
+
+                        if (hasData) {
+                            rawData.push(rowObj);
+                        }
+                    }
+
+                    updateTimestamp();
+                    syncBadge.className = "text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-mono";
+                    syncBadge.innerText = "Active";
+                    
+                    renderTableHeader(rawHeaders);
+                    renderTableBody(rawData);
+                    updateStats(rawData.length, rawHeaders.length);
                 })
                 .catch(err => {
                     console.error("Error fetching CSV:", err);
@@ -245,14 +269,14 @@
                 });
         }
 
-        // Render Header murni sesuai Fetch
+        // Render Header murni Kiri ke Kanan mengikuti susunan CSV
         function renderTableHeader(headers) {
             const thead = document.getElementById("table-head");
             thead.innerHTML = "";
 
             const tr = document.createElement("tr");
             
-            // Kolom Penomoran Otomatis
+            // Kolom Penomoran
             const thNo = document.createElement("th");
             thNo.className = "p-3 text-center bg-slate-200 text-slate-700 font-bold border-b border-slate-300";
             thNo.innerText = "No.";
@@ -260,15 +284,15 @@
 
             headers.forEach(h => {
                 const th = document.createElement("th");
-                th.className = "p-3 font-semibold text-slate-700 border-b border-slate-200";
-                th.innerText = h ? h.trim() : "-";
+                th.className = "p-3 font-semibold text-slate-700 border-b border-slate-200 bg-slate-100";
+                th.innerText = h;
                 tr.appendChild(th);
             });
 
             thead.appendChild(tr);
         }
 
-        // Render Data murni sesuai Fetch
+        // Render Data Baris demi Baris
         function renderTableBody(data) {
             const tbody = document.getElementById("table-body-allstore");
             tbody.innerHTML = "";
@@ -294,7 +318,7 @@
                     td.className = "p-3 text-slate-700";
                     
                     const val = row[header];
-                    td.innerText = (val !== undefined && val !== null && String(val).trim() !== "") ? String(val).trim() : "-";
+                    td.innerText = (val !== undefined && val !== null && val !== "") ? val : "-";
                     
                     tr.appendChild(td);
                 });
@@ -305,7 +329,7 @@
             tbody.appendChild(fragment);
         }
 
-        // Fungsi Filter / Pencarian Global
+        // Filter / Pencarian Global
         function applyFilter() {
             const query = document.getElementById("filter-input").value.toLowerCase();
             
