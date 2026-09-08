@@ -254,11 +254,9 @@
     </div>
 
     <script>
-        // URL Publikasi Asli Google Sheets
-        const RAW_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRbNFcwSEqELSS37KQrPEtThcbjN7KtzySQskvck9c9y8G-INIRH6AiteYxTPBWJp8fO2tKjXlq7AF/pub?gid=0&single=true&output=csv";
-        
-        // Membungkus dengan CORS Proxy untuk menembus blokir CORS browser
-        const CSV_URL = "https://corsproxy.io/?" + encodeURIComponent(RAW_CSV_URL);
+        // Konfigurasi Google Sheets via Google Visualization Query API (Bebas CORS)
+        const SHEET_ID = "1vRRbNFcwSEqELSS37KQrPEtThcbjN7KtzySQskvck9c9y8G-INIRH6AiteYxTPBWJp8fO2tKjXlq7AF";
+        const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 
         const MAPTECH_STORE_LIST = [
             "M108 Digimap Trans Studio Mall Bandung", "M116 Digimap Beachwalk Bali", "M117 Digimap Plaza Senayan",
@@ -330,7 +328,7 @@
             
             errorAlert.classList.add("hidden");
 
-            fetch(CSV_URL)
+            fetch(GVIZ_URL)
                 .then(response => {
                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     return response.text();
