@@ -27,13 +27,11 @@
             color: #2b3674;
         }
 
-        /* Neon Green Utility */
         .text-neon-green {
             color: #39ff14;
             text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
         }
 
-        /* Status Badges */
         .badge {
             padding: 4px 10px;
             border-radius: 20px;
@@ -49,7 +47,6 @@
         .badge-absent { background-color: #fff8e6; color: #ffb800; }
         .badge-default { background-color: #f4f7fe; color: #707eae; }
 
-        /* Custom Scrollbar */
         .table-responsive::-webkit-scrollbar { height: 6px; width: 6px; }
         .table-responsive::-webkit-scrollbar-track { background: #f1f1f1; }
         .table-responsive::-webkit-scrollbar-thumb { background: #c3cadb; border-radius: 4px; }
@@ -61,7 +58,6 @@
     <div id="login-modal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md p-6 md:p-8 relative">
             <div class="text-center mb-6">
-                <!-- LOGO DENGAN GAMBAR/IKON ORANG -->
                 <div class="w-14 h-14 bg-indigo-600 rounded-full mx-auto flex items-center justify-center text-white text-2xl font-bold mb-3 shadow-lg shadow-indigo-500/30">
                     <i class="fa-solid fa-user-circle"></i>
                 </div>
@@ -106,13 +102,8 @@
     <!-- MAIN APP WRAPPER -->
     <div id="app-wrapper" class="flex flex-col md:flex-row min-h-screen hidden">
         
-        <!-- SIDEBAR (PC/Laptop/Tablet) & BOTTOM DOCK (Mobile Gawai) -->
         <aside class="fixed bottom-0 left-0 right-0 z-50 bg-slate-900 border-t border-slate-800 p-2 md:relative md:w-64 md:border-t-0 md:p-4 flex md:flex-col justify-between select-none flex-shrink-0">
-            
-            <!-- Tampilan Desktop & Tablet (Disembunyikan di Mobile) -->
             <div class="hidden md:block w-full">
-                
-                <!-- USER INFO & LOGOUT BUTTON (Paling Atas Sidebar Desktop) -->
                 <div class="bg-slate-800/90 border border-slate-700/80 rounded-xl p-3 mb-4 flex items-center justify-between">
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white" id="user-avatar-initial">
@@ -128,12 +119,10 @@
                     </button>
                 </div>
 
-                <!-- CONCEPT & CURATION & VERSI -->
                 <div class="px-1 mb-3 text-[10px] text-slate-400 font-medium tracking-tight border-l-2 border-indigo-500 pl-2">
                     Concept & Curation by <span class="text-slate-200 font-semibold">Novi Riyanto</span> <span id="sidebar-app-version" class="text-indigo-400 font-mono font-bold ml-1"></span>
                 </div>
 
-                <!-- Status AutoSync -->
                 <div class="mb-4 bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 flex flex-col gap-1.5">
                     <div class="flex items-center justify-between">
                         <span class="text-[12px] font-bold text-neon-green tracking-wide flex items-center gap-1.5">
@@ -146,12 +135,10 @@
                     </p>
                 </div>
 
-                <!-- Header / Brand -->
                 <div class="px-1 py-2 mb-4 border-b border-slate-800 pb-3">
                     <h2 class="text-base font-bold text-white tracking-wide leading-tight">Nilai Post Test Sementara</h2>
                 </div>
 
-                <!-- Navigation Links Desktop -->
                 <nav class="space-y-1">
                     <button onclick="switchView('summary')" id="nav-summary" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition-colors">
                         <div class="flex items-center gap-3">
@@ -170,7 +157,6 @@
                 </nav>
             </div>
 
-            <!-- MENU DOCK MOBILE (Hanya Tampil di Perangkat Gawai) -->
             <nav class="flex md:hidden w-full items-center justify-around">
                 <button onclick="switchView('summary')" id="nav-mobile-summary" class="flex flex-col items-center justify-center py-1 px-3 text-indigo-400 font-semibold transition-colors">
                     <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i>
@@ -183,7 +169,6 @@
                     <span id="badge-mobile-team-count" class="absolute -top-1 right-2 bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">0</span>
                 </button>
 
-                <!-- INFO USER & LOGOUT MOBILE (Terkumpul di Menu Bawah Kanan) -->
                 <div class="flex items-center gap-1 bg-slate-800/80 pl-2 pr-1 py-1 rounded-lg border border-slate-700/60">
                     <div class="text-right">
                         <p class="text-[9px] font-bold text-slate-200 leading-tight" id="user-display-store-mobile">Store</p>
@@ -201,7 +186,6 @@
         <main class="flex-1 p-3 md:p-6 overflow-x-hidden flex flex-col justify-between">
             <div class="max-w-7xl mx-auto w-full bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
                 
-                <!-- HEADER MOBILE BANNER (Tampil Khusus di Mobile untuk Info AutoSync & Curator) -->
                 <div class="block md:hidden mb-4 p-3 bg-slate-900 text-white rounded-xl">
                     <div class="flex items-center justify-between text-[10px] text-slate-400 border-b border-slate-800 pb-2 mb-2">
                         <span>Concept & Curation by <b class="text-slate-200">Novi Riyanto</b> <span id="mobile-app-version" class="text-indigo-400 font-mono font-bold"></span></span>
@@ -213,7 +197,6 @@
                     </div>
                 </div>
 
-                <!-- HEADER DASHBOARD UTAMA -->
                 <div class="pb-3 md:pb-4 mb-4 md:mb-6 border-b border-slate-100">
                     <h2 class="text-lg md:text-2xl font-bold text-slate-900" id="page-title">Nilai Post Test Sementara</h2>
                 </div>
@@ -294,8 +277,6 @@
 
                 <!-- VIEW 1: SUMMARY TAB -->
                 <div id="view-summary" class="space-y-6">
-                    
-                    <!-- CHART VISUALISASI SUMMARY -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div class="lg:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
                             <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
@@ -306,7 +287,6 @@
                             </div>
                         </div>
 
-                        <!-- Kelengkapan Nilai Peserta -->
                         <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
                             <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
                                 <i class="fa-solid fa-chart-pie text-indigo-600"></i> Kelengkapan Nilai Peserta
@@ -317,14 +297,11 @@
                         </div>
                     </div>
 
-                    <!-- TABEL MONITORING KHUSUS -->
                     <div>
                         <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Monitoring Khusus Staff (Remidi & Nilai Belum Muncul)
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            
-                            <!-- Tabel Staff Remidi -->
                             <div class="bg-rose-50/60 border border-rose-200 rounded-xl p-3 md:p-4">
                                 <h4 class="text-xs font-bold text-rose-800 uppercase tracking-wider mb-2 flex items-center justify-between">
                                     <span><i class="fa-solid fa-user-xmark"></i> Daftar Staff Remidi</span>
@@ -346,7 +323,6 @@
                                 </div>
                             </div>
 
-                            <!-- Tabel Staff Nilai Tidak Ditemukan -->
                             <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-3 md:p-4">
                                 <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-2 flex items-center justify-between">
                                     <span><i class="fa-solid fa-circle-question"></i> Nilai Belum Keluar / Kosong</span>
@@ -367,11 +343,9 @@
                                     </table>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
-                    <!-- RINGKASAN SESI ASSESSMENT TABLE -->
                     <div>
                         <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-calendar-check text-indigo-600"></i> Ringkasan Sesi Assessment (Pagi & Siang)
@@ -398,7 +372,6 @@
                         </div>
                     </div>
 
-                    <!-- TOP 10 VS BOTTOM 10 -->
                     <div>
                         <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-ranking-star text-indigo-600"></i> Ranking Toko (Top 10 vs Bottom 10)
@@ -449,13 +422,10 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <!-- VIEW 2: ALL STORE TAB -->
                 <div id="view-all-store" class="hidden space-y-6">
-                    
-                    <!-- TABEL RINGKASAN STORE & AVERAGE -->
                     <div>
                         <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-store text-indigo-600"></i> Ringkasan Performa Rata-Rata Store
@@ -477,7 +447,6 @@
                         </div>
                     </div>
 
-                    <!-- TABEL DETAIL PESERTA ALL STORE -->
                     <div>
                         <h3 class="text-xs md:text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-table-list text-indigo-600"></i> Detail Peserta & Nilai Post Test All Store
@@ -501,14 +470,16 @@
                                         <th class="p-3 text-center bg-indigo-50">10-Sept-2026<br><span class="font-normal text-[10px]">Siang</span></th>
                                         <th class="p-3 text-center bg-indigo-50">11-Sept-2026<br><span class="font-normal text-[10px]">Pagi</span></th>
                                         <th class="p-3 text-center bg-indigo-50">11-Sept-2026<br><span class="font-normal text-[10px]">Siang</span></th>
-                                        <th class="p-3 text-center font-bold text-indigo-600">Max Score</th>
-                                        <th class="p-3">Status Join</th>
-                                        <th class="p-3">Status Final</th>
+                                        <th class="p-3">Keterangan</th>
+                                        <th class="p-3 text-center font-bold text-indigo-600">Min Score pt.1</th>
+                                        <th class="p-3 text-center font-bold text-indigo-600">Max Score pt.1</th>
+                                        <th class="p-3">Keterangan Join / Tidak Join</th>
+                                        <th class="p-3">Status Remidi / Lulus</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body-allstore" class="divide-y divide-slate-100 bg-white">
                                     <tr>
-                                        <td colspan="18" class="text-center py-6 text-indigo-600">
+                                        <td colspan="20" class="text-center py-6 text-indigo-600">
                                             <i class="fa-solid fa-spinner fa-spin"></i> Memuat data...
                                         </td>
                                     </tr>
@@ -516,7 +487,6 @@
                             </table>
                         </div>
                     </div>
-
                 </div>
 
             </div>
@@ -524,10 +494,8 @@
     </div>
 
     <script>
-        // URL FETCH DATA CSV GOOGLE SHEET BARU
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT-qqVF7ni3YNO19bT149rKAXNvemlgIvWYpJ0-QOs9F6WAJJ-c-Z3XqDl83jrbfoip7zu2D5aWYxfa/pub?output=csv";
 
-        // Daftar Kode Toko MAPTECH
         const MAPTECH_STORE_CODES = [
             "M108", "M116", "M117", "M118", "M119", "M120", "M121", "M122", "M123", "M124", 
             "M125", "M126", "M127", "M128", "M129", "M130", "M131", "M201", "M203", "M205", 
@@ -546,7 +514,6 @@
         let statusChartInstance = null;
         let debounceTimer = null;
 
-        // Kunci Tanggal & Sesi September 2026
         const SESSION_KEYS = [
             '8-Sept-2026 Pagi', '8-Sept-2026 Siang',
             '9-Sept-2026 Pagi', '9-Sept-2026 Siang',
@@ -554,7 +521,6 @@
             '11-Sept-2026 Pagi', '11-Sept-2026 Siang'
         ];
 
-        // FUNGSI GENERATE VERSI DENGAN TITIK (YYYY.MM.DD.HH.MM)
         function generateVersionString() {
             const now = new Date();
             const year = now.getFullYear();
@@ -600,7 +566,6 @@
                 document.getElementById("login-modal").classList.add("hidden");
                 document.getElementById("app-wrapper").classList.remove("hidden");
                 
-                // Update UI Display User Toko Desktop & Mobile
                 const userDisplay = document.getElementById("user-display-store");
                 const userDisplayMobile = document.getElementById("user-display-store-mobile");
                 const avatarInitial = document.getElementById("user-avatar-initial");
@@ -678,10 +643,19 @@
             }
         }
 
-        function isValidName(nama) {
-            if (!nama) return false;
-            const clean = String(nama).trim();
-            return clean !== '' && clean !== '-';
+        function getSafeValue(item, possibleKeys) {
+            for (let key of possibleKeys) {
+                if (item[key] !== undefined && item[key] !== null) {
+                    return item[key];
+                }
+                // Cek dengan trim untuk mengantisipasi spasi tersembunyi
+                for (let k in item) {
+                    if (k.trim() === key.trim()) {
+                        return item[k];
+                    }
+                }
+            }
+            return '';
         }
 
         function fetchSheetData() {
@@ -689,8 +663,37 @@
                 download: true,
                 header: true,
                 skipEmptyLines: true,
+                transformHeader: function(header) {
+                    return header.trim();
+                },
                 complete: function(results) {
-                    rawData = results.data.filter(item => isValidName(item['Nama']));
+                    rawData = results.data.map(item => {
+                        return {
+                            Store: getSafeValue(item, ['Store', 'StoreNama']),
+                            Nama: getSafeValue(item, ['Nama']),
+                            NIK: getSafeValue(item, ['NIK']),
+                            WorkExperience: getSafeValue(item, ['Work Experience']),
+                            SEEDEmail: getSafeValue(item, ['SEED Registered Email']),
+                            Positions: getSafeValue(item, ['Positions']),
+                            '8-Sept-2026 Pagi': getSafeValue(item, ['8-Sept-2026 Pagi']),
+                            '8-Sept-2026 Siang': getSafeValue(item, ['8-Sept-2026 Siang']),
+                            '9-Sept-2026 Pagi': getSafeValue(item, ['9-Sept-2026 Pagi']),
+                            '9-Sept-2026 Siang': getSafeValue(item, ['9-Sept-2026 Siang']),
+                            '10-Sept-2026 Pagi': getSafeValue(item, ['10-Sept-2026 Pagi']),
+                            '10-Sept-2026 Siang': getSafeValue(item, ['10-Sept-2026 Siang']),
+                            '11-Sept-2026 Pagi': getSafeValue(item, ['11-Sept-2026 Pagi']),
+                            '11-Sept-2026 Siang': getSafeValue(item, ['11-Sept-2026 Siang']),
+                            Keterangan: getSafeValue(item, ['Keterangan']),
+                            MinScore: getSafeValue(item, ['Min Score pt.1']),
+                            MaxScore: getSafeValue(item, ['Max Score pt.1']),
+                            KeteranganJoin: getSafeValue(item, ['Keterangan Join / Tidak Join']),
+                            StatusRemidi: getSafeValue(item, ['Status Remidi / Lulus'])
+                        };
+                    }).filter(item => {
+                        const nama = String(item.Nama).trim();
+                        return nama !== '' && nama !== '-';
+                    });
+
                     updateTimestamp();
                     populateStoreDropdown(rawData);
                     renderAllData(rawData);
@@ -699,7 +702,7 @@
                     console.error("Error fetching CSV:", err);
                     document.getElementById("table-body-allstore").innerHTML = `
                         <tr>
-                            <td colspan="18" class="text-center py-4 text-rose-500">
+                            <td colspan="20" class="text-center py-4 text-rose-500">
                                 Gagal memuat data. Silakan periksa koneksi internet Anda.
                             </td>
                         </tr>`;
@@ -709,10 +712,10 @@
 
         function populateStoreDropdown(data) {
             const storeSelect = document.getElementById("filter-store");
-            
             const storeSet = new Set();
+            
             data.forEach(item => {
-                const storeName = item['Store'] ? item['Store'].trim() : '';
+                const storeName = item.Store ? String(item.Store).trim() : '';
                 if (storeName && storeName !== '-') {
                     storeSet.add(storeName);
                 }
@@ -763,9 +766,9 @@
             const storeMap = {};
 
             data.forEach(item => {
-                const store = item['Store'] ? item['Store'].trim() : '';
+                const store = item.Store ? String(item.Store).trim() : '';
                 if (!store) return;
-                const maxVal = parseScore(item['Max Score pt.1']);
+                const maxVal = parseScore(item.MaxScore);
 
                 if (!storeMap[store]) {
                     storeMap[store] = { count: 0, totalScore: 0, scoreEntries: 0 };
@@ -813,19 +816,19 @@
             tbody.innerHTML = "";
 
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="18" class="text-center py-4 text-slate-400">Data tidak ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="20" class="text-center py-4 text-slate-400">Data tidak ditemukan.</td></tr>`;
                 return;
             }
 
             const fragment = document.createDocumentFragment();
 
             data.forEach((item, index) => {
-                const store = item['Store'] || '-';
-                const nama = item['Nama'].trim();
-                const nik = item['NIK'] || '-';
-                const exp = item['Work Experience'] || '-';
-                const email = item['SEED Registered Email'] || '-';
-                const pos = item['Positions'] || '-';
+                const store = item.Store || '-';
+                const nama = String(item.Nama).trim();
+                const nik = item.NIK || '-';
+                const exp = item.WorkExperience || '-';
+                const email = item.SEEDEmail || '-';
+                const pos = item.Positions || '-';
 
                 const d8p = item['8-Sept-2026 Pagi'] || '-';
                 const d8s = item['8-Sept-2026 Siang'] || '-';
@@ -836,8 +839,10 @@
                 const d11p = item['11-Sept-2026 Pagi'] || '-';
                 const d11s = item['11-Sept-2026 Siang'] || '-';
 
-                const maxVal = parseScore(item['Max Score pt.1']);
-                const join = item['Keterangan Join / Tidak Join'] || '-';
+                const ket = item.Keterangan || '-';
+                const minVal = item.MinScore || '-';
+                const maxVal = parseScore(item.MaxScore);
+                const join = item.KeteranganJoin || '-';
                 
                 const calculatedStatus = getCalculatedStatus(maxVal);
 
@@ -868,6 +873,8 @@
                     <td class="p-3 text-center">${d10s}</td>
                     <td class="p-3 text-center">${d11p}</td>
                     <td class="p-3 text-center">${d11s}</td>
+                    <td class="p-3">${ket}</td>
+                    <td class="p-3 text-center">${minVal}</td>
                     <td class="p-3 text-center font-semibold text-indigo-600">${maxVal !== null ? maxVal : 0}</td>
                     <td class="p-3"><span class="badge ${joinBadgeClass}">${join}</span></td>
                     <td class="p-3"><span class="badge ${statusBadgeClass}">${calculatedStatus}</span></td>
@@ -884,14 +891,13 @@
 
             let remidiList = [];
             let missingList = [];
-
             let hasScoreCount = 0;
             let missingScoreCount = 0;
 
             data.forEach(item => {
-                const nama = item['Nama'].trim();
-                const store = item['Store'] || '-';
-                const maxVal = parseScore(item['Max Score pt.1']);
+                const nama = String(item.Nama).trim();
+                const store = item.Store || '-';
+                const maxVal = parseScore(item.MaxScore);
                 const status = getCalculatedStatus(maxVal);
 
                 if (maxVal !== null) {
@@ -937,7 +943,7 @@
             const totalKaryawan = data.length;
 
             data.forEach(item => {
-                const maxVal = parseScore(item['Max Score pt.1']);
+                const maxVal = parseScore(item.MaxScore);
 
                 if (maxVal !== null) { 
                     totalMaxScore += maxVal; 
@@ -971,9 +977,9 @@
             const storeStats = {};
 
             data.forEach(item => {
-                const store = item['Store'];
+                const store = item.Store;
                 if (!store) return;
-                const maxScore = parseScore(item['Max Score pt.1']);
+                const maxScore = parseScore(item.MaxScore);
 
                 if (!storeStats[store]) {
                     storeStats[store] = { count: 0, totalScore: 0, scoreEntries: 0 };
@@ -1033,7 +1039,7 @@
             });
 
             data.forEach(item => {
-                const maxVal = parseScore(item['Max Score pt.1']);
+                const maxVal = parseScore(item.MaxScore);
                 const isOverallMissing = (maxVal === null);
 
                 SESSION_KEYS.forEach(key => {
@@ -1144,10 +1150,10 @@
             const selectedStatus = document.getElementById("filter-status").value.toLowerCase().trim();
 
             const filteredData = rawData.filter(item => {
-                const nama = (item['Nama'] || '').toLowerCase();
-                const nik = (item['NIK'] || '').toLowerCase();
-                const store = (item['Store'] || '').toLowerCase().trim();
-                const maxVal = parseScore(item['Max Score pt.1']);
+                const nama = (item.Nama || '').toLowerCase();
+                const nik = (item.NIK || '').toLowerCase();
+                const store = (item.Store || '').toLowerCase().trim();
+                const maxVal = parseScore(item.MaxScore);
                 const status = getCalculatedStatus(maxVal).toLowerCase();
 
                 const matchPersonal = personalSearch === "" || nama.includes(personalSearch) || nik.includes(personalSearch);
