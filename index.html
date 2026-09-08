@@ -25,11 +25,6 @@
             color: #2b3674;
         }
 
-        .text-neon-green {
-            color: #39ff14;
-            text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
-        }
-
         .badge {
             padding: 4px 10px;
             border-radius: 20px;
@@ -44,20 +39,6 @@
         .badge-join { background-color: #e9f3ff; color: #2b77e5; }
         .badge-absent { background-color: #fff8e6; color: #ffb800; }
         .badge-default { background-color: #f4f7fe; color: #707eae; }
-
-        tr.row-status-lulus {
-            background-color: #f0fdf4 !important;
-        }
-        tr.row-status-lulus:hover {
-            background-color: #dcfce7 !important;
-        }
-
-        tr.row-status-remidi {
-            background-color: #fff1f2 !important;
-        }
-        tr.row-status-remidi:hover {
-            background-color: #ffe4e6 !important;
-        }
 
         .table-responsive::-webkit-scrollbar { height: 6px; width: 6px; }
         .table-responsive::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -120,7 +101,7 @@
         <div class="table-responsive overflow-x-auto border border-slate-200 rounded-xl max-h-[600px]">
             <table class="w-full text-xs text-left whitespace-nowrap">
                 <thead id="table-head" class="bg-slate-100 sticky top-0 z-10 border-b border-slate-200">
-                    <!-- Header generated dynamically from fetch -->
+                    <!-- Header dinamis dari fetch -->
                 </thead>
                 <tbody id="table-body" class="divide-y divide-slate-100 bg-white">
                     <tr>
@@ -135,20 +116,8 @@
     </div>
 
     <script>
-        // ID Spreadsheet Asli
         const SHEET_ID = "1Ckk2YocjioES8EKEkT3bjHy_56tUShglGPBCpYCyh5Y";
-        
-        // Target URL Resmi Export CSV Google Sheets
         const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
-
-        let rawData = [];
-
-        const SESSION_KEYS = [
-            "8-Sept-2026 Pagi", "8-Sept-2026 Siang",
-            "9-Sept-2026 Pagi", "9-Sept-2026 Siang",
-            "10-Sept-2026 Pagi", "10-Sept-2026 Siang",
-            "11-Sept-2026 Pagi", "11-Sept-2026 Siang"
-        ];
 
         document.addEventListener("DOMContentLoaded", () => {
             fetchSheetData();
@@ -159,17 +128,6 @@
             const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
             const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             document.getElementById("sync-timestamp").innerText = `${dateStr}, ${timeStr} WIB`;
-        }
-
-        // Helper untuk mencari data berdasarkan kunci (case-insensitive & trim space)
-        function getVal(row, keyName) {
-            if (!row) return '-';
-            const foundKey = Object.keys(row).find(k => k.trim().toLowerCase() === keyName.toLowerCase());
-            if (foundKey && row[foundKey] !== undefined && row[foundKey] !== null) {
-                const strVal = String(row[foundKey]).trim();
-                return strVal !== '' ? strVal : '-';
-            }
-            return '-';
         }
 
         function fetchSheetData() {
@@ -185,18 +143,18 @@
                     Papa.parse(csvText, {
                         header: true,
                         skipEmptyLines: true,
-                        transformHeader: function(header) {
-                            return header ? header.trim().replace(/\s+/g, ' ') : '';
-                        },
                         complete: function(results) {
-                            // Filter baris yang memiliki "Nama" valid
-                            rawData = results.data.filter(item => {
-                                const nama = getVal(item, 'Nama');
-                                return nama !== '-' && nama !== '';
+                            // Ambil seluruh data hasil parsing tanpa filter ketat
+                            const cleanData = results.data.filter(row => {
+                                return Object.values(row).some(val => val && String(val).trim() !== "");
                             });
 
                             updateTimestamp();
-                            renderAllData(rawData, results.meta.fields);
+                            renderDynamicTable(cleanData, results.meta.fields);
+                            
+                            // Update statistik
+                            document.getElementById("stat-total-karyawan").innerText = cleanData.length;
+                            document.getElementById("stat-total").innerText = cleanData.length;
                         },
                         error: function(err) {
                             throw new Error("Gagal memparsing data CSV: " + err.message);
@@ -207,23 +165,6 @@
                     console.error("Error fetching CSV:", err);
                     errorAlert.classList.remove("hidden");
                 });
-        }
-
-        function parseScore(val) {
-            if (val === undefined || val === null || val === '' || val === '-') return null;
-            let str = String(val).replace(',', '.').trim();
-            let num = parseFloat(str);
-            return isNaN(num) ? null : num;
-        }
-
-        function getCalculatedStatus(maxVal) {
-            if (maxVal === null || maxVal === undefined) return 'Remidi';
-            return maxVal >= 80 ? 'Lulus' : 'Remidi';
-        }
-
-        function renderAllData(data, fields) {
-            renderDynamicTable(data, fields);
-            renderStatsAndSummary(data);
         }
 
         function renderDynamicTable(data, fields) {
@@ -238,110 +179,36 @@
                 return;
             }
 
-            // Gunakan header dari meta parsing CSV jika tersedia, jika tidak ambil dari keys objek pertama
             const headers = fields && fields.length > 0 ? fields : Object.keys(data[0]);
 
-            // 1. Render Header secara langsung dari fetch Google Sheets
+            // 1. Render Header
             const trHead = document.createElement("tr");
             headers.forEach(headerText => {
                 const th = document.createElement("th");
-                th.className = "p-3 font-semibold text-slate-700 bg-slate-100";
-                
-                // Styling khusus untuk kolom sesi tanggal
-                if (SESSION_KEYS.some(k => k.toLowerCase() === headerText.toLowerCase())) {
-                    th.className += " text-center bg-indigo-50/70";
-                }
-                
-                th.innerText = headerText;
+                th.className = "p-3 font-semibold text-slate-700 bg-slate-100 border-b border-slate-200";
+                th.innerText = headerText || "Kolom";
                 trHead.appendChild(th);
             });
-            
-            // Tambahkan Header Status Tambahan jika belum ada di Sheet
-            const hasStatusCol = headers.some(h => h.toLowerCase().includes('status remidi'));
-            if (!hasStatusCol) {
-                const thStatus = document.createElement("th");
-                thStatus.className = "p-3 font-semibold text-slate-700 bg-slate-100";
-                thStatus.innerText = "Status Remidi / Lulus";
-                trHead.appendChild(thStatus);
-            }
-            
             thead.appendChild(trHead);
 
-            // 2. Render Baris Data
+            // 2. Render Body Data
             const fragment = document.createDocumentFragment();
-
-            data.forEach((item) => {
-                let rawMaxScore = getVal(item, 'Max Score pt.1');
-                if (rawMaxScore === '-') rawMaxScore = getVal(item, 'Max Score');
-                const maxVal = parseScore(rawMaxScore);
-                const calculatedStatus = getCalculatedStatus(maxVal);
-
-                let rowHighlightClass = calculatedStatus === 'Lulus' ? 'row-status-lulus' : 'row-status-remidi';
-
+            data.forEach((row) => {
                 const tr = document.createElement("tr");
-                tr.className = `transition-colors ${rowHighlightClass}`;
+                tr.className = "hover:bg-slate-50 transition-colors";
 
                 headers.forEach(headerText => {
                     const td = document.createElement("td");
-                    td.className = "p-3";
-                    const cellVal = getVal(item, headerText);
-
-                    // Formating khusus tampilan cell
-                    if (SESSION_KEYS.some(k => k.toLowerCase() === headerText.toLowerCase())) {
-                        td.className += " text-center";
-                        td.innerText = cellVal;
-                    } else if (headerText.toLowerCase().includes('join')) {
-                        let joinBadgeClass = 'badge-default';
-                        if (cellVal.toLowerCase().includes('join') && !cellVal.toLowerCase().includes('tidak')) {
-                            joinBadgeClass = 'badge-join';
-                        } else if (cellVal.toLowerCase().includes('tidak')) {
-                            joinBadgeClass = 'badge-absent';
-                        }
-                        td.innerHTML = `<span class="badge ${joinBadgeClass}">${cellVal}</span>`;
-                    } else if (headerText.toLowerCase().includes('status remidi')) {
-                        let statusBadgeClass = calculatedStatus === 'Lulus' ? 'badge-lulus' : 'badge-remidi';
-                        td.innerHTML = `<span class="badge ${statusBadgeClass}">${calculatedStatus}</span>`;
-                    } else if (headerText.toLowerCase().includes('max score')) {
-                        td.className += " text-center font-semibold text-indigo-600";
-                        td.innerText = maxVal !== null ? maxVal : cellVal;
-                    } else if (headerText.toLowerCase() === 'nama') {
-                        td.className += " font-semibold text-slate-900";
-                        td.innerText = cellVal;
-                    } else {
-                        td.innerText = cellVal;
-                    }
-
+                    td.className = "p-3 border-b border-slate-100";
+                    const val = row[headerText] !== undefined && row[headerText] !== null ? String(row[headerText]).trim() : "-";
+                    td.innerText = val !== "" ? val : "-";
                     tr.appendChild(td);
                 });
-
-                // Jika kolom status belum ada di sheet, lampirkan badge kalkulasi status di akhir
-                if (!hasStatusCol) {
-                    const tdStatus = document.createElement("td");
-                    tdStatus.className = "p-3";
-                    let statusBadgeClass = calculatedStatus === 'Lulus' ? 'badge-lulus' : 'badge-remidi';
-                    tdStatus.innerHTML = `<span class="badge ${statusBadgeClass}">${calculatedStatus}</span>`;
-                    tr.appendChild(tdStatus);
-                }
 
                 fragment.appendChild(tr);
             });
 
             tbody.appendChild(fragment);
-        }
-
-        function renderStatsAndSummary(data) {
-            const totalKaryawan = data.length;
-            let totalPesertaSet = new Set();
-            data.forEach((item, index) => {
-                const hasSessionScore = SESSION_KEYS.some(h => {
-                    const val = getVal(item, h);
-                    return val !== '-';
-                });
-                if (hasSessionScore) totalPesertaSet.add(index);
-            });
-
-            document.getElementById("stat-total-karyawan").innerText = totalKaryawan;
-            document.getElementById("stat-total").innerText = totalPesertaSet.size;
         }
     </script>
 </body>
