@@ -129,7 +129,7 @@
     </aside>
 
     <!-- MAIN CONTENT CONTAINER -->
-    <div class="flex-1 lg:ml-64 flex flex-col min-h-screen pb-20 lg:pb-0">
+    <div class="flex-1 lg:ml-64 flex flex-col min-h-screen pb-20 lg:pb-0 w-full overflow-x-hidden">
         
         <!-- MOBILE NAVBAR TOP -->
         <header class="lg:hidden bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4 flex items-center justify-between sticky top-0 z-40">
@@ -153,7 +153,7 @@
                 <button onclick="fetchSheetData()" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold transition-colors">Coba Lagi</button>
             </div>
 
-            <!-- STATISTIK UTAMA (Updated: Tanpa Kelulusan, Total Peserta dari Max Score pt.1, Lulus 80-100, Remidi <80) -->
+            <!-- STATISTIK UTAMA -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl flex items-center gap-3 shadow-sm">
                     <div class="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg shrink-0">
@@ -186,11 +186,13 @@
                 </div>
             </div>
 
-            <!-- SECTION: CHART ONLY -->
+            <!-- SECTION: CHART (Side-by-side untuk Nilai 100, 90, 80) -->
             <div id="chart-section" class="grid grid-cols-1 gap-6">
                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col justify-between">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Grafik Kelulusan Sesi</h3>
-                    <div class="relative w-full h-64">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Grafik Kelulusan Sesi (Perbandingan Nilai 100, 90, 80)</h3>
+                    </div>
+                    <div class="relative w-full h-72 sm:h-80">
                         <canvas id="sessionChart"></canvas>
                     </div>
                 </div>
@@ -247,7 +249,7 @@
         </main>
     </div>
 
-    <!-- MOBILE BOTTOM NAVIGATION (SIMILAR TO APP EXPERIENCE) -->
+    <!-- MOBILE BOTTOM NAVIGATION -->
     <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center justify-around p-2 z-40 text-[10px] text-slate-600 dark:text-slate-300">
         <button onclick="switchView('all'); window.scrollTo({top: 0, behavior: 'smooth'})" id="mobile-nav-all" class="flex flex-col items-center gap-1 p-2 text-indigo-600 dark:text-indigo-400 font-bold">
             <i class="fa-solid fa-house text-base"></i>
@@ -277,7 +279,7 @@
         
         let currentPage = 1;
         let pageSize = 25;
-        let currentViewMode = "all"; // 'all' or 'remidi'
+        let currentViewMode = "all";
         let sessionChartInstance = null;
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -369,16 +371,13 @@
             let lulusCount = 0;
             let remidiCount = 0;
 
-            // Indeks kolom Max Score pt.1
             let maxScoreIdx = allHeaders.findIndex(h => h.toLowerCase().includes("max score pt.1"));
 
-            // Indeks kolom sesi yang ditentukan
             let sessionIndices = targetSessionCols.map(colName => {
                 return allHeaders.findIndex(h => h.trim().toLowerCase() === colName.toLowerCase());
             });
 
             allDataRows.forEach(row => {
-                // Total Peserta: Hitung yang sudah mendapatkan nilai dari kolom Max Score pt.1
                 if (maxScoreIdx !== -1 && row[maxScoreIdx] !== undefined) {
                     const valStr = String(row[maxScoreIdx]).trim();
                     const numVal = parseFloat(valStr);
@@ -387,7 +386,6 @@
                     }
                 }
 
-                // Hitung Lulus (80-100) dan Remidi (<80, abaikan nol) dari kolom sesi target
                 sessionIndices.forEach(idx => {
                     if (idx !== -1 && row[idx] !== undefined) {
                         const cellStr = String(row[idx]).trim();
@@ -403,15 +401,35 @@
                 });
             });
 
-            // Grafik Kelulusan Sesi: hitung berapa orang yang lulus (nilai 80-100) per sesi target
-            let sessionLulusData = sessionIndices.map(idx => {
+            // Kalkulasi side-by-side untuk nilai 100, 90, dan 80 per sesi
+            let session100Data = sessionIndices.map(idx => {
                 let count = 0;
                 if (idx !== -1) {
                     allDataRows.forEach(row => {
                         const val = parseFloat(String(row[idx]).trim());
-                        if (!isNaN(val) && val >= 80 && val <= 100) {
-                            count++;
-                        }
+                        if (!isNaN(val) && val === 100) count++;
+                    });
+                }
+                return count;
+            });
+
+            let session90Data = sessionIndices.map(idx => {
+                let count = 0;
+                if (idx !== -1) {
+                    allDataRows.forEach(row => {
+                        const val = parseFloat(String(row[idx]).trim());
+                        if (!isNaN(val) && val === 90) count++;
+                    });
+                }
+                return count;
+            });
+
+            let session80Data = sessionIndices.map(idx => {
+                let count = 0;
+                if (idx !== -1) {
+                    allDataRows.forEach(row => {
+                        const val = parseFloat(String(row[idx]).trim());
+                        if (!isNaN(val) && val === 80) count++;
                     });
                 }
                 return count;
@@ -421,10 +439,10 @@
             document.getElementById("stat-lulus").innerText = lulusCount;
             document.getElementById("stat-remidi").innerText = remidiCount;
 
-            renderChart(targetSessionCols, sessionLulusData);
+            renderChart(targetSessionCols, session100Data, session90Data, session80Data);
         }
 
-        function renderChart(labels, lulusData) {
+        function renderChart(labels, data100, data90, data80) {
             const ctx = document.getElementById('sessionChart').getContext('2d');
             const isDark = document.body.classList.contains("dark");
             const textColor = isDark ? '#94a3b8' : '#64748b';
@@ -440,9 +458,21 @@
                     labels: labels.map(l => l.replace("-2026", "")),
                     datasets: [
                         {
-                            label: 'Jumlah Orang Lulus (Nilai 80-100)',
-                            data: lulusData,
+                            label: 'Nilai 100',
+                            data: data100,
                             backgroundColor: '#05cd99',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Nilai 90',
+                            data: data90,
+                            backgroundColor: '#6366f1',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Nilai 80',
+                            data: data80,
+                            backgroundColor: '#f59e0b',
                             borderRadius: 4
                         }
                     ]
@@ -492,7 +522,6 @@
         function switchView(mode) {
             currentViewMode = mode;
             
-            // Update UI Sidebar & Bottom Nav
             const btnAllDesktop = document.getElementById("nav-btn-all");
             const btnRemidiDesktop = document.getElementById("nav-btn-remidi");
             const btnAllMobile = document.getElementById("mobile-nav-all");
@@ -535,7 +564,6 @@
                 if (!matchesSearch) return false;
 
                 if (currentViewMode === 'remidi') {
-                    // Hanya ambil baris yang memiliki setidaknya satu nilai remidi (<80 dan bukan 0/kosong) pada kolom sesi target
                     let hasRemidi = false;
                     sessionIndices.forEach(idx => {
                         if (idx !== -1 && row[idx] !== undefined) {
@@ -608,7 +636,6 @@
                     td.className = "p-3 border-b border-slate-100 dark:border-slate-700";
                     const cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? String(row[colIndex]).trim() : "";
                     
-                    // Jika kolom termasuk sesi target, tandai jika remidi (<80, >0) atau lulus (80-100)
                     if (sessionIndices.includes(colIndex)) {
                         const num = parseFloat(cellVal);
                         if (cellVal !== "" && !isNaN(num) && num > 0) {
