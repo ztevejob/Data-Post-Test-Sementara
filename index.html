@@ -11,12 +11,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- PapaParse for Google Sheets CSV Parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Chart.js DataLabels Plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <!-- SheetJS (XLSX) CDN for Excel Export -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
     <style>
         * {
@@ -254,9 +248,9 @@
     </div>
 
     <script>
-        // Konfigurasi Google Sheets via Google Visualization Query API (Bebas CORS)
+        // Membatasi pengambilan data khusus sel B2 sampai T840
         const SHEET_ID = "1vRRbNFcwSEqELSS37KQrPEtThcbjN7KtzySQskvck9c9y8G-INIRH6AiteYxTPBWJp8fO2tKjXlq7AF";
-        const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+        const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&range=B2:T840`;
 
         const MAPTECH_STORE_LIST = [
             "M108 Digimap Trans Studio Mall Bandung", "M116 Digimap Beachwalk Bali", "M117 Digimap Plaza Senayan",
