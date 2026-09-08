@@ -136,25 +136,44 @@
 
             fetch(CSV_URL)
                 .then(response => {
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
                     return response.text();
                 })
                 .then(csvText => {
+                    // Deteksi jika Google merespons dengan HTML (misal halaman login/akses terbatas)
+                    if (csvText.trim().startsWith("<!DOCTYPE html>") || csvText.trim().startsWith("<html")) {
+                        throw new Error("Akses Google Sheets dibatasi. Pastikan pengaturan berbagi file diset ke 'Anyone with the link'.");
+                    }
+
+                    // Parse sebagai Array 2D (header: false) untuk menangani offset baris di Google Sheets
                     Papa.parse(csvText, {
-                        header: true,
-                        skipEmptyLines: true,
+                        header: false,
+                        skipEmptyLines: 'greedy',
                         complete: function(results) {
-                            // Ambil seluruh data hasil parsing tanpa filter ketat
-                            const cleanData = results.data.filter(row => {
-                                return Object.values(row).some(val => val && String(val).trim() !== "");
-                            });
+                            const rawRows = results.data;
+
+                            if (!rawRows || rawRows.length === 0) {
+                                renderEmptyTable();
+                                return;
+                            }
+
+                            // Cari baris pertama yang memiliki isi sebagai header
+                            let headerIdx = rawRows.findIndex(row => row.some(cell => String(cell).trim() !== ""));
+
+                            if (headerIdx === -1) {
+                                renderEmptyTable();
+                                return;
+                            }
+
+                            const headers = rawRows[headerIdx].map((h, i) => String(h).trim() || `Kolom ${i + 1}`);
+                            const dataRows = rawRows.slice(headerIdx + 1).filter(row => row.some(cell => String(cell).trim() !== ""));
 
                             updateTimestamp();
-                            renderDynamicTable(cleanData, results.meta.fields);
-                            
-                            // Update statistik
-                            document.getElementById("stat-total-karyawan").innerText = cleanData.length;
-                            document.getElementById("stat-total").innerText = cleanData.length;
+                            renderTableData(headers, dataRows);
+
+                            // Update Statistik
+                            document.getElementById("stat-total-karyawan").innerText = dataRows.length;
+                            document.getElementById("stat-total").innerText = dataRows.length;
                         },
                         error: function(err) {
                             throw new Error("Gagal memparsing data CSV: " + err.message);
@@ -162,46 +181,63 @@
                     });
                 })
                 .catch(err => {
-                    console.error("Error fetching CSV:", err);
+                    console.error("Error fetching sheet:", err);
+                    const errorMsg = document.getElementById("error-message-text");
+                    if (errorMsg) errorMsg.innerText = err.message;
                     errorAlert.classList.remove("hidden");
+                    renderEmptyTable();
                 });
         }
 
-        function renderDynamicTable(data, fields) {
+        function renderEmptyTable() {
+            const tbody = document.getElementById("table-body");
+            tbody.innerHTML = `<tr><td class="text-center py-6 text-slate-400">Data tidak ditemukan di Google Sheets.</td></tr>`;
+            document.getElementById("stat-total-karyawan").innerText = "0";
+            document.getElementById("stat-total").innerText = "0";
+        }
+
+        function renderTableData(headers, rows) {
             const thead = document.getElementById("table-head");
             const tbody = document.getElementById("table-body");
-            
+
             thead.innerHTML = "";
             tbody.innerHTML = "";
 
-            if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td class="text-center py-6 text-slate-400">Data tidak ditemukan di Google Sheets.</td></tr>`;
+            if (rows.length === 0) {
+                renderEmptyTable();
                 return;
             }
-
-            const headers = fields && fields.length > 0 ? fields : Object.keys(data[0]);
 
             // 1. Render Header
             const trHead = document.createElement("tr");
             headers.forEach(headerText => {
                 const th = document.createElement("th");
-                th.className = "p-3 font-semibold text-slate-700 bg-slate-100 border-b border-slate-200";
-                th.innerText = headerText || "Kolom";
+                th.className = "p-3 font-semibold text-slate-700 bg-slate-100 border-b border-slate-200 text-left";
+                th.innerText = headerText;
                 trHead.appendChild(th);
             });
             thead.appendChild(trHead);
 
-            // 2. Render Body Data
+            // 2. Render Baris Data
             const fragment = document.createDocumentFragment();
-            data.forEach((row) => {
+            rows.forEach(row => {
                 const tr = document.createElement("tr");
                 tr.className = "hover:bg-slate-50 transition-colors";
 
-                headers.forEach(headerText => {
+                headers.forEach((_, colIndex) => {
                     const td = document.createElement("td");
                     td.className = "p-3 border-b border-slate-100";
-                    const val = row[headerText] !== undefined && row[headerText] !== null ? String(row[headerText]).trim() : "-";
-                    td.innerText = val !== "" ? val : "-";
+                    const cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? String(row[colIndex]).trim() : "";
+                    
+                    // Format tampilan badge otomatis untuk status Lulus/Remidi jika ada
+                    if (cellVal.toLowerCase() === "lulus") {
+                        td.innerHTML = `<span class="badge badge-lulus">Lulus</span>`;
+                    } else if (cellVal.toLowerCase() === "remidi" || cellVal.toLowerCase() === "remedi") {
+                        td.innerHTML = `<span class="badge badge-remidi">Remidi</span>`;
+                    } else {
+                        td.innerText = cellVal !== "" ? cellVal : "-";
+                    }
+                    
                     tr.appendChild(td);
                 });
 
