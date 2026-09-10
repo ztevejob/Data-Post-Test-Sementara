@@ -74,25 +74,18 @@
         .table-responsive::-webkit-scrollbar-thumb { background: #c3cadb; border-radius: 4px; }
         body.dark .table-responsive::-webkit-scrollbar-track { background: #1e293b; }
         body.dark .table-responsive::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-
-        #sidebar {
-            transition: transform 0.3s ease-in-out;
-        }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex min-h-screen">
 
-    <!-- SIDEBAR DESKTOP -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+    <!-- SIDEBAR (Hanya Tampil di Desktop/LG ke atas) -->
+    <aside id="sidebar" class="hidden lg:flex fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex-col">
         <!-- Sidebar Header -->
         <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
             <div>
                 <h1 class="font-bold text-slate-900 dark:text-white text-base">MAPTECH</h1>
                 <p class="text-[10px] text-slate-400 mt-0.5">Concept & Curation by <span class="text-slate-600 dark:text-slate-300 font-semibold">Novi Riyanto</span></p>
             </div>
-            <button onclick="toggleSidebar()" class="lg:hidden text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
         </div>
 
         <!-- Sidebar Top Actions: Unified Dark Mode, Auto Sync, Live Clock & YouTube Playlist -->
@@ -124,7 +117,7 @@
                 </div>
             </div>
 
-            <!-- Pemutar Playlist YouTube -->
+            <!-- Pemutar Playlist YouTube (Diperbarui) -->
             <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60">
                 <div class="flex items-center justify-between mb-1.5 px-1">
                     <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
@@ -132,7 +125,7 @@
                     </span>
                 </div>
                 <div class="w-full rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-700 bg-black">
-                    <iframe class="w-full h-32" src="https://www.youtube.com/embed/videoseries?si=9CGm54pUbqzRF1Vr&amp;list=PLs4z8c3PbCEeN6-_UvU3_cF5cVRds8z3B" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <iframe class="w-full h-32" src="https://www.youtube.com/embed/videoseries?si=QxPXUeNIF95o1JjY&amp;list=PLIl2EzNYri0emtB96zErQCSnoNf_VOdLd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -158,14 +151,16 @@
         
         <!-- MOBILE NAVBAR TOP -->
         <header class="lg:hidden bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4 flex items-center justify-between sticky top-0 z-40">
-            <button onclick="toggleSidebar()" class="text-slate-700 dark:text-slate-200 text-lg">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleDarkMode()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-moon text-xs"></i>
+                </button>
+            </div>
             <div class="text-center">
                 <span class="font-bold text-slate-900 dark:text-white text-sm block">MAPTECH Dashboard</span>
                 <span class="text-[9px] text-slate-400">Concept & Curation by <span class="text-slate-600 dark:text-slate-300 font-semibold">Novi Riyanto</span></span>
             </div>
-            <div class="w-6"></div>
+            <div class="w-8"></div>
         </header>
 
         <main class="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto space-y-6">
@@ -292,8 +287,8 @@
         </main>
     </div>
 
-    <!-- MOBILE BOTTOM NAVIGATION -->
-    <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center justify-around p-2 z-40 text-[10px] text-slate-600 dark:text-slate-300">
+    <!-- MOBILE BOTTOM NAVIGATION (MENU DOCK) -->
+    <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center justify-around p-2 z-40 text-[10px] text-slate-600 dark:text-slate-300 shadow-lg">
         <button onclick="switchView('all'); window.scrollTo({top: 0, behavior: 'smooth'})" id="mobile-nav-all" class="flex flex-col items-center gap-1 p-2 text-indigo-600 dark:text-indigo-400 font-bold">
             <i class="fa-solid fa-house text-base"></i>
             <span>Semua Sesi</span>
@@ -333,11 +328,6 @@
             setInterval(updateLiveClock, 1000);
         });
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById("sidebar");
-            sidebar.classList.toggle("-translate-x-full");
-        }
-
         function toggleDarkMode() {
             document.body.classList.toggle("dark");
             const isDark = document.body.classList.contains("dark");
@@ -365,7 +355,10 @@
             const now = new Date();
             const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
             const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById("sync-timestamp").innerText = `Last Sync: ${dateStr}, ${timeStr}`;
+            const timestampEl = document.getElementById("sync-timestamp");
+            if(timestampEl) {
+                timestampEl.innerText = `Last Sync: ${dateStr}, ${timeStr}`;
+            }
         }
 
         function fetchWeather() {
@@ -425,7 +418,9 @@
                         header: false,
                         skipEmptyLines: 'greedy',
                         complete: function(results) {
-                            syncIndicator.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm transition-colors shadow-[0_0_8px_#10b981]";
+                            if (syncIndicator) {
+                                syncIndicator.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm transition-colors shadow-[0_0_8px_#10b981]";
+                            }
                             
                             const rawRows = results.data;
                             if (!rawRows || rawRows.length === 0) {
@@ -459,7 +454,9 @@
                 })
                 .catch(err => {
                     console.error("Error fetching sheet:", err);
-                    syncIndicator.className = "w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm transition-colors shadow-[0_0_8px_#f43f5e]";
+                    if (syncIndicator) {
+                        syncIndicator.className = "w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm transition-colors shadow-[0_0_8px_#f43f5e]";
+                    }
                     const errorMsg = document.getElementById("error-message-text");
                     if (errorMsg) errorMsg.innerText = err.message;
                     errorAlert.classList.remove("hidden");
@@ -672,20 +669,20 @@
             const tableTitle = document.getElementById("table-title");
 
             if (mode === 'remidi') {
-                btnRemidiDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 transition-colors flex items-center gap-2";
-                btnAllDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2";
+                if(btnRemidiDesktop) btnRemidiDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 transition-colors flex items-center gap-2";
+                if(btnAllDesktop) btnAllDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2";
                 
-                btnRemidiMobile.className = "flex flex-col items-center gap-1 p-2 text-rose-600 dark:text-rose-400 font-bold";
-                btnAllMobile.className = "flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400";
+                if(btnRemidiMobile) btnRemidiMobile.className = "flex flex-col items-center gap-1 p-2 text-rose-600 dark:text-rose-400 font-bold";
+                if(btnAllMobile) btnAllMobile.className = "flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400";
                 
                 chartSection.style.display = "none";
                 tableTitle.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Audit Tabel Perbaikan & Remidi (Nilai &lt; 80)`;
             } else {
-                btnAllDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 transition-colors flex items-center gap-2";
-                btnRemidiDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2";
+                if(btnAllDesktop) btnAllDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 transition-colors flex items-center gap-2";
+                if(btnRemidiDesktop) btnRemidiDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2";
                 
-                btnAllMobile.className = "flex flex-col items-center gap-1 p-2 text-indigo-600 dark:text-indigo-400 font-bold";
-                btnRemidiMobile.className = "flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400";
+                if(btnAllMobile) btnAllMobile.className = "flex flex-col items-center gap-1 p-2 text-indigo-600 dark:text-indigo-400 font-bold";
+                if(btnRemidiMobile) btnRemidiMobile.className = "flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400";
                 
                 chartSection.style.display = "grid";
                 tableTitle.innerHTML = `<i class="fa-solid fa-table-cells text-indigo-500"></i> Rekapitulasi Komprehensif Sesi Ujian Post-Test`;
@@ -695,7 +692,8 @@
         }
 
         function applyFilter() {
-            const query = document.getElementById("search-input").value.toLowerCase().trim();
+            const searchInput = document.getElementById("search-input");
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
             let sessionIndices = targetSessionCols.map(colName => {
                 return allHeaders.findIndex(h => h.trim().toLowerCase() === colName.toLowerCase());
             });
@@ -727,7 +725,8 @@
         }
 
         function changePageSize() {
-            pageSize = parseInt(document.getElementById("page-size").value);
+            const pageSizeEl = document.getElementById("page-size");
+            pageSize = pageSizeEl ? parseInt(pageSizeEl.value) : 25;
             currentPage = 1;
             renderTableData();
         }
