@@ -214,7 +214,7 @@
                     </div>
                 </div>
 
-                <!-- Donut Chart: Komparasi Kelulusan Digimap -->
+                <!-- Donut Chart -->
                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-2">
@@ -411,7 +411,7 @@
                         skipEmptyLines: 'greedy',
                         complete: function(results) {
                             if (syncIndicator) {
-                                syncIndicator.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm transition-colors";
+                                syncIndicator.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm transition-colors shadow-[0_0_8px_#10b981]";
                             }
                             
                             const rawRows = results.data;
@@ -447,7 +447,7 @@
                 .catch(err => {
                     console.error("Error fetching sheet:", err);
                     if (syncIndicator) {
-                        syncIndicator.className = "w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm transition-colors";
+                        syncIndicator.className = "w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm transition-colors shadow-[0_0_8px_#f43f5e]";
                     }
                     const errorMsg = document.getElementById("error-message-text");
                     if (errorMsg) errorMsg.innerText = err.message;
@@ -461,19 +461,16 @@
             let lulusCount = 0;
             let remidiCount = 0;
 
-            // Cari index kolom nama dan max score pt.1
             let nameIdx = allHeaders.findIndex(h => h.toLowerCase().includes("nama") || h.toLowerCase().includes("name"));
             let maxScoreIdx = allHeaders.findIndex(h => h.toLowerCase().includes("max score pt.1"));
 
             let maxScoreLulus = 0;
-            let maxScoreBelum = 0;
 
             let sessionIndices = targetSessionCols.map(colName => {
                 return allHeaders.findIndex(h => h.trim().toLowerCase() === colName.toLowerCase());
             });
 
             allDataRows.forEach(row => {
-                // Hitung jumlah staff Digimap berdasarkan kolom nama
                 let isDigimap = false;
                 if (nameIdx !== -1 && row[nameIdx] !== undefined) {
                     isDigimap = String(row[nameIdx]).toLowerCase().includes("digimap");
@@ -484,17 +481,12 @@
                 if (isDigimap) {
                     totalPesertaCount++;
 
-                    // Hitung kelulusan nilai 80 keatas dari kolom Max Score pt.1
                     if (maxScoreIdx !== -1 && row[maxScoreIdx] !== undefined) {
                         const valStr = String(row[maxScoreIdx]).trim();
                         const numVal = parseFloat(valStr);
                         if (valStr !== "" && !isNaN(numVal) && numVal >= 80) {
                             maxScoreLulus++;
-                        } else {
-                            maxScoreBelum++;
                         }
-                    } else {
-                        maxScoreBelum++;
                     }
                 }
 
@@ -512,6 +504,9 @@
                     }
                 });
             });
+
+            // Donut chart: Total staff Digimap dikurangi total nama kelulusan nilai 80 keatas dari Max Score pt.1
+            let maxScoreBelum = totalPesertaCount - maxScoreLulus;
 
             let session100Data = sessionIndices.map(idx => {
                 let count = 0;
