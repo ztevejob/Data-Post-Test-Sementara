@@ -1,9 +1,11 @@
+
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NILAI POST TEST SEMENTARA - MULTI SHEET</title>
+    <title>NILAI POST TEST SEMENTARA<</title>
     <!-- Google Fonts & Font Awesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -34,15 +36,41 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: #f4f7fe; color: #2b3674; transition: background-color 0.3s, color 0.3s; }
-        body.dark { background-color: #0f172a; color: #f1f5f9; }
-        .badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fe;
+            color: #2b3674;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark {
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         .badge-lulus { background-color: #e6f9f0; color: #05cd99; border: 1px solid #b7f4d8; }
         .badge-remidi { background-color: #ffeef0; color: #ee5d50; border: 1px solid #fcd2d4; }
         .badge-default { background-color: #f4f7fe; color: #707eae; }
+
         body.dark .badge-lulus { background-color: rgba(5, 205, 153, 0.15); color: #35dcaf; border-color: rgba(5, 205, 153, 0.3); }
         body.dark .badge-remidi { background-color: rgba(238, 93, 80, 0.15); color: #f87171; border-color: rgba(238, 93, 80, 0.3); }
+
         .table-responsive::-webkit-scrollbar { height: 6px; width: 6px; }
         .table-responsive::-webkit-scrollbar-track { background: #f1f1f1; }
         .table-responsive::-webkit-scrollbar-thumb { background: #c3cadb; border-radius: 4px; }
@@ -52,8 +80,9 @@
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex min-h-screen">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (Hanya Tampil di Desktop/LG ke atas) -->
     <aside id="sidebar" class="hidden lg:flex fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex-col">
+        <!-- Sidebar Header -->
         <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
             <div>
                 <h1 class="font-bold text-slate-900 dark:text-white text-base">MAPTECH</h1>
@@ -61,7 +90,9 @@
             </div>
         </div>
 
+        <!-- Sidebar Top Actions: Unified Dark Mode, Auto Sync, Live Clock & YouTube Playlist -->
         <div class="p-4 border-b border-slate-100 dark:border-slate-700 space-y-3">
+            <!-- Unified Dark Mode Toggle -->
             <button onclick="toggleDarkMode()" class="w-full flex items-center justify-between group text-left px-2 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                 <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-2">
                     <i class="fa-solid fa-moon text-indigo-500"></i> Mode Gelap
@@ -71,6 +102,7 @@
                 </div>
             </button>
 
+            <!-- Auto Sync & Live Clock Info -->
             <div class="px-2 py-1 space-y-1">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
@@ -78,10 +110,16 @@
                         <span class="text-[11px] font-bold text-emerald-500 dark:text-emerald-400">Auto Sync Active</span>
                     </div>
                 </div>
-                <div id="live-datetime" class="text-[10px] font-medium text-slate-500 dark:text-slate-400 pl-4.5">Memuat waktu...</div>
-                <div class="text-[10px] text-slate-400 pl-4.5" id="sync-timestamp">Sync: Memuat...</div>
+                <!-- Tanggal dan Jam Real-Time -->
+                <div id="live-datetime" class="text-[10px] font-medium text-slate-500 dark:text-slate-400 pl-4.5">
+                    Memuat waktu...
+                </div>
+                <div class="text-[10px] text-slate-400 pl-4.5" id="sync-timestamp">
+                    Sync: Memuat...
+                </div>
             </div>
 
+            <!-- Pemutar Playlist YouTube (Diperbarui) -->
             <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60">
                 <div class="flex items-center justify-between mb-1.5 px-1">
                     <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
@@ -94,6 +132,7 @@
             </div>
         </div>
 
+        <!-- Sidebar Navigation -->
         <div class="flex-1 overflow-y-auto p-4 space-y-1">
             <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Menu Utama</p>
             <div class="mb-3 px-3 py-2 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px]">
@@ -112,6 +151,7 @@
     <!-- MAIN CONTENT CONTAINER -->
     <div class="flex-1 lg:ml-64 flex flex-col min-h-screen pb-20 lg:pb-0 w-full overflow-x-hidden">
         
+        <!-- MOBILE NAVBAR TOP -->
         <header class="lg:hidden bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4 flex items-center justify-between sticky top-0 z-40">
             <div class="flex items-center gap-2">
                 <button onclick="toggleDarkMode()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300">
@@ -127,18 +167,7 @@
 
         <main class="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto space-y-6">
 
-            <!-- PEMILIH SHEET (MULTI-SHEET SWITCHER) -->
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-2 rounded-xl shadow-sm flex items-center gap-2">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 px-3"><i class="fa-solid fa-file-excel text-emerald-500 mr-1.5"></i> Pilih Sheet Rangkuman:</span>
-                <button onclick="switchSheet('sheet1')" id="tab-sheet1" class="px-4 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white transition-all shadow-sm">
-                    Rangkuman Sheet 1 (Utama)
-                </button>
-                <button onclick="switchSheet('sheet2')" id="tab-sheet2" class="px-4 py-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-all">
-                    Rangkuman Sheet 2 (Lanjutan)
-                </button>
-            </div>
-
-            <!-- ERROR ALERT -->
+            <!-- ERROR ALERT CONTAINER -->
             <div id="error-alert" class="hidden p-3 bg-rose-50 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-xl text-xs flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-triangle-exclamation text-rose-500 text-base"></i>
@@ -154,7 +183,7 @@
                         <i class="fa-solid fa-users"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Peserta Digimap</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Peserta Digimap (Max Score pt.1)</span>
                         <h3 id="stat-total" class="text-xl font-bold text-slate-800 dark:text-white">0</h3>
                     </div>
                 </div>
@@ -180,12 +209,13 @@
                 </div>
             </div>
 
-            <!-- CHARTS -->
+            <!-- SECTION: CHARTS -->
             <div id="chart-section" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Bar Chart: Distribusi Performa Nilai Sesi Ujian -->
                 <div class="lg:col-span-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-column text-indigo-500"></i> Distribusi Performa Nilai Sesi Ujian
+                            <i class="fa-solid fa-chart-column text-indigo-500"></i> Distribusi Performa Nilai Sesi Ujian (Benchmark 100, 90, 80)
                         </h3>
                     </div>
                     <div class="relative w-full h-72 sm:h-80">
@@ -193,6 +223,7 @@
                     </div>
                 </div>
 
+                <!-- Donut Chart: Komparasi Status Kelulusan Keseluruhan -->
                 <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-2">
@@ -205,7 +236,7 @@
                 </div>
             </div>
 
-            <!-- SEARCH & CONTROLS -->
+            <!-- SEARCH & CONTROLS SECTION -->
             <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div class="relative w-full md:w-80">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -229,12 +260,14 @@
             <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden">
                 <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
                     <h3 id="table-title" class="font-bold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                        <i class="fa-solid fa-table-cells text-indigo-500"></i> Rekapitulasi Rangkuman Nilai
+                        <i class="fa-solid fa-table-cells text-indigo-500"></i> Rekapitulasi
                     </h3>
                 </div>
                 <div class="table-responsive overflow-x-auto max-h-[550px]">
                     <table class="w-full text-xs text-left whitespace-nowrap">
-                        <thead id="table-head" class="bg-slate-100 dark:bg-slate-700 sticky top-0 z-10 border-b border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200"></thead>
+                        <thead id="table-head" class="bg-slate-100 dark:bg-slate-700 sticky top-0 z-10 border-b border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200">
+                            <!-- Header Dinamis -->
+                        </thead>
                         <tbody id="table-body" class="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
                             <tr>
                                 <td colspan="100%" class="text-center py-8 text-indigo-600 dark:text-indigo-400">
@@ -246,6 +279,7 @@
                     </table>
                 </div>
 
+                <!-- PAGINATION BAR -->
                 <div id="pagination-container" class="p-4 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
                     <span id="pagination-info">Menampilkan 0 data</span>
                     <div class="flex items-center gap-1" id="pagination-buttons"></div>
@@ -255,7 +289,7 @@
         </main>
     </div>
 
-    <!-- MOBILE BOTTOM NAVIGATION -->
+    <!-- MOBILE BOTTOM NAVIGATION (MENU DOCK) -->
     <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center justify-around p-2 z-40 text-[10px] text-slate-600 dark:text-slate-300 shadow-lg">
         <button onclick="switchView('all'); window.scrollTo({top: 0, behavior: 'smooth'})" id="mobile-nav-all" class="flex flex-col items-center gap-1 p-2 text-indigo-600 dark:text-indigo-400 font-bold">
             <i class="fa-solid fa-house text-base"></i>
@@ -269,15 +303,7 @@
 
     <script>
         const SHEET_ID = "1Ckk2YocjioES8EKEkT3bjHy_56tUShglGPBCpYCyh5Y";
-        
-        // Konfigurasi GID untuk 2 Sheet Rangkuman Nilai Anda
-        // Sesuaikan angka gid berikut dengan tab sheet pertama dan kedua di Spreadsheet Anda
-        const SHEET_CONFIG = {
-            sheet1: { gid: "0", name: "Rangkuman Sheet 1" },
-            sheet2: { gid: "123456789", name: "Rangkuman Sheet 2" } // Ganti angka 123456789 dengan GID sheet kedua Anda
-        };
-
-        let currentActiveSheet = "sheet1";
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&range=A1:T&gid=0`;
         const MAX_COLUMNS = 20;
 
         const targetSessionCols = [
@@ -304,24 +330,6 @@
             setInterval(updateLiveClock, 1000);
         });
 
-        function switchSheet(sheetKey) {
-            currentActiveSheet = sheetKey;
-            
-            // Ubah tampilan tombol tab
-            const btn1 = document.getElementById("tab-sheet1");
-            const btn2 = document.getElementById("tab-sheet2");
-            
-            if (sheetKey === 'sheet1') {
-                btn1.className = "px-4 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white transition-all shadow-sm";
-                btn2.className = "px-4 py-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-all";
-            } else {
-                btn2.className = "px-4 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white transition-all shadow-sm";
-                btn1.className = "px-4 py-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-all";
-            }
-
-            fetchSheetData();
-        }
-
         function toggleDarkMode() {
             document.body.classList.toggle("dark");
             const isDark = document.body.classList.contains("dark");
@@ -340,7 +348,9 @@
             const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             
             const liveClockEl = document.getElementById("live-datetime");
-            if(liveClockEl) liveClockEl.innerText = `${dateStr} | ${timeStr} WIB`;
+            if(liveClockEl) {
+                liveClockEl.innerText = `${dateStr} | ${timeStr} WIB`;
+            }
         }
 
         function updateTimestamp() {
@@ -348,7 +358,9 @@
             const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
             const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             const timestampEl = document.getElementById("sync-timestamp");
-            if(timestampEl) timestampEl.innerText = `Last Sync: ${dateStr}, ${timeStr}`;
+            if(timestampEl) {
+                timestampEl.innerText = `Last Sync: ${dateStr}, ${timeStr}`;
+            }
         }
 
         function fetchWeather() {
@@ -393,9 +405,6 @@
             const errorAlert = document.getElementById("error-alert");
             const syncIndicator = document.getElementById("sync-indicator");
             errorAlert.classList.add("hidden");
-
-            const currentGid = SHEET_CONFIG[currentActiveSheet].gid;
-            const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&range=A1:T&gid=${currentGid}`;
 
             fetch(SHEET_URL)
                 .then(response => {
@@ -463,6 +472,7 @@
             let remidiCount = 0;
 
             let maxScoreIdx = allHeaders.findIndex(h => h.toLowerCase().includes("max score pt.1"));
+
             let maxScoreLulus = 0;
             let maxScoreBelum = 0;
 
@@ -480,8 +490,11 @@
                         const numVal = parseFloat(valStr);
                         if (valStr !== "" && !isNaN(numVal)) {
                             totalPesertaCount++;
-                            if (numVal >= 80) maxScoreLulus++;
-                            else maxScoreBelum++;
+                            if (numVal >= 80) {
+                                maxScoreLulus++;
+                            } else {
+                                maxScoreBelum++;
+                            }
                         } else {
                             maxScoreBelum++;
                         }
@@ -493,8 +506,11 @@
                         const cellStr = String(row[idx]).trim();
                         const val = parseFloat(cellStr);
                         if (!isNaN(val) && val !== 0) {
-                            if (val >= 80 && val <= 100) lulusCount++;
-                            else if (val < 80 && val > 0) remidiCount++;
+                            if (val >= 80 && val <= 100) {
+                                lulusCount++;
+                            } else if (val < 80 && val > 0) {
+                                remidiCount++;
+                            }
                         }
                     }
                 });
@@ -569,11 +585,18 @@
                     maintainAspectRatio: false,
                     plugins: {
                         datalabels: {
-                            anchor: 'center', align: 'center', color: '#ffffff',
+                            anchor: 'center',
+                            align: 'center',
+                            color: '#ffffff',
                             font: { weight: 'bold', size: 10 },
-                            formatter: (value) => value > 0 ? value : ''
+                            formatter: function(value) {
+                                return value > 0 ? value : '';
+                            }
                         },
-                        legend: { position: 'bottom', labels: { boxWidth: 12, color: textColor, font: { size: 10 } } }
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, color: textColor, font: { size: 10 } }
+                        }
                     },
                     scales: {
                         x: { grid: { display: false }, ticks: { color: textColor, font: { size: 9 } } },
@@ -590,17 +613,27 @@
                 type: 'doughnut',
                 data: {
                     labels: ['Sudah Lulus', 'Belum / 0'],
-                    datasets: [{ data: [donutLulus, donutBelum], backgroundColor: ['#05cd99', '#ee5d50'], borderWidth: 0 }]
+                    datasets: [{
+                        data: [donutLulus, donutBelum],
+                        backgroundColor: ['#05cd99', '#ee5d50'],
+                        borderWidth: 0
+                    }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         datalabels: {
-                            color: '#ffffff', font: { weight: 'bold', size: 12 },
-                            formatter: (value) => value > 0 ? value : ''
+                            color: '#ffffff',
+                            font: { weight: 'bold', size: 12 },
+                            formatter: function(value) {
+                                return value > 0 ? value : '';
+                            }
                         },
-                        legend: { position: 'bottom', labels: { boxWidth: 12, color: textColor, font: { size: 10 } } }
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, color: textColor, font: { size: 10 } }
+                        }
                     }
                 },
                 plugins: [ChartDataLabels]
@@ -629,16 +662,34 @@
 
         function switchView(mode) {
             currentViewMode = mode;
+            
+            const btnAllDesktop = document.getElementById("nav-btn-all");
+            const btnRemidiDesktop = document.getElementById("nav-btn-remidi");
+            const btnAllMobile = document.getElementById("mobile-nav-all");
+            const btnRemidiMobile = document.getElementById("mobile-nav-remidi");
             const chartSection = document.getElementById("chart-section");
             const tableTitle = document.getElementById("table-title");
 
             if (mode === 'remidi') {
+                if(btnRemidiDesktop) btnRemidiDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 transition-colors flex items-center gap-2";
+                if(btnAllDesktop) btnAllDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2";
+                
+                if(btnRemidiMobile) btnRemidiMobile.className = "flex flex-col items-center gap-1 p-2 text-rose-600 dark:text-rose-400 font-bold";
+                if(btnAllMobile) btnAllMobile.className = "flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400";
+                
                 chartSection.style.display = "none";
                 tableTitle.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Audit Tabel Perbaikan & Remidi (Nilai &lt; 80)`;
             } else {
+                if(btnAllDesktop) btnAllDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 transition-colors flex items-center gap-2";
+                if(btnRemidiDesktop) btnRemidiDesktop.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-2";
+                
+                if(btnAllMobile) btnAllMobile.className = "flex flex-col items-center gap-1 p-2 text-indigo-600 dark:text-indigo-400 font-bold";
+                if(btnRemidiMobile) btnRemidiMobile.className = "flex flex-col items-center gap-1 p-2 text-slate-500 dark:text-slate-400";
+                
                 chartSection.style.display = "grid";
-                tableTitle.innerHTML = `<i class="fa-solid fa-table-cells text-indigo-500"></i> Rekapitulasi Rangkuman Nilai`;
+                tableTitle.innerHTML = `<i class="fa-solid fa-table-cells text-indigo-500"></i> Rekapitulasi`;
             }
+
             applyFilter();
         }
 
@@ -651,6 +702,7 @@
 
             filteredRows = allDataRows.filter(row => {
                 const matchesSearch = query === "" || row.some(cell => String(cell).toLowerCase().includes(query));
+
                 if (!matchesSearch) return false;
 
                 if (currentViewMode === 'remidi') {
@@ -659,11 +711,14 @@
                         if (idx !== -1 && row[idx] !== undefined) {
                             const valStr = String(row[idx]).trim();
                             const val = parseFloat(valStr);
-                            if (valStr !== "" && !isNaN(val) && val > 0 && val < 80) hasRemidi = true;
+                            if (valStr !== "" && !isNaN(val) && val > 0 && val < 80) {
+                                hasRemidi = true;
+                            }
                         }
                     });
                     return hasRemidi;
                 }
+
                 return true;
             });
 
@@ -747,6 +802,7 @@
             });
 
             tbody.appendChild(fragment);
+
             const endIdx = Math.min(startIdx + pageSize, filteredRows.length);
             document.getElementById("pagination-info").innerText = `Menampilkan ${startIdx + 1} - ${endIdx} dari ${filteredRows.length} data`;
             renderPaginationButtons(totalPage);
